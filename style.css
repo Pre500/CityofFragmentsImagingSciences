@@ -1,0 +1,84 @@
+/* Reset + basic setup */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  background-color: #000;
+  font-family: "Helvetica Neue", sans-serif;
+  color: #f0f0f0;
+  overflow: hidden;
+  height: 100vh;
+}
+
+/* Header */
+header {
+  position: fixed;
+  top: 20px;
+  width: 100%;
+  text-align: center;
+  z-index: 10;
+}
+
+header h1 {
+  font-size: 1.6rem;
+  letter-spacing: 4px;
+  opacity: 0.85;
+  font-weight: 300;
+}
+
+/* Overlay description */
+#overlay {
+  position: absolute;
+  bottom: 80px;
+  left: 50%;
+  transform: translateX(-50%);
+  text-align: center;
+  width: 80%;
+  color: rgba(255, 255, 255, 0.8);
+  font-size: 1rem;
+  line-height: 1.4em;
+  z-index: 5;
+}
+
+/* Canvas container (for p5.js) */
+#canvas-container {
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 1;
+}
+
+/* Floating button */
+#add-btn {
+  position: fixed;
+  bottom: 25px;
+  right: 30px;
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  border-radius: 50%;
+  width: 50px;
+  height: 50px;
+  font-size: 2rem;
+  color: #fff;
+  cursor: pointer;
+  z-index: 10;
+  transition: all 0.3s ease;
+}
+
+#add-btn:hover {
+  background: rgba(255, 255, 255, 0.25);
+}
+
+/* Footer */
+footer {
+  position: fixed;
+  bottom: 10px;
+  width: 100%;
+  text-align: center;
+  font-size: 0.8rem;
+  color: rgba(255, 255, 255, 0.4);
+  z-index: 5;
+}
