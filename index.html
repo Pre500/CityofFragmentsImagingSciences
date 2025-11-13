@@ -1,38 +1,138 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
+
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title>City of Fragments</title>
-  <link rel="stylesheet" href="style.css">
-  <!-- p5.js -->
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.9.0/p5.min.js"></script>
+  <link rel="stylesheet" href="style.css" />
+  <!-- p5 (optional, you'll add your sketch.js later) -->
+  <script defer src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.9.0/p5.min.js"></script>
+
+  <!-- Google Playfair Display (remote) -->
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&display=swap" rel="stylesheet">
+  <!-- Local Playfair italic (uses local file in assets if available) -->
+    <style>
+      @font-face {
+        font-family: 'Playfair Display';
+        src: url('assets/PlayfairDisplay-Italic-VariableFont_wght.ttf') format('truetype');
+        font-weight: 700;
+        font-style: italic;
+        font-display: swap;
+        /* If the file isn't present the browser will fall back to the remote Google font or system fonts */
+      }
+    </style>
+
 </head>
+
 <body>
-  <header>
-    <h1>CITY OF FRAGMENTS</h1>
-  </header>
+  <div class="page">
 
-  <main>
-    <!-- Canvas will appear here -->
-    <div id="canvas-container"></div>
-
-    <!-- Overlay text -->
-    <div id="overlay">
-      <p>
-        Explore the city through fragments of time.<br>
-        Move your cursor to reveal shifting memories.
-      </p>
+    <!-- Top small bar -->
+    <div class="topbar">
+      <div class="left">PEOPLE</div>
+      <div class="center" id="clock">--:--:--</div>
+      <div class="right">INFO</div>
     </div>
 
-    <!-- Floating "Add Memory" button -->
-    <button id="add-btn">+</button>
-  </main>
+    <!-- Header / title -->
+    <header class="site-header">
+      <h1 class="site-title">
+        <span class="title-City">City of</span>
+        <span class="title-fragments">Fragments</span>
+      </h1>
+      <div class="subtitle">The city is no longer a place we inhabit — it’s a place we remember.</div>
+    </header>
 
-  <footer>
-    <p>© 2025 City of Fragments | Interactive Media Project</p>
-  </footer>
+    <!-- Rectangular canvas/video area (for animation/video playback) -->
+    <div id="canvas-rect" class="canvas-rect"></div>
 
-  <script src="sketch.js"></script>
+    <!-- Canvas container for p5 (full screen layer) -->
+    <div id="canvas-container"></div>
+
+    <!-- Content area -->
+    <main class="content">
+      <section class="grid-row grid-row-top">
+        <article class="card large">
+          <div class="frame-grid video-frame">
+            <!-- video: use muted autoplay loop for autoplay support on browsers -->
+            <video id="heroVideo" autoplay muted loop playsinline preload="auto">
+              <source src="assets/IMG_8770.MP4" type="video/mp4">
+              Your browser does not support the video tag.
+            </video>
+          </div>
+          <p class="caption">Lorem Ipsum...</p>
+        </article>
+
+        <article class="card medium">
+          <div class="frame-grid"></div>
+          <p class="caption">Lorem Ipsum...</p>
+        </article>
+      </section>
+
+      <section class="grid-row grid-row-mid">
+        <article class="card medium-left">
+          <div class="frame-grid"></div>
+          <p class="caption">Lorem Ipsum...</p>
+        </article>
+
+        <article class="card small">
+          <div class="frame-grid"></div>
+          <p class="caption">Lorem Ipsum...</p>
+        </article>
+      </section>
+
+      <section class="grid-row grid-row-wide">
+        <article class="card wide">
+          <div class="frame-grid"></div>
+          <p class="caption">Lorem Ipsum...</p>
+        </article>
+      </section>
+
+      <!-- second row of small thumbnails -->
+      <section class="grid-row grid-row-bottom">
+        <article class="card small">
+          <div class="frame-grid"></div>
+          <p class="caption">Lorem Ipsum...</p>
+        </article>
+        <article class="card small">
+          <div class="frame-grid"></div>
+          <p class="caption">Lorem Ipsum...</p>
+        </article>
+      </section>
+    </main>
+
+    <!-- Footer -->
+    <footer class="site-footer">
+      <div class="left small-label">DOCUMENTATION</div>
+      <div class="center small-caption">SM3805 Imaging Sciences Studio</div>
+      <div class="right small-label">FOLLOW</div>
+    </footer>
+
+    <!-- Floating Add button -->
+    <button id="addBtn" title="Add memory">+</button>
+  </div>
+
+  <!-- Optional minimal interaction script (clock and add button) -->
+  <script>
+    // simple clock update
+    function updateClock() {
+      const el = document.getElementById('clock');
+      const d = new Date();
+      el.textContent = d.toTimeString().split(' ')[0];
+    }
+    setInterval(updateClock, 1000);
+    updateClock();
+
+    // add button: placeholder action
+    document.getElementById('addBtn').addEventListener('click', () => {
+      alert('Add page / upload UI will open here.');
+    });
+  </script>
+
+  <!-- placeholder for your p5/sketch.js — add later -->
+  <script src="sketch.js" defer></script>
 </body>
+
 </html>
