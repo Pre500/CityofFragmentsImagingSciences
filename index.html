@@ -56,9 +56,11 @@
       <section class="grid-row grid-row-top">
         <article class="card large">
           <div class="frame-grid video-frame">
-            <!-- video: use muted autoplay loop for autoplay support on browsers --><video autoplay muted loop>
-  <source src="assets/IMG_8770.MP4" type="video/mp4">
-</video>
+            <!-- video: use muted autoplay loop for autoplay support on browsers -->
+            <video id="heroVideo" autoplay muted loop playsinline preload="auto">
+              <source src="assets/IMG_8770.MP4" type="video/mp4">
+              Your browser does not support the video tag.
+            </video>
           </div>
           <p class="caption">Lorem Ipsum...</p>
         </article>
