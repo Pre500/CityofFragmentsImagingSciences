@@ -27,29 +27,43 @@
 </head>
 
 <body>
-  <div class="page">
+  <!-- Top small bar (navigation links) -->
+  <div class="topbar">
+    <a class="top-link left" href="people.html">PEOPLE</a>
+    <a class="top-link right" href="info.html">INFO</a>
+  </div>
 
-    <!-- Top small bar -->
-    <div class="topbar">
-      <div class="left">PEOPLE</div>
-      <div class="center" id="clock">--:--:--</div>
-      <div class="right">INFO</div>
+  <!-- Header / title moved to main page -->
+  <header class="site-header">
+    <h1 class="site-title">
+      <span class="title-City">City of</span>
+      <span class="title-fragments">Fragments</span>
+    </h1>
+    <div class="subtitle">The city is no longer a place we inhabit — it’s a place we remember.</div>
+  </header>
+
+  <!-- Fullscreen video player (new main interface) -->
+  <div id="fullscreen-player">
+    <video id="mainPlayer" autoplay muted playsinline preload="auto"></video>
+    <div class="player-controls">
+      <button id="moreMemoriesBtn" class="control-btn">discover Hong Kong</button>
     </div>
+    <div id="videoStatus" aria-hidden="true"></div>
+  </div>
 
-    <!-- Header / title -->
-    <header class="site-header">
-      <h1 class="site-title">
-        <span class="title-City">City of</span>
-        <span class="title-fragments">Fragments</span>
-      </h1>
-      <div class="subtitle">The city is no longer a place we inhabit — it’s a place we remember.</div>
-    </header>
+  <!-- Title overlay image centered at top -->
+  <img id="title-overlay" src="assets/Title White.png" alt="City of Fragments" />
+
+  <!-- Canvas container for p5 (full screen layer) - moved here so orb overlays fullscreen player -->
+  <div id="canvas-container"></div>
+
+  <!-- Mini site: the original page moved to a small left-hand panel -->
+  <div id="mini-site" class="mini-site" aria-hidden="true">
+    <button id="miniClose" class="mini-close" aria-label="Close">✕</button>
+    <div class="page">
 
     <!-- Rectangular canvas/video area (for animation/video playback) -->
     <div id="canvas-rect" class="canvas-rect"></div>
-
-    <!-- Canvas container for p5 (full screen layer) -->
-    <div id="canvas-container"></div>
 
     <!-- Content area -->
     <main class="content">
@@ -66,26 +80,26 @@
         </article>
 
         <article class="card medium">
-          <div class="frame-grid"></div>
+          <div class="frame-grid" data-video="assets/IMG_5619.MP4"></div>
           <p class="caption">Lorem Ipsum...</p>
         </article>
       </section>
 
       <section class="grid-row grid-row-mid">
         <article class="card medium-left">
-          <div class="frame-grid"></div>
+          <div class="frame-grid" data-video="assets/IMG_6424.MP4"></div>
           <p class="caption">Lorem Ipsum...</p>
         </article>
 
         <article class="card small">
-          <div class="frame-grid"></div>
+          <div class="frame-grid" data-video="assets/IMG_7113.MP4"></div>
           <p class="caption">Lorem Ipsum...</p>
         </article>
       </section>
 
       <section class="grid-row grid-row-wide">
         <article class="card wide">
-          <div class="frame-grid"></div>
+          <div class="frame-grid" data-video="assets/IMG_8774.MP4"></div>
           <p class="caption">Lorem Ipsum...</p>
         </article>
       </section>
@@ -93,46 +107,211 @@
       <!-- second row of small thumbnails -->
       <section class="grid-row grid-row-bottom">
         <article class="card small">
-          <div class="frame-grid"></div>
+          <div class="frame-grid" data-video="assets/IMG_8775.MP4"></div>
           <p class="caption">Lorem Ipsum...</p>
         </article>
         <article class="card small">
-          <div class="frame-grid"></div>
+          <div class="frame-grid" data-video="assets/IMG_8776.MP4"></div>
           <p class="caption">Lorem Ipsum...</p>
         </article>
       </section>
     </main>
 
-    <!-- Footer -->
-    <footer class="site-footer">
-      <div class="left small-label">DOCUMENTATION</div>
-      <div class="center small-caption">SM3805 Imaging Sciences Studio</div>
-      <div class="right small-label">FOLLOW</div>
-    </footer>
-
-    <!-- Floating Add button -->
+    <!-- Floating Add button (remains in mini-site) -->
     <button id="addBtn" title="Add memory">+</button>
+    </div>
   </div>
 
-  <!-- Optional minimal interaction script (clock and add button) -->
-  <script>
-    // simple clock update
-    function updateClock() {
-      const el = document.getElementById('clock');
-      const d = new Date();
-      el.textContent = d.toTimeString().split(' ')[0];
-    }
-    setInterval(updateClock, 1000);
-    updateClock();
+  <!-- Footer (moved to main page) -->
+  <footer class="site-footer">
+    <a class="bottom-link left" href="documentation.html">DOCUMENTATION</a>
+    <div class="center small-caption"></div>
+    <a class="bottom-link right" href="follow.html">FOLLOW</a>
+  </footer>
 
+  <!-- Optional minimal interaction script (add button) -->
+  <script>
     // add button: placeholder action
     document.getElementById('addBtn').addEventListener('click', () => {
       alert('Add page / upload UI will open here.');
     });
   </script>
 
+  <!-- Initialize videos inside frame-grid elements that have a `data-video` attribute -->
+  <script>
+    (function () {
+      // find all frame-grid elements with a data-video attribute
+      const frames = document.querySelectorAll('.frame-grid[data-video]');
+      frames.forEach(async (frame) => {
+        const src = frame.getAttribute('data-video');
+        if (!src) return;
+
+        // quick HEAD request to check file existence when served over http
+        let exists = true;
+        try {
+          const resp = await fetch(src, { method: 'HEAD' });
+          exists = resp && resp.ok;
+        } catch (e) {
+          exists = true; // if fetch fails (eg file://) try to create video anyway
+        }
+
+        if (!exists) {
+          frame.classList.add('video-missing');
+          frame.innerHTML = '<div class="missing-label">Video missing<br>add file to assets/</div>';
+          return;
+        }
+
+        // create video element with explicit properties
+        const vid = document.createElement('video');
+        vid.playsInline = true;
+        vid.muted = true;
+        vid.autoplay = true;
+        vid.loop = true;
+        vid.preload = 'auto';
+        vid.style.display = 'block';
+        vid.style.width = '100%';
+        vid.style.height = '100%';
+        vid.style.objectFit = 'cover';
+
+        // source element
+        const source = document.createElement('source');
+        source.src = src;
+        source.type = 'video/mp4';
+        vid.appendChild(source);
+
+        // add a class so CSS can remove padding/overlay
+        frame.classList.add('has-video');
+        // replace the inner content (if any) with the video
+        frame.innerHTML = '';
+        frame.appendChild(vid);
+
+        // playback handling with helpful fallbacks
+        vid.addEventListener('canplay', () => {
+          // try to play; modern browsers return a promise
+          const p = vid.play();
+          if (p && p.catch) p.catch(() => {
+            // if autoplay was blocked, show a play overlay
+            showPlayOverlay(frame, vid);
+          });
+        });
+
+        vid.addEventListener('play', () => frame.classList.add('is-playing'));
+        vid.addEventListener('error', () => {
+          frame.classList.remove('has-video');
+          frame.classList.add('video-missing');
+          frame.innerHTML = '<div class="missing-label">Video failed to load</div>';
+        });
+
+        // helper to show a click overlay to start playback when autoplay blocked
+        function showPlayOverlay(frameEl, videoEl) {
+          const btn = document.createElement('button');
+          btn.className = 'video-play-overlay';
+          btn.innerText = 'Play';
+          btn.addEventListener('click', () => {
+            videoEl.muted = false; // let user unmute if desired
+            videoEl.play().catch(()=>{});
+            btn.remove();
+          });
+          frameEl.appendChild(btn);
+        }
+      });
+    })();
+  </script>
+
   <!-- placeholder for your p5/sketch.js — add later -->
   <script src="sketch.js" defer></script>
+  
+  <!-- More memories: randomize the background player source -->
+  <script>
+    (function () {
+      const moreBtn = document.getElementById('moreMemoriesBtn');
+      const player = document.getElementById('mainPlayer');
+      const status = document.getElementById('videoStatus');
+      // explicit list of available MP4s in the `assets/` folder
+      const sources = [
+        'assets/IMG_8770.MP4',
+        'assets/IMG_5619.MP4',
+        'assets/IMG_6424.MP4',
+        'assets/IMG_7113.MP4'
+      ];
+
+      let currentIndex = 0;
+
+      // helper: update on-screen status (useful for debugging/UX)
+      function updateStatus() {
+        if (!status) return;
+        status.textContent = `Video ${currentIndex + 1} / ${sources.length}`;
+      }
+
+      // robust source swapping: create a fresh <source>, call load(), then try play
+      function setSourceIndex(i) {
+        if (!player) return;
+        currentIndex = ((i % sources.length) + sources.length) % sources.length;
+        const src = sources[currentIndex];
+        console.log('Switching main player to', src);
+
+        // ensure player is muted for autoplay
+        try { player.muted = true; player.playsInline = true; } catch (e) {}
+
+        // remove any previous sources
+        while (player.firstChild) player.removeChild(player.firstChild);
+
+        // create and append a source element
+        const s = document.createElement('source');
+        s.src = src;
+        s.type = 'video/mp4';
+        player.appendChild(s);
+
+        // force reload and try to play
+        try {
+          player.load();
+          const p = player.play();
+          if (p && p.catch) p.catch((err) => {
+            console.warn('Autoplay prevented:', err);
+            // if autoplay is blocked, leave player ready; user can click to start
+          });
+        } catch (err) {
+          console.error('Error while switching video:', err);
+        }
+
+        updateStatus();
+      }
+
+
+      // initialize player with the original hero subvideo
+      setSourceIndex(0);
+
+      // ensure player will loop in the background
+      try { player.loop = true; player.muted = true; player.playsInline = true; } catch(e) {}
+
+      function cycleNext() {
+        setSourceIndex(currentIndex + 1);
+      }
+
+      if (moreBtn) {
+        moreBtn.addEventListener('click', (ev) => {
+          ev.preventDefault();
+          // cycle to next video
+          cycleNext();
+          // reset playback and attempt to play (user interaction should allow autoplay)
+          try {
+            player.currentTime = 0;
+            player.muted = true;
+            const p = player.play();
+            if (p && p.catch) p.catch(err => console.warn('play() rejected after click:', err));
+          } catch (err) { console.warn('Error while attempting play on click', err); }
+        });
+      }
+
+      // log playback errors to console and show on status
+      if (player) {
+        player.addEventListener('error', (e) => {
+          console.error('Main player error', e);
+          if (status) status.textContent = 'Video failed to load';
+        });
+      }
+    })();
+  </script>
 </body>
 
 </html>

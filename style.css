@@ -20,6 +20,132 @@ body {
   padding-bottom: 80px; /* space for footer */
 }
 
+/* Mini-site panel (left corner) */
+.mini-site {
+  position: fixed;
+  left: 16px;
+  top: 16px;
+  width: 360px;
+  max-height: calc(100vh - 32px);
+  overflow: auto;
+  background: rgba(255,255,255,0.95);
+  border-radius: 6px;
+  box-shadow: 0 8px 30px rgba(0,0,0,0.12);
+  z-index: 6; /* above canvas and player */
+  padding: 12px;
+}
+.mini-site .page { max-width: none; margin: 0; }
+
+/* hidden by default; toggled with .open */
+.mini-site {
+  opacity: 0;
+  transform: translateY(-8px) scale(0.99);
+  pointer-events: none;
+  transition: opacity 200ms ease, transform 220ms ease, inset 220ms ease;
+}
+
+/* when opened, expand the mini-site to cover the full viewport */
+.mini-site.open {
+  position: fixed;
+  inset: 0;
+  width: 100%;
+  height: 100vh;
+  margin: 0;
+  border-radius: 0;
+  padding: 28px;
+  background: #fff;
+  z-index: 20; /* above everything */
+  opacity: 1;
+  transform: none;
+  pointer-events: auto;
+  overflow: auto;
+}
+
+/* top-left persistent toggle button */
+.mini-toggle {
+  display: none; /* keep the element for a11y/programmatic toggling but hide visually */
+}
+
+.topbar .left {
+  cursor: pointer; /* make top-left text indicate it is clickable */
+}
+
+.topbar .top-link, .topbar a.top-link { color: #000; text-decoration: none; background: #fff; padding: 12px 18px; border-radius: 12px; display: inline-block; font-weight: 700; }
+.topbar .top-link { text-shadow: none; }
+
+/* Title overlay in the center top */
+#title-overlay {
+  position: fixed;
+  left: 50%;
+  top: 24px;
+  transform: translateX(-50%);
+  z-index: 22;
+  pointer-events: none;
+  max-width: 340px;
+  width: calc(100% - 120px);
+  height: auto;
+}
+
+/* Make 'More memories' button larger and match nav buttons (white background, black text) */
+#moreMemoriesBtn, .control-btn {
+  background: #fff;
+  color: #000;
+  border: none;
+  padding: 18px 28px;
+  border-radius: 16px;
+  font-size: 18px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+/* remove any text effects site-wide for topbar/nav */
+.topbar .top-link, .control-btn { text-shadow: none; }
+
+/* close button inside mini-site */
+.mini-close {
+  position: absolute;
+  right: 8px;
+  top: 8px;
+  border: none;
+  background: transparent;
+  font-size: 18px;
+  cursor: pointer;
+}
+
+/* Fullscreen player styles */
+#fullscreen-player {
+  position: fixed;
+  inset: 0;
+  width: 100%;
+  height: 100vh;
+  background: #000;
+  display: flex;
+  align-items: stretch;
+  justify-content: center;
+  z-index: 1; /* behind canvas (orb) and mini-site */
+}
+#fullscreen-player video#mainPlayer {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.player-controls {
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  bottom: 18px;
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  z-index: 40; /* ensure it's above overlays */
+  padding: 6px; /* larger click area around buttons */
+}
+.source-btn { padding: 8px 12px; border-radius: 4px; border: none; background: rgba(255,255,255,0.9); cursor: pointer; }
+.source-btn.active { background: rgba(40,40,40,0.9); color: #fff; }
+.control-btn { padding: 8px 12px; border-radius: 4px; border: none; background: rgba(255,255,255,0.9); cursor: pointer; }
+
 /* top smallbar */
 .topbar {
   display:flex;
@@ -96,6 +222,9 @@ body {
   z-index: 3; /* bring canvas above video/content so the orb is visible over the mp4 */
   pointer-events: none; /* allow mouse events to pass through */
 }
+
+/* hide orb canvas when mini-site is open so orb only appears on main page */
+body.mini-open #canvas-container { display: none; }
 
 /* content area sits above canvas */
 .content {
@@ -194,6 +323,45 @@ body {
   border-radius: 2px;
 }
 
+/* when a frame-grid has a dynamically inserted video */
+.frame-grid.has-video {
+  padding: 0; /* remove placeholder padding so video fills the frame */
+}
+.frame-grid.has-video::before { display: none; }
+.frame-grid.has-video video {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  border-radius: 2px;
+}
+
+/* missing video fallback */
+.frame-grid.video-missing {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #f0f0f0;
+  color: #666;
+  font-size: 13px;
+}
+.frame-grid .missing-label { text-align: center; line-height:1.2; }
+
+/* simple play overlay when autoplay is blocked */
+.video-play-overlay {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  padding: 8px 14px;
+  background: rgba(0,0,0,0.6);
+  color: #fff;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  z-index: 5;
+}
+
 
 /* sizes for frame-grid blocks */
 .card.large .frame-grid { width: 420px; height: 540px; }
@@ -246,6 +414,20 @@ body {
   box-shadow: 0 6px 20px rgba(0,0,0,0.06);
 }
 
+/* small status badge to show which video is loaded (top-right) */
+#videoStatus {
+  position: fixed;
+  right: 18px;
+  top: 18px;
+  background: rgba(0,0,0,0.55);
+  color: #fff;
+  padding: 6px 10px;
+  border-radius: 10px;
+  font-size: 12px;
+  z-index: 60;
+  pointer-events: none;
+}
+
 /* responsive */
 @media (max-width: 880px) {
   .page { padding: 0 16px; }
@@ -261,3 +443,57 @@ body {
   .card.wide .frame-grid { width: 100%; height: 200px; }
   .site-footer { font-size: 11px; padding: 0 8px; }
 }
+
+/* Pin the small topbar to the very top of the viewport (full-width area centered to page width) */
+.topbar {
+  position: fixed;
+  left: 50%;
+  transform: translateX(-50%);
+  top: 20px; /* more space from top */
+  width: calc(100% - 56px);
+  max-width: 900px;
+  z-index: 12; /* above player and canvas */
+  background: transparent;
+  padding: 14px 32px; /* increased padding */
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+/* push page content down so topbar doesn't overlap the header */
+.page { padding-top: 96px; }
+
+/* Bottom navigation bar styled like the topbar */
+.site-footer {
+  position: fixed;
+  left: 50%;
+  transform: translateX(-50%);
+  bottom: 20px; /* more space from bottom */
+  width: calc(100% - 56px);
+  max-width: 900px;
+  z-index: 12;
+  background: transparent;
+  padding: 10px 32px; /* match topbar spacing */
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.site-footer .bottom-link { color: #000; text-decoration: none; background: #fff; padding: 12px 18px; border-radius: 12px; display: inline-block; font-weight: 700; }
+
+/* Hover and active states for top and bottom nav buttons */
+.topbar .top-link, .site-footer .bottom-link { transition: background 150ms ease, transform 120ms ease; }
+.topbar .top-link:hover, .topbar .top-link:focus, .site-footer .bottom-link:hover, .site-footer .bottom-link:focus {
+  background: #f2f2f2;
+  cursor: pointer;
+  transform: translateY(-2px);
+}
+.topbar .top-link.active, .site-footer .bottom-link.active {
+  background: #000;
+  color: #fff;
+}
+
+/* Make the More memories button larger and easier to click */
+#moreMemoriesBtn { display: inline-block; background: rgba(255,255,255,0.95); color: #000; padding: 14px 22px; border-radius: 16px; font-weight:700; text-decoration:none; cursor:pointer; transition: transform 120ms ease, box-shadow 120ms ease; }
+#moreMemoriesBtn:hover, #moreMemoriesBtn:focus { transform: translateY(-3px); box-shadow: 0 6px 18px rgba(0,0,0,0.12); }
+#moreMemoriesBtn:active { transform: translateY(0); }
