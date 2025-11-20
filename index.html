@@ -46,7 +46,9 @@
   <div id="fullscreen-player">
     <video id="mainPlayer" autoplay muted playsinline preload="auto"></video>
     <div class="player-controls">
-      <button id="moreMemoriesBtn" class="control-btn">discover Hong Kong</button>
+      <button id="discoverBtn" class="discover-btn" aria-label="Discover Hong Kong">
+        <img src="assets/Discover Hong Kong.png" alt="Discover Hong Kong" />
+      </button>
     </div>
     <div id="videoStatus" aria-hidden="true"></div>
   </div>
@@ -62,8 +64,7 @@
     <button id="miniClose" class="mini-close" aria-label="Close">✕</button>
     <div class="page">
 
-    <!-- Rectangular canvas/video area (for animation/video playback) -->
-    <div id="canvas-rect" class="canvas-rect"></div>
+    <!-- Rectangular canvas/video area removed; canvas now uses #canvas-container -->
 
     <!-- Content area -->
     <main class="content">
@@ -224,7 +225,7 @@
   <!-- More memories: randomize the background player source -->
   <script>
     (function () {
-      const moreBtn = document.getElementById('moreMemoriesBtn');
+      const moreBtn = document.getElementById('discoverBtn');
       const player = document.getElementById('mainPlayer');
       const status = document.getElementById('videoStatus');
       // explicit list of available MP4s in the `assets/` folder
@@ -289,17 +290,25 @@
       }
 
       if (moreBtn) {
+        // click handler
         moreBtn.addEventListener('click', (ev) => {
           ev.preventDefault();
-          // cycle to next video
+          console.log('discoverBtn clicked — cycling video');
           cycleNext();
-          // reset playback and attempt to play (user interaction should allow autoplay)
           try {
             player.currentTime = 0;
             player.muted = true;
             const p = player.play();
             if (p && p.catch) p.catch(err => console.warn('play() rejected after click:', err));
           } catch (err) { console.warn('Error while attempting play on click', err); }
+        });
+
+        // keyboard support: Enter or Space triggers the same action
+        moreBtn.addEventListener('keydown', (ev) => {
+          if (ev.key === 'Enter' || ev.key === ' ' || ev.key === 'Spacebar') {
+            ev.preventDefault();
+            moreBtn.click();
+          }
         });
       }
 
