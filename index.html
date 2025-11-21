@@ -232,16 +232,16 @@
       
       // Fallback: if no videos found, use original hardcoded list
       if (sources.length === 0) {
+        // fallback list: only include files that are present in the assets folder
         sources = [
           'assets/IMG_8770.MP4',
-          'assets/IMG_5619.MP4',
-          'assets/IMG_6424.MP4',
           'assets/IMG_8991.MP4',
           'assets/IMG_8910.MP4',
           'assets/IMG_8805.MP4',
           'assets/IMG_7414.MP4',
           'assets/IMG_2723.MP4',
-          'assets/IMG_5193.MP4',
+          'assets/IMG_6021.MP4',
+          'assets/IMG_8758.MP4'
         ];
 
         // validate that each fallback source actually exists (HEAD request)
