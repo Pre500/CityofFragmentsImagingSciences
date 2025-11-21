@@ -1,373 +1,127 @@
 <!doctype html>
 <html lang="en">
 
-
 <head>
-
-
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title>City of Fragments</title>
   <link rel="stylesheet" href="style.css" />
   <!-- p5.js library -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.9.0/p5.min.js"></script>
-
-
 </head>
 
-
 <body>
-  <!-- Top small bar (4 navigation) -->
+  <!-- Top small bar -->
   <div class="topbar">
     <a class="top-link left" href="PROJECTINTRO.html">PROJECT INTRO</a>
     <a class="top-link right" href="people.html">PEOPLE</a>
   </div>
 
-
-  <!-- Fullscreen video player (new main interface) -->
+  <!-- Fullscreen video player -->
   <div id="fullscreen-player">
-    <video id="mainPlayer" autoplay muted playsinline preload="auto"></video>
+    <video id="mainPlayer" autoplay muted playsinline loop preload="auto">
+      <source src="assets/IMG_8770.MP4" type="video/mp4">
+    </video>
     <div class="player-controls">
       <button id="discoverBtn" class="discover-btn" aria-label="Discover Hong Kong">
         <img src="assets/Discover Hong Kong.png" alt="Discover Hong Kong" />
       </button>
+    </div>
   </div>
 
-  <!-- Canvas container for p5.js orb (full-screen overlay) -->
+  <!-- Canvas container for p5.js orb -->
   <div id="canvas-container"></div>
 
-
+  <!-- Title overlay -->
   <div id="title-wrap">
     <img id="title-overlay" src="assets/Title White.png" alt="City of Fragments" />
-    <a id="overlay-subtitle" class="subtitle overlay-subtitle" href="#" aria-hidden="true">The city is no longer a place we inhabit — it’s a place we remember.</a>
+    <a id="overlay-subtitle" class="subtitle overlay-subtitle" href="#" aria-hidden="true">
+      The city is no longer a place we inhabit — it’s a place we remember.
+    </a>
   </div>
 
+  <!-- Floating Add button -->
+  <button id="addBtn" title="Discover Hong Kong">+</button>
 
-    <!-- Floating Add button (remains in mini-site) -->
-    <button id="addBtn" title="Discover Hong Kong">+</button>
-
-
-  <!-- Footer (moved to main page) -->
+  <!-- Footer -->
   <footer class="site-footer">
     <a class="bottom-link left" href="documentation.html">DOCUMENTATION</a>
     <div class="center small-caption"></div>
     <a class="bottom-link right" href="follow.html">FOLLOW</a>
   </footer>
 
-
-  <!-- Optional minimal interaction script (add button) -->
+  <!-- Scripts -->
   <script>
-    // add button: placeholder action
+    // --- Add button placeholder ---
     document.getElementById('addBtn').addEventListener('click', () => {
       alert('Add page / upload UI will open here.');
     });
-  </script>
-  <script>
-    // Prevent video upscaling: size hero video to intrinsic resolution when smaller than its container
-    (function() {
-      const vid = document.getElementById('heroVideo');
-      if (!vid) return;
-      const container = vid.closest('.frame-grid') || vid.parentElement;
 
-
-      function fitVideo() {
-        const vw = vid.videoWidth || vid.naturalWidth || 0;
-        const vh = vid.videoHeight || vid.naturalHeight || 0;
-        const cw = container.clientWidth;
-        const ch = container.clientHeight;
-
-
-        // reset positioning so we can center
-        vid.style.position = 'absolute';
-        vid.style.left = '50%';
-        vid.style.top = '50%';
-        vid.style.transform = 'translate(-50%, -50%)';
-
-
-        if (vw && vh) {
-          // If the intrinsic video size is smaller than container, don't upscale: use intrinsic width.
-          if (vw <= cw && vh <= ch) {
-            vid.style.width = vw + 'px';
-            vid.style.height = 'auto';
-            vid.style.objectFit = 'none';
-          } else {
-            // otherwise fit inside container while preserving aspect ratio
-            vid.style.width = '100%';
-            vid.style.height = '100%';
-            vid.style.objectFit = 'contain';
-          }
-        } else {
-          // fallback: ensure contain
-          vid.style.width = '100%';
-          vid.style.height = '100%';
-          vid.style.objectFit = 'contain';
-        }
-      }
-
-
-      vid.addEventListener('loadedmetadata', fitVideo);
-      window.addEventListener('resize', fitVideo);
-      // try to run once in case metadata already available
-      setTimeout(fitVideo, 150);
-    })();
-  </script>
-
-
-  <!-- Initialize videos inside frame-grid elements that have a `data-video` attribute -->
-  <script>
-    (async function () {
-      // find all frame-grid elements with a data-video attribute
-      const frames = document.querySelectorAll('.frame-grid[data-video]');
-      frames.forEach(async (frame) => {
-        const src = frame.getAttribute('data-video');
-        if (!src) return;
-
-
-        // quick HEAD request to check file existence when served over http
-        let exists = true;
-        try {
-          const resp = await fetch(src, { method: 'HEAD' });
-          exists = resp && resp.ok;
-        } catch (e) {
-          exists = true; // if fetch fails (eg file://) try to create video anyway
-        }
-
-
-        if (!exists) {
-          frame.classList.add('video-missing');
-          frame.innerHTML = '<div class="missing-label">Video missing<br>add file to assets/</div>';
-          return;
-        }
-
-
-        // create video element with explicit properties
-        const vid = document.createElement('video');
-        vid.playsInline = true;
-        vid.muted = true;
-        vid.autoplay = true;
-        vid.loop = true;
-        vid.preload = 'auto';
-        vid.style.display = 'block';
-        vid.style.width = '100%';
-        vid.style.height = '100%';
-        vid.style.objectFit = 'cover';
-
-
-        // source element
-        const source = document.createElement('source');
-        source.src = src;
-        source.type = 'video/mp4';
-        vid.appendChild(source);
-
-
-        // add a class so CSS can remove padding/overlay
-        frame.classList.add('has-video');
-        // replace the inner content (if any) with the video
-        frame.innerHTML = '';
-        frame.appendChild(vid);
-
-
-        // playback handling with helpful fallbacks
-        vid.addEventListener('canplay', () => {
-          // try to play; modern browsers return a promise
-          const p = vid.play();
-          if (p && p.catch) p.catch(() => {
-            // if autoplay was blocked, show a play overlay
-            showPlayOverlay(frame, vid);
-          });
-        });
-
-
-        vid.addEventListener('play', () => frame.classList.add('is-playing'));
-        vid.addEventListener('error', () => {
-          frame.classList.remove('has-video');
-          frame.classList.add('video-missing');
-          frame.innerHTML = '<div class="missing-label">Video failed to load</div>';
-        });
-
-
-        // helper to show a click overlay to start playback when autoplay blocked
-        function showPlayOverlay(frameEl, videoEl) {
-          const btn = document.createElement('button');
-          btn.className = 'video-play-overlay';
-          btn.innerText = 'Play';
-          btn.addEventListener('click', () => {
-            videoEl.muted = false; // let user unmute if desired
-            videoEl.play().catch(()=>{});
-            btn.remove();
-          });
-          frameEl.appendChild(btn);
-        }
-      });
-    })();
-  </script>
-
-
-  <!-- p5 sketch is loaded at the end of the document -->
-  
-  <script>
-    (async function () {
-      const moreBtn = document.getElementById('discoverBtn');
+    // --- Video management ---
+    (function () {
       const player = document.getElementById('mainPlayer');
-      const status = document.getElementById('videoStatus');
-      console.log('video switcher init', { moreBtnExists: !!moreBtn, playerExists: !!player, statusExists: !!status });
-      
-      // Dynamically build list of MP4 files by scanning frame-grid elements with data-video attribute
-      // plus the hero video, to ensure all videos in the mini-site are included
-      let sources = [];
-      
-      // Add hero video first
-      const heroVid = document.getElementById('heroVideo');
-      if (heroVid && heroVid.querySelector('source')) {
-        sources.push(heroVid.querySelector('source').src);
-      }
-      
-      // Add all videos from data-video attributes in frame-grid elements
-      document.querySelectorAll('.frame-grid[data-video]').forEach(frame => {
-        const src = frame.getAttribute('data-video');
-        if (src && !sources.includes(src)) {
-          sources.push(src);
-        }
-      });
-      
-      // Fallback: if no videos found, use original hardcoded list
-      if (sources.length === 0) {
-        // fallback list: only include files that are present in the assets folder
-        sources = [
-          'assets/IMG_8770.MP4',
-          'assets/IMG_8991.MP4',
-          'assets/IMG_8910.MP4',
-          'assets/IMG_8805.MP4',
-          'assets/IMG_7414.MP4',
-          'assets/IMG_2723.MP4',
-          'assets/IMG_6021.MP4',
-          'assets/IMG_5619.MP4',
-          'assets/IMG_5193.MP4',
-          'assets/IMG_8758.MP4'
-        ];
+      const discoverBtn = document.getElementById('discoverBtn');
 
-        // validate that each fallback source actually exists (HEAD request)
-        async function validateSources(list) {
-          const validated = [];
-          await Promise.all(list.map(async (src) => {
-            try {
-              const resp = await fetch(src, { method: 'HEAD' });
-              if (resp && resp.ok) validated.push(src);
-              else console.warn('Video unavailable (will skip):', src, resp && resp.status);
-            } catch (e) {
-              console.warn('Error checking video (will skip):', src, e);
-            }
-          }));
-          return validated;
-        }
-
-        sources = await validateSources(sources);
-        if (sources.length === 0) console.warn('No valid fallback videos found.');
-      }
-
+      // List all video sources
+      const sources = [
+        'assets/IMG_8770.MP4',
+        'assets/IMG_8991.MP4',
+        'assets/IMG_8910.MP4',
+        'assets/IMG_8805.MP4',
+        'assets/IMG_7414.MP4',
+        'assets/IMG_2723.MP4',
+        'assets/IMG_6021.MP4',
+        'assets/IMG_5619.MP4',
+        'assets/IMG_5193.MP4',
+        'assets/IMG_8758.MP4'
+      ];
 
       let currentIndex = 0;
 
-
-      // helper: update on-screen status (useful for debugging/UX)
-      function updateStatus() {
-        if (!status) return;
-        status.textContent = `Video ${currentIndex + 1} / ${sources.length}`;
-      }
-
-
-      // robust source swapping: create a fresh <source>, call load(), then try play
-      function setSourceIndex(i) {
-        if (!player) return;
-        currentIndex = ((i % sources.length) + sources.length) % sources.length;
-        const src = sources[currentIndex];
-        console.log('Switching main player to', src);
-
-
-        // ensure player is muted for autoplay
-        try { player.muted = true; player.playsInline = true; } catch (e) {}
-
-
-        // remove any previous sources
-        while (player.firstChild) player.removeChild(player.firstChild);
-
-
-        // create and append a source element
-        const s = document.createElement('source');
-        s.src = src;
-        s.type = 'video/mp4';
-        player.appendChild(s);
-
-
-        // force reload and try to play
-        try {
-          player.load();
-          const p = player.play();
-          if (p && p.catch) p.catch((err) => {
-            console.warn('Autoplay prevented:', err);
-            // if autoplay is blocked, leave player ready; user can click to start
-          });
-        } catch (err) {
-          console.error('Error while switching video:', err);
-        }
-
-
-        updateStatus();
-      }
-
-
-
-      // initialize player with the original hero subvideo
-      setSourceIndex(0);
-
-
-      // ensure player will loop in the background
-      try { player.loop = true; player.muted = true; player.playsInline = true; } catch(e) {}
-
-
-      function cycleNext() {
-        setSourceIndex(currentIndex + 1);
-      }
-
-
-      if (moreBtn) {
-        // click handler
-        moreBtn.addEventListener('click', (ev) => {
-          ev.preventDefault();
-          console.log('discoverBtn clicked — cycling video');
-          cycleNext();
-          try {
-            player.currentTime = 0;
-            player.muted = true;
-            const p = player.play();
-            if (p && p.catch) p.catch(err => console.warn('play() rejected after click:', err));
-          } catch (err) { console.warn('Error while attempting play on click', err); }
+      // --- Helper to switch videos smoothly ---
+      function switchVideo(index) {
+        currentIndex = (index + sources.length) % sources.length;
+        player.src = sources[currentIndex];
+        player.load();
+        player.play().catch(() => {
+          console.warn('Autoplay blocked, waiting for user interaction.');
         });
+      }
 
-
-        // keyboard support: Enter or Space triggers the same action
-        moreBtn.addEventListener('keydown', (ev) => {
-          if (ev.key === 'Enter' || ev.key === ' ' || ev.key === 'Spacebar') {
-            ev.preventDefault();
-            moreBtn.click();
+      // --- Click to cycle videos ---
+      if (discoverBtn) {
+        discoverBtn.addEventListener('click', (e) => {
+          e.preventDefault();
+          switchVideo(currentIndex + 1);
+        });
+        discoverBtn.addEventListener('keydown', (e) => {
+          if (e.key === 'Enter' || e.key === ' ' || e.key === 'Spacebar') {
+            e.preventDefault();
+            discoverBtn.click();
           }
         });
       }
 
-
-      // log playback errors to console and show on status
-      if (player) {
-        player.addEventListener('error', (e) => {
-          console.error('Main player error', e);
-          if (status) status.textContent = 'Video failed to load';
-        });
+      // --- Responsive fullscreen fit ---
+      function fitVideo() {
+        if (!player) return;
+        player.style.position = 'absolute';
+        player.style.left = '50%';
+        player.style.top = '50%';
+        player.style.transform = 'translate(-50%, -50%)';
+        player.style.width = '100%';
+        player.style.height = '100%';
+        player.style.objectFit = 'cover';
       }
+      window.addEventListener('resize', fitVideo);
+      player.addEventListener('loadedmetadata', fitVideo);
+      setTimeout(fitVideo, 100);
     })();
   </script>
 
-  <!-- p5.js sketch for orb -->
+  <!-- p5.js sketch -->
   <script src="sketch.js"></script>
 </body>
 
-
 </html>
+
