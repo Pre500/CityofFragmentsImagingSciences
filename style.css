@@ -128,31 +128,25 @@ html, body {
   justify-content: center;
   z-index: 150;
 }
+/* Enlarged Discover button */
 .discover-btn {
-  background: transparent;
+  width: 300px;   /* adjust size to match title visually */
+  height: 100px;
   border: none;
-  padding: 6px;
+  background: transparent;
   cursor: pointer;
-  border-radius: 12px;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  z-index: 150;
 }
+
 .discover-btn img {
-  display: block;
-  width: 3600px;          /* default larger width */
-  max-width: 50vw;       /* responsive on smaller screens */
-  height: auto;
-  border-radius: 12px;
-  box-shadow: 0 6px 18px rgba(0,0,0,0.12);
-  transition: transform 120ms ease, box-shadow 120ms ease;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
 }
+
 .discover-btn:hover img {
   transform: translateY(-4px);
   box-shadow: 0 10px 24px rgba(0,0,0,0.18);
 }
-
 
 .discover-btn:focus {
   outline: 2px solid rgba(255,255,255,0.9);
