@@ -126,7 +126,7 @@ html, body {
   gap: 10px;
   align-items: center;
   justify-content: center;
-  z-index: 150;
+  z-index: 20;
 }
 /* Enlarged Discover button */
 .discover-btn {
