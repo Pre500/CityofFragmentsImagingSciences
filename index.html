@@ -274,41 +274,40 @@
       }
 
 
-      // robust source swapping: create a fresh <source>, call load(), then try play
+      // robust source swapping: set video src directly, load and play
       function setSourceIndex(i) {
         if (!player) return;
+        if (!sources || sources.length === 0) return;
         currentIndex = ((i % sources.length) + sources.length) % sources.length;
         const src = sources[currentIndex];
         console.log('Switching main player to', src);
 
-
-        // ensure player is muted for autoplay
-        try { player.muted = true; player.playsInline = true; } catch (e) {}
-
-
-        // remove any previous sources
-        while (player.firstChild) player.removeChild(player.firstChild);
-
-
-        // create and append a source element
-        const s = document.createElement('source');
-        s.src = src;
-        s.type = 'video/mp4';
-        player.appendChild(s);
-
-
-        // force reload and try to play
         try {
+          // ensure player properties
+          player.muted = true;
+          player.playsInline = true;
+          player.loop = true;
+
+          // set src directly (simpler and more reliable than creating <source> nodes)
+          if (player.src !== src) {
+            player.pause();
+            // remove child sources for cleanliness
+            while (player.firstChild) player.removeChild(player.firstChild);
+            player.removeAttribute('src');
+            player.src = src;
+          }
+
+          // reset and try to play
           player.load();
+          player.currentTime = 0;
           const p = player.play();
           if (p && p.catch) p.catch((err) => {
-            console.warn('Autoplay prevented:', err);
-            // if autoplay is blocked, leave player ready; user can click to start
+            console.warn('Autoplay prevented or play() rejected for', src, err);
+            // Leave player ready; user can manually start playback if needed
           });
         } catch (err) {
           console.error('Error while switching video:', err);
         }
-
 
         updateStatus();
       }
