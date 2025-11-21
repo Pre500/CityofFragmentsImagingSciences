@@ -1,32 +1,30 @@
-// Minimal, reliable orb that follows the pointer without clicks
+// Port of the Processing scanline effect to p5.js.
+// Uses an offscreen graphics buffer at 720x540 to sample frames from a video
+// and copies vertical strips into a persistent `buffer` image while scanning.
+
 let cnv;
 let containerEl;
-let cursorX = 0;
-let cursorY = 0;
-const mouseRadius = 6;
 
-// single window listeners update globals (no duplication; they run even before setup)
-if (typeof window !== 'undefined') {
-  window.__cf_cursorX = window.__cf_cursorX || 0;
-  window.__cf_cursorY = window.__cf_cursorY || 0;
-  window.addEventListener('mousemove', (e) => {
-    window.__cf_cursorX = e.clientX;
-    window.__cf_cursorY = e.clientY;
-  }, { passive: true });
-  window.addEventListener('touchmove', (e) => {
-    if (e.touches && e.touches[0]) {
-      window.__cf_cursorX = e.touches[0].clientX;
-      window.__cf_cursorY = e.touches[0].clientY;
-    }
-  }, { passive: true });
-}
+// video and buffers
+let vid;            // p5.MediaElement for the video
+let pg;             // offscreen graphics to render video at 720x540
+let bufferImg;      // persistent image where scanned strips accumulate
+
+// scan parameters (kept from Processing code)
+let currentX = 720 - 8;
+let dx = 2;
+let scanWidth = 8;
+let scanning = false;
+
+// lastTime to detect loop reset
+let lastVideoTime = 0;
 
 function setup() {
   containerEl = document.getElementById('canvas-container') || document.body;
   cnv = createCanvas(windowWidth, windowHeight);
   if (containerEl && containerEl.id) cnv.parent(containerEl.id);
 
-  // position canvas to cover viewport and be click-through
+  // make canvas overlay; keep pointer-events none so UI remains clickable
   cnv.position(0, 0);
   cnv.style('position', 'fixed');
   cnv.style('left', '0px');
@@ -34,55 +32,93 @@ function setup() {
   cnv.style('pointer-events', 'none');
   cnv.style('z-index', '3');
 
-  noStroke();
   pixelDensity(1);
 
-  // seed cursor in center
-  cursorX = width / 2;
-  cursorY = height / 2;
+  // offscreen graphics sized to Processing sketch dimensions
+  pg = createGraphics(720, 540);
+  pg.pixelDensity(1);
+
+  // persistent buffer image (starts fully transparent)
+  bufferImg = createImage(720, 540);
+  bufferImg.loadPixels();
+  for (let i = 0; i < bufferImg.pixels.length; i++) bufferImg.pixels[i] = color(0, 0, 0, 0);
+  bufferImg.updatePixels();
+
+  // load and start the video (matches Processing source)
+  vid = createVideo(['assets/IMG_8770.MP4'], () => {
+    vid.volume(0);
+    vid.loop();
+    vid.hide();
+  });
+
+  // window-level pointer listeners (canvas is click-through)
+  if (typeof window !== 'undefined') {
+    window.addEventListener('mousedown', () => { scanning = true; }, { passive: true });
+    window.addEventListener('mouseup', () => { scanning = false; }, { passive: true });
+    window.addEventListener('touchstart', () => { scanning = true; }, { passive: true });
+    window.addEventListener('touchend', () => { scanning = false; }, { passive: true });
+  }
 }
 
 function draw() {
   clear();
-  push();
-  blendMode(ADD);
+  background(0);
 
-  const mainRadius = mouseRadius * 2;
-  const t = millis() / 1000;
-  const pulse = (sin(t * 2.0) * 0.5) + 0.5;
+  // draw the current video frame into offscreen graphics at 720x540
+  try {
+    pg.image(vid, 0, 0, 720, 540);
+  } catch (e) {
+    // video may not be ready yet
+  }
 
-  // use direct globals (no lerp) so orb snaps to pointer immediately
-  const px = (typeof window.__cf_cursorX === 'number') ? window.__cf_cursorX : cursorX;
-  const py = (typeof window.__cf_cursorY === 'number') ? window.__cf_cursorY : cursorY;
+  // detect loop / reset: when video time jumps back near 0
+  let curTime = 0;
+  if (vid && vid.elt && typeof vid.elt.currentTime === 'number') curTime = vid.elt.currentTime;
+  if (curTime <= 0.05 && lastVideoTime > 0.2) {
+    // reset the persistent buffer
+    bufferImg = createImage(720, 540);
+    bufferImg.loadPixels();
+    for (let i = 0; i < bufferImg.pixels.length; i++) bufferImg.pixels[i] = color(0, 0, 0, 0);
+    bufferImg.updatePixels();
+    currentX = 720 - scanWidth;
+  }
+  lastVideoTime = curTime;
 
-  // draw core and glows
-  noStroke();
-  fill(255, 255, 255, 230);
-  ellipse(px, py, mainRadius * 2, mainRadius * 2);
+  // If scanning, copy vertical strip columns from pg into bufferImg
+  if (scanning) {
+    pg.loadPixels();
+    bufferImg.loadPixels();
+    for (let sx = 0; sx < scanWidth; sx++) {
+      let x = (currentX + sx) % 720;
+      if (x < 0) x += 720;
+      for (let y = 0; y < 540; y++) {
+        let idx = (y * 720 + x) * 4; // index into pixel array
+        // copy RGBA components
+        bufferImg.pixels[idx + 0] = pg.pixels[idx + 0];
+        bufferImg.pixels[idx + 1] = pg.pixels[idx + 1];
+        bufferImg.pixels[idx + 2] = pg.pixels[idx + 2];
+        bufferImg.pixels[idx + 3] = 255;
+      }
+    }
+    bufferImg.updatePixels();
+  }
 
-  fill(255, 255, 255, 120);
-  ellipse(px, py, mainRadius * 4, mainRadius * 4);
+  // draw the live video (scaled to canvas)
+  image(pg, 0, 0, width, height);
 
-  fill(255, 255, 255, 50);
-  ellipse(px, py, mainRadius * 8, mainRadius * 8);
+  // draw the accumulated buffer on top (scaled)
+  image(bufferImg, 0, 0, width, height);
 
-  // radiating ring
-  const ringMax = mainRadius * 9;
-  const ringRadius = (mainRadius * 4 + pulse * ringMax) * 0.5;
-  const ringAlpha = lerp(200, 12, pulse);
-  stroke(255, 255, 255, ringAlpha);
-  strokeWeight(2 + pulse * 4);
+  // draw thick vertical scan line (red) — scale position to canvas width
   noFill();
-  ellipse(px, py, ringRadius * 2, ringRadius * 2);
+  stroke(255, 0, 0, 180);
+  strokeWeight(scanWidth * (width / 720));
+  let linePos = (currentX + scanWidth / 2) * (width / 720);
+  line(linePos, 0, linePos, height);
 
-  // outer subtle ring
-  const ring2 = ringRadius * 0.6;
-  stroke(255, 255, 255, 18);
-  strokeWeight(1.5);
-  ellipse(px, py, ring2 * 2, ring2 * 2);
-
-  pop();
-  blendMode(BLEND);
+  // Move scan line from right to left
+  currentX -= dx;
+  if (currentX < 0) currentX = 720 - scanWidth; // Loop back to right edge
 }
 
 function windowResized() {
