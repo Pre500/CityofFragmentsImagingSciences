@@ -15,290 +15,29 @@
     <a class="top-link left" href="PROJECTINTRO.html">PROJECT INTRO</a>
     <a class="top-link right" href="people.html">PEOPLE</a>
   </div>
+  <!-- unified, robust video switcher + on-screen status -->
+  <div id="videoStatus" aria-hidden="true" style="position:fixed;bottom:140px;left:50%;transform:translateX(-50%);color:#fff;z-index:99998;font-size:13px;padding:6px 10px;background:rgba(0,0,0,0.4);border-radius:6px;pointer-events:none;"></div>
 
-  <div id="fullscreen-player">
-    <video id="mainPlayer" autoplay muted playsinline loop preload="auto">
-      <source src="assets/IMG_9639.MP4" type="video/mp4">
-    </video>
-    <div class="player-controls">
-      <button id="discoverBtn" class="discover-btn" aria-label="Discover Hong Kong">
-        <img src="assets/Discover Hong Kong.png" alt="Discover Hong Kong" />
-      </button>
-    </div>
-  </div>
-
-  <!-- Canvas container for p5.js orb -->
-  <div id="canvas-container"></div>
-
-  <!-- Title overlay -->
-  <div id="title-wrap">
-    <img id="title-overlay" src="assets/Title White.png" alt="City of Fragments" />
-    <a id="overlay-subtitle" class="subtitle overlay-subtitle" href="#" aria-hidden="true">
-      The city is no longer a place we inhabit — it’s a place we remember.
-    </a>
-  </div>
-
-  <!-- Floating Add button -->
-  <button id="addBtn" title="Discover Hong Kong">+</button>
-
-  <footer class="site-footer">
-    <a class="bottom-link left" href="documentation.html">DOCUMENTATION</a>
-    <div class="center small-caption"></div>
-    <a class="bottom-link right" href="follow.html">FOLLOW</a>
-  </footer>
-
-  <script>
-  (function () {
-    const player = document.getElementById('mainPlayer');
-    const discoverBtn = document.getElementById('discoverBtn');
-
-    // Plain array of video URLs
-    const sources = [
-      'assets/IMG_2723.MP4',
-      'assets/IMG_5193.MP4',
-      'assets/IMG_5619.MP4',
-      'assets/IMG_6021.MP4',
-      'assets/IMG_7414.MP4',
-      'assets/IMG_8758.MP4',
-      'assets/IMG_8766.MP4',
-      'assets/IMG_8805.MP4',
-      'assets/IMG_8910.MP4',
-      'assets/IMG_8991.MP4',
-      'assets/IMG_9319.MP4',
-      'assets/IMG_9639.MP4'
-    ];
-
-    let currentIndex = 0;
-
-    function showDiagnosticOverlay(message) {
-      if (document.getElementById('videoDiag')) return;
-      const wrap = document.createElement('div');
-      wrap.id = 'videoDiag';
-      Object.assign(wrap.style, {
-        position: 'fixed',
-        left: '10px',
-        right: '10px',
-        top: '10px',
-        padding: '12px',
-        background: 'rgba(0,0,0,0.8)',
-        color: '#fff',
-        zIndex: 99999,
-        fontSize: '14px',
-        borderRadius: '6px'
-      });
-      wrap.innerHTML = '<strong>Video diagnostic:</strong> ' + message;
-      document.body.appendChild(wrap);
-    }
-
-    async function checkAsset(url) {
-      try {
-        const resp = await fetch(url, { method: 'HEAD' });
-        if (!resp.ok) {
-          return { ok: false, status: resp.status, statusText: resp.statusText };
-        }
-        const ct = resp.headers.get('content-type') || '';
-        return { ok: true, contentType: ct };
-      } catch (err) {
-        return { ok: false, error: String(err) };
-      }
-    }
-
-    function switchVideo(index) {
-      currentIndex = (index + sources.length) % sources.length;
-      const src = sources[currentIndex];
-
-      player.pause();
-      player.src = src;
-      player.load();
-      player.muted = true;
-
-      player.addEventListener('canplaythrough', function playHandler() {
-        player.play().catch(() => {
-          console.warn('Autoplay blocked, user interaction required.');
-        });
-        player.removeEventListener('canplaythrough', playHandler);
-      });
-    }
-
-    async function init() {
-      if (!player) {
-        console.warn('#mainPlayer not found');
-        return;
-      }
-
-      // Simple runtime diagnostic: check first video asset
-      const diag = await checkAsset(sources[0]);
-      if (!diag.ok) {
-        showDiagnosticOverlay('Asset check failed for ' + sources[0] + ' — HTTP status: ' + (diag.status || diag.error));
-        return;
-      }
-      if (!diag.contentType.startsWith('video/')) {
-        showDiagnosticOverlay('Asset ' + sources[0] + ' served with content-type: ' + diag.contentType + '. If this is a Git LFS pointer or text file, GitHub Pages will not serve the actual binary. Re-upload the MP4 files without LFS or enable proper hosting.');
-        return;
-      }
-
-      if (discoverBtn) {
-        discoverBtn.addEventListener('click', (e) => {
-          e.preventDefault();
-          switchVideo(currentIndex + 1);
-        });
-
-        discoverBtn.addEventListener('keydown', (e) => {
-          if (e.key === 'Enter' || e.key === ' ' || e.key === 'Spacebar') {
-            e.preventDefault();
-            discoverBtn.click();
-          }
-        });
-      }
-
-      function fitVideo() {
-        player.style.position = 'absolute';
-        player.style.left = '50%';
-        player.style.top = '50%';
-        player.style.transform = 'translate(-50%, -50%)';
-        player.style.width = '100%';
-        player.style.height = '100%';
-        player.style.objectFit = 'cover';
-      }
-      window.addEventListener('resize', fitVideo);
-      player.addEventListener('loadedmetadata', fitVideo);
-      setTimeout(fitVideo, 100);
-
-      // Initialize first video
-      switchVideo(0);
-    }
-
-    // Run init after DOM loaded
-    if (document.readyState === 'loading') {
-      document.addEventListener('DOMContentLoaded', init);
-    } else {
-      init();
-    }
-  })();
-  </script>
-
-<<<<<<< HEAD
-
-  <!-- Initialize videos inside frame-grid elements that have a `data-video` attribute -->
-  <script>
-    (async function () {
-      // find all frame-grid elements with a data-video attribute
-      const frames = document.querySelectorAll('.frame-grid[data-video]');
-      frames.forEach(async (frame) => {
-        const src = frame.getAttribute('data-video');
-        if (!src) return;
-
-
-        // quick HEAD request to check file existence when served over http
-        let exists = true;
-        try {
-          const resp = await fetch(src, { method: 'HEAD' });
-          exists = resp && resp.ok;
-        } catch (e) {
-          exists = true; // if fetch fails (eg file://) try to create video anyway
-        }
-
-
-        if (!exists) {
-          frame.classList.add('video-missing');
-          frame.innerHTML = '<div class="missing-label">Video missing<br>add file to assets/</div>';
-          return;
-        }
-
-
-        // create video element with explicit properties
-        const vid = document.createElement('video');
-        vid.playsInline = true;
-        vid.muted = true;
-        vid.autoplay = true;
-        vid.loop = true;
-        vid.preload = 'auto';
-        vid.style.display = 'block';
-        vid.style.width = '100%';
-        vid.style.height = '100%';
-        vid.style.objectFit = 'cover';
-
-
-        // source element
-        const source = document.createElement('source');
-        source.src = src;
-        source.type = 'video/mp4';
-        vid.appendChild(source);
-
-
-        // add a class so CSS can remove padding/overlay
-        frame.classList.add('has-video');
-        // replace the inner content (if any) with the video
-        frame.innerHTML = '';
-        frame.appendChild(vid);
-
-
-        // playback handling with helpful fallbacks
-        vid.addEventListener('canplay', () => {
-          // try to play; modern browsers return a promise
-          const p = vid.play();
-          if (p && p.catch) p.catch(() => {
-            // if autoplay was blocked, show a play overlay
-            showPlayOverlay(frame, vid);
-          });
-        });
-
-
-        vid.addEventListener('play', () => frame.classList.add('is-playing'));
-        vid.addEventListener('error', () => {
-          frame.classList.remove('has-video');
-          frame.classList.add('video-missing');
-          frame.innerHTML = '<div class="missing-label">Video failed to load</div>';
-        });
-
-
-        // helper to show a click overlay to start playback when autoplay blocked
-        function showPlayOverlay(frameEl, videoEl) {
-          const btn = document.createElement('button');
-          btn.className = 'video-play-overlay';
-          btn.innerText = 'Play';
-          btn.addEventListener('click', () => {
-            videoEl.muted = false; // let user unmute if desired
-            videoEl.play().catch(()=>{});
-            btn.remove();
-          });
-          frameEl.appendChild(btn);
-        }
-      });
-    })();
-  </script>
-
-
-  <!-- p5 sketch is loaded at the end of the document -->
-  
   <script>
     (async function () {
       const moreBtn = document.getElementById('discoverBtn');
       const player = document.getElementById('mainPlayer');
       const status = document.getElementById('videoStatus');
       console.log('video switcher init', { moreBtnExists: !!moreBtn, playerExists: !!player, statusExists: !!status });
-      
-      // Dynamically build list of MP4 files by scanning frame-grid elements with data-video attribute
-      // plus the hero video, to ensure all videos in the mini-site are included
+
+      // Build list of sources from in-page attributes if present
       let sources = [];
-      
-      // Add hero video first
       const heroVid = document.getElementById('heroVideo');
       if (heroVid && heroVid.querySelector('source')) {
         sources.push(heroVid.querySelector('source').src);
       }
-      
-      // Add all videos from data-video attributes in frame-grid elements
       document.querySelectorAll('.frame-grid[data-video]').forEach(frame => {
         const src = frame.getAttribute('data-video');
-        if (src && !sources.includes(src)) {
-          sources.push(src);
-        }
+        if (src && !sources.includes(src)) sources.push(src);
       });
-      
-      // Fallback: if no videos found, use original hardcoded list
+
+      // Fallback hardcoded list (matches local assets/ folder)
       if (sources.length === 0) {
-        // fallback list: only include files that are present in the assets folder
         sources = [
           'assets/IMG_8770.MP4',
           'assets/IMG_8991.MP4',
@@ -307,19 +46,36 @@
           'assets/IMG_7414.MP4',
           'assets/IMG_2723.MP4',
           'assets/IMG_6021.MP4',
-          'assets/IMG_8758.MP4'
+          'assets/IMG_8758.MP4',
+          'assets/IMG_5193.MP4',
+          'assets/IMG_5619.MP4',
+          'assets/IMG_6424.MP4',
+          'assets/IMG_7113.MP4',
+          'assets/IMG_8766.MP4',
+          'assets/IMG_9319.MP4',
+          'assets/IMG_9639.MP4'
         ];
 
-        // validate that each fallback source actually exists (HEAD request)
+        // Validate sources: if HEAD check succeeds, keep; if it fails (CORS/file://), assume local file exists and keep it.
         async function validateSources(list) {
           const validated = [];
           await Promise.all(list.map(async (src) => {
             try {
               const resp = await fetch(src, { method: 'HEAD' });
-              if (resp && resp.ok) validated.push(src);
-              else console.warn('Video unavailable (will skip):', src, resp && resp.status);
+              if (resp && resp.ok) {
+                validated.push(src);
+              } else {
+                // If server responded but not OK, skip. If no resp (undefined), assume local and keep.
+                if (!resp) {
+                  validated.push(src);
+                } else {
+                  console.warn('Video unavailable (will skip):', src, resp && resp.status);
+                }
+              }
             } catch (e) {
-              console.warn('Error checking video (will skip):', src, e);
+              // fetch threw (likely file:// or CORS) — assume file present locally
+              console.warn('Error checking video (assuming exists):', src, e);
+              validated.push(src);
             }
           }));
           return validated;
@@ -329,18 +85,13 @@
         if (sources.length === 0) console.warn('No valid fallback videos found.');
       }
 
-
       let currentIndex = 0;
 
-
-      // helper: update on-screen status (useful for debugging/UX)
       function updateStatus() {
         if (!status) return;
-        status.textContent = `Video ${currentIndex + 1} / ${sources.length}`;
+        status.textContent = sources && sources.length ? `Video ${currentIndex + 1} / ${sources.length}` : 'No videos available';
       }
 
-
-      // robust source swapping: set video src directly, load and play
       function setSourceIndex(i) {
         if (!player) return;
         if (!sources || sources.length === 0) return;
@@ -349,40 +100,32 @@
         console.log('Switching main player to', src);
 
         try {
-          // ensure player properties
           player.muted = true;
           player.playsInline = true;
           player.loop = true;
 
-          // set src directly (simpler and more reliable than creating <source> nodes)
           if (player.src !== src) {
             player.pause();
-            // remove child sources for cleanliness
             while (player.firstChild) player.removeChild(player.firstChild);
             player.removeAttribute('src');
             player.src = src;
           }
 
-          // debug: report whether browser claims it can play mp4
-          try { console.log('canPlayType(video/mp4):', player.canPlayType && player.canPlayType('video/mp4')); } catch(e) {}
+          try { console.log('canPlayType(video/mp4):', player.canPlayType && player.canPlayType('video/mp4')); } catch (e) {}
 
-          // attach a temporary error handler: if this source fails to load/play, skip to next
           const onErr = (ev) => {
             console.warn('Player error for source, skipping to next:', src, ev);
-            try { player.removeEventListener('error', onErr); } catch(e){}
-            // mark this source as skipped and advance
+            try { player.removeEventListener('error', onErr); } catch (e) {}
             setTimeout(() => setSourceIndex(currentIndex + 1), 50);
           };
           player.addEventListener('error', onErr);
 
-          // reset and try to play
           player.load();
           player.currentTime = 0;
           const p = player.play();
           if (p && p.catch) p.catch((err) => {
             console.warn('Autoplay prevented or play() rejected for', src, err);
-            // if play() rejected, try advancing after short delay
-            try { player.removeEventListener('error', onErr); } catch(e){}
+            try { player.removeEventListener('error', onErr); } catch (e) {}
             setTimeout(() => setSourceIndex(currentIndex + 1), 150);
           });
         } catch (err) {
@@ -392,23 +135,13 @@
         updateStatus();
       }
 
-
-
-      // initialize player with the original hero subvideo
+      // start on first source
       setSourceIndex(0);
+      try { player.loop = true; player.muted = true; player.playsInline = true; } catch (e) {}
 
-
-      // ensure player will loop in the background
-      try { player.loop = true; player.muted = true; player.playsInline = true; } catch(e) {}
-
-
-      function cycleNext() {
-        setSourceIndex(currentIndex + 1);
-      }
-
+      function cycleNext() { setSourceIndex(currentIndex + 1); }
 
       if (moreBtn) {
-        // click handler
         moreBtn.addEventListener('click', (ev) => {
           ev.preventDefault();
           console.log('discoverBtn clicked — cycling video');
@@ -416,6 +149,29 @@
           try {
             player.currentTime = 0;
             player.muted = true;
+            const p = player.play();
+            if (p && p.catch) p.catch(err => console.warn('play() rejected after click:', err));
+          } catch (err) { console.warn('Error while attempting play on click', err); }
+        });
+
+        moreBtn.addEventListener('keydown', (ev) => {
+          if (ev.key === 'Enter' || ev.key === ' ' || ev.key === 'Spacebar') {
+            ev.preventDefault();
+            moreBtn.click();
+          }
+        });
+      }
+
+      if (player) {
+        player.addEventListener('error', (e) => {
+          console.error('Main player error', e);
+          if (status) status.textContent = 'Video failed to load';
+        });
+      }
+    })();
+  </script>
+
+  <script src="sketch.js"></script>
             const p = player.play();
             if (p && p.catch) p.catch(err => console.warn('play() rejected after click:', err));
           } catch (err) { console.warn('Error while attempting play on click', err); }
