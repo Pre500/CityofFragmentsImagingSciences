@@ -77,20 +77,49 @@
       const player = document.getElementById('mainPlayer');
       const discoverBtn = document.getElementById('discoverBtn');
 
-      const sources = [
-        'assets/IMG_8991.MP4',
-        'assets/IMG_8910.MP4',
-        'assets/IMG_8805.MP4',
-        'assets/IMG_7414.MP4',
-        'assets/IMG_2723.MP4',
-        'assets/IMG_6021.MP4',
-        'assets/IMG_5619.MP4',
-        'assets/IMG_5193.MP4',
-        'assets/IMG_8758.MP4',
-        'assets/IMG_8766.MP4',
-        'assets/IMG_9319.MP4',
-        'assets/IMG_9639.MP4'
-      ];
+     const mainPlayer = document.getElementById('mainPlayer');
+const discoverBtn = document.getElementById('discoverBtn');
+let videoSources = [
+  'assets/IMG_8991.MP4',
+  'assets/IMG_8910.MP4',
+  'assets/IMG_8805.MP4',
+  'assets/IMG_7414.MP4',
+  'assets/IMG_2723.MP4',
+  'assets/IMG_6021.MP4',
+  'assets/IMG_5619.MP4',
+  'assets/IMG_5193.MP4',
+  'assets/IMG_8758.MP4',
+  'assets/IMG_8766.mp4',
+  'assets/IMG_9319.mp4',
+  'assets/IMG_9639.mp4'
+];
+let currentIndex = 0;
+
+function loadVideo(index) {
+  currentIndex = index % videoSources.length;
+  mainPlayer.src = videoSources[currentIndex];
+  mainPlayer.load();
+  mainPlayer.muted = true;
+  mainPlayer.style.opacity = 0;
+  mainPlayer.addEventListener('canplaythrough', function fadeIn() {
+    mainPlayer.style.transition = 'opacity 0.5s ease-in';
+    mainPlayer.style.opacity = 1;
+    mainPlayer.play().catch(() => {
+      console.warn('Autoplay prevented, user must click play.');
+    });
+    mainPlayer.removeEventListener('canplaythrough', fadeIn);
+  });
+}
+
+if (discoverBtn) {
+  discoverBtn.addEventListener('click', () => {
+    loadVideo(currentIndex + 1);
+  });
+}
+
+// Initialize first video
+loadVideo(0);
+
 
       let currentIndex = 0;
       const preloadedBlobs = [];
