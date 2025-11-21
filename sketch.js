@@ -1,73 +1,90 @@
-// sketch.js — attach canvas to the full-screen #canvas-container so the orb appears across the whole page
+// Minimal, reliable orb that follows the pointer without clicks
 let cnv;
 let containerEl;
-// approximate mouse "radius" (in px) — treated as the cursor size; main orb radius = 2 * mouseRadius
+let cursorX = 0;
+let cursorY = 0;
 const mouseRadius = 6;
 
+// single window listeners update globals (no duplication; they run even before setup)
+if (typeof window !== 'undefined') {
+  window.__cf_cursorX = window.__cf_cursorX || 0;
+  window.__cf_cursorY = window.__cf_cursorY || 0;
+  window.addEventListener('mousemove', (e) => {
+    window.__cf_cursorX = e.clientX;
+    window.__cf_cursorY = e.clientY;
+  }, { passive: true });
+  window.addEventListener('touchmove', (e) => {
+    if (e.touches && e.touches[0]) {
+      window.__cf_cursorX = e.touches[0].clientX;
+      window.__cf_cursorY = e.touches[0].clientY;
+    }
+  }, { passive: true });
+}
+
 function setup() {
-  // always use the full-screen canvas container so the orb appears over the entire viewport
-  containerEl = document.getElementById('canvas-container') || document.getElementById('canvas-rect');
-  // create a full-window canvas
+  containerEl = document.getElementById('canvas-container') || document.body;
   cnv = createCanvas(windowWidth, windowHeight);
-  // attach inside the full-screen container
   if (containerEl && containerEl.id) cnv.parent(containerEl.id);
-  // position and sizing so it fills the viewport
+
+  // position canvas to cover viewport and be click-through
+  cnv.position(0, 0);
   cnv.style('position', 'fixed');
-  cnv.style('left', '50%');
+  cnv.style('left', '0px');
   cnv.style('top', '0px');
-  cnv.style('transform', 'translateX(-50%)');
   cnv.style('pointer-events', 'none');
+  cnv.style('z-index', '3');
+
   noStroke();
   pixelDensity(1);
+
+  // seed cursor in center
+  cursorX = width / 2;
+  cursorY = height / 2;
 }
 
 function draw() {
-  clear(); // keep canvas transparent by default
-
-  // bright orb with radiating pulse (visible across whole screen)
+  clear();
   push();
-  // additive blending makes glow brighter where layers overlap
   blendMode(ADD);
 
-  // base sizes
-  const mainRadius = mouseRadius * 2; // radius (twice the mouse radius as requested)
+  const mainRadius = mouseRadius * 2;
+  const t = millis() / 1000;
+  const pulse = (sin(t * 2.0) * 0.5) + 0.5;
 
-  // animated pulse factor (0..1) for radiating ring
-  const t = millis() / 1000; // seconds
-  const pulse = (sin(t * 2.0) * 0.5) + 0.5; // smooth oscillation
+  // use direct globals (no lerp) so orb snaps to pointer immediately
+  const px = (typeof window.__cf_cursorX === 'number') ? window.__cf_cursorX : cursorX;
+  const py = (typeof window.__cf_cursorY === 'number') ? window.__cf_cursorY : cursorY;
 
-  // main bright core
+  // draw core and glows
   noStroke();
-  fill(255, 255, 255, 220); // bright core
-  ellipse(mouseX, mouseY, mainRadius * 2, mainRadius * 2);
+  fill(255, 255, 255, 230);
+  ellipse(px, py, mainRadius * 2, mainRadius * 2);
 
-  // inner glow layers (stacked, lower alpha)
   fill(255, 255, 255, 120);
-  ellipse(mouseX, mouseY, mainRadius * 4, mainRadius * 4);
+  ellipse(px, py, mainRadius * 4, mainRadius * 4);
 
   fill(255, 255, 255, 50);
-  ellipse(mouseX, mouseY, mainRadius * 8, mainRadius * 8);
+  ellipse(px, py, mainRadius * 8, mainRadius * 8);
 
-  // soft animated radiating ring (stroke only) — reduced size by ~50%
-  const ringMax = mainRadius * 9; // half of previous value
-  const ringRadius = (mainRadius * 4 + pulse * ringMax) * 0.5; // shrink by half
-  const ringAlpha = lerp(200, 12, pulse); // visibility
+  // radiating ring
+  const ringMax = mainRadius * 9;
+  const ringRadius = (mainRadius * 4 + pulse * ringMax) * 0.5;
+  const ringAlpha = lerp(200, 12, pulse);
   stroke(255, 255, 255, ringAlpha);
   strokeWeight(2 + pulse * 4);
   noFill();
-  ellipse(mouseX, mouseY, ringRadius * 2, ringRadius * 2);
+  ellipse(px, py, ringRadius * 2, ringRadius * 2);
 
-  // subtle trailing rings for extra radiance
+  // outer subtle ring
   const ring2 = ringRadius * 0.6;
   stroke(255, 255, 255, 18);
   strokeWeight(1.5);
-  ellipse(mouseX, mouseY, ring2 * 2, ring2 * 2);
+  ellipse(px, py, ring2 * 2, ring2 * 2);
 
   pop();
   blendMode(BLEND);
 }
 
 function windowResized() {
-  // always resize to full window
   resizeCanvas(windowWidth, windowHeight);
 }

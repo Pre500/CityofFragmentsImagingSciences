@@ -1,12 +1,12 @@
 /* Basic reset */
 * { box-sizing: border-box; margin: 0; padding: 0; }
-html,body { height: 100%; }
+html,body { width: 100%; height: 100%; overflow: hidden; }
 
 /* Page background + base font */
 body {
   font-family: "Helvetica Neue", "Apple Garamond", "Playfair Display", "sans-serif";
-  font-size: 15px; /* slightly smaller sentence size */
-  background: #fffbed; /* white background like your template */
+  font-size: 15px;
+  background: #fffbed; 
   color: #222;
   -webkit-font-smoothing:antialiased;
   -moz-osx-font-smoothing:grayscale;
@@ -19,6 +19,80 @@ body {
   position: relative;
   padding-bottom: 80px; /* space for footer */
 }
+
+.topbar .left {
+  cursor: pointer; /* make top-left text indicate it is clickable */
+}
+
+.topbar .top-link, .topbar a.top-link { color: #ffffff; text-decoration: none; padding: 12px 18px; border-radius: 12px; display: inline-block; font-weight: 500; }
+.topbar .top-link { text-shadow: none; }
+
+#title-overlay {
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 22;
+  pointer-events: none;
+  max-width: 340px;
+  height: auto;
+}
+
+/* wrapper for title + overlay subtitle so subtitle sits directly beneath the image */
+#title-wrap {
+  position: fixed;
+  left: 50%;
+  top: 24px;
+  transform: translateX(-50%);
+  z-index: 22;
+  pointer-events: none;
+  text-align: center;
+  display: inline-block;
+}
+
+.overlay-subtitle {
+  display: block;
+  margin-top: 55px;
+  color: #ffffff;
+  font-size: 12px;
+  line-height: 1.5;
+  opacity: 1;
+  pointer-events: none;
+}
+
+#fullscreen-player {
+  position: fixed;
+  inset: 0;
+  width: 100%;
+  height: 100vh;
+  background: #000;
+  display: flex;
+  align-items: stretch;
+  justify-content: center;
+  z-index: 1; /* behind canvas (orb) and mini-site */
+}
+#fullscreen-player video#mainPlayer {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  background: #000;
+}
+
+.player-controls {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 15px;
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  z-index: 20; /* ensure it's above overlays */
+  padding: 6px; /* larger click area around buttons */
+  justify-content: center;
+}
+.source-btn { padding: 8px 12px; border-radius: 4px; border: none; background: rgba(255,255,255,0.9); cursor: pointer; }
+.source-btn.active { background: rgba(40,40,40,0.9); color: #fff; }
+.control-btn { padding: 8px 12px; border-radius: 4px; border: none; background: rgba(255,255,255,0.9); cursor: pointer; }
 
 /* top smallbar */
 .topbar {
@@ -40,42 +114,19 @@ body {
   padding: 10px 10px 30px;
 }
 
-/* Title: two fonts on one line */
-.site-header { text-align: center; padding: 10px 10px 18px; margin-top: 80px; margin-bottom: 90px; }
-.site-title {
-  font-size: 56px;
-  line-height: 1;
-  letter-spacing: 1px;
-  display: inline-block;
-  white-space: nowrap;
-}
 
-/* City: Apple Garamond local if available, otherwise Garamond/fallback */
-.title-City {
-  font-family: "Apple Garamond", "Garamond", serif;
-  font-weight: 750; /* make Apple Garamond title bold */
-  font-style: normal;
-  margin-right: 8px; /* smaller space between 'City in' and 'Fragments' */
-  color: #1c1a16;
-  display: inline-block;
-}
 
-/* Fragments: Playfair Display (Google font) in italic */
-.title-fragments {
-  font-family: "Playfair Display", serif;
-  font-weight: 700;
-  font-style: italic;
-  color: #1a1818;
-  display: inline-block;
-}
 
 /* subtitle */
 .site-header .subtitle {
   margin-top: 8px;
   font-size: 16px; /* reduced subtitle sentence size */
-  color: #444;
-  opacity: 0.9;
-  display: block;
+  color: #ffffff;
+  opacity: 1; /* make fully visible */
+  display: block !important;
+  visibility: visible !important;
+  z-index: 10;
+  position: relative;
 }
 .site-header h1 {
   font-weight:700;
@@ -88,14 +139,16 @@ body {
 /* canvas container sits absolute behind content (z below overlays) */
 #canvas-container {
   position: fixed;
-  left: 50%;
-  transform: translateX(-50%);
+  left: 0;
   top: 0;
   width: 100%;
   height: 100vh;
   z-index: 3; /* bring canvas above video/content so the orb is visible over the mp4 */
   pointer-events: none; /* allow mouse events to pass through */
 }
+
+/* hide orb canvas when mini-site is open so orb only appears on main page */
+body.mini-open #canvas-container { display: none; }
 
 /* content area sits above canvas */
 .content {
@@ -104,63 +157,7 @@ body {
   padding: 10px 18px 40px;
 }
 
-/* layout rows */
-.grid-row {
-  display: grid;
-  gap: 48px; /* increased spacing between cards */
-  margin-bottom: 36px;
-}
-/* top row: two columns 60/35 */
-.grid-row-top {
-  grid-template-columns: 1fr 0.6fr;
-  align-items:start;
-}
-/* mid row: two columns 0.6fr / 0.4fr */
-.grid-row-mid {
-  grid-template-columns: 0.6fr 0.4fr;
-  align-items:start;
-}
-/* wide single column */
-.grid-row-wide {
-  grid-template-columns: 1fr;
-}
-/* bottom small pair */
-.grid-row-bottom {
-  grid-template-columns: 1fr 1fr;
-  gap: 40px; /* larger gap for bottom thumbnails */
-}
 
-/* card base style */
-.card {
-  background: transparent;
-  display:flex;
-  flex-direction:column;
-  align-items:center;
-}
-
-/* frame-grid is the pale block with grid lines */
-.frame-grid {
-  width: 100%;
-  background: linear-gradient(#f5f5f3, #f5f5f3);
-  border-radius: 2px;
-  box-shadow: 0 2px 0 rgba(0,0,0,0.02);
-  padding: 20px;
-  position: relative;
-  overflow: hidden;
-  /* grid size will be controlled per class */
-}
-
-/* visual grid pattern using background image (SVG) to emulate faint grid lines */
-.frame-grid::before {
-  content: "";
-  position: absolute;
-  inset: 0;
-  background-image:
-    linear-gradient(rgba(0,0,0,0.03) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(0,0,0,0.03) 1px, transparent 1px);
-  background-size: 48px 48px; /* grid cell size */
-  pointer-events: none;
-}
 /* large rectangular canvas/video area — almost screen size */
 .canvas-rect,
 .frame-grid.video-large {
@@ -187,11 +184,52 @@ body {
 
 /* the video itself */
 .frame-grid.video-frame video {
+  display: block;
   width: 100%;
   height: 100%;
-  object-fit: cover;      /* crop to fill the frame nicely */
+  object-fit: contain;      /* contain so we avoid aggressive upscaling/cropping */
+  object-position: center;
+  border-radius: 2px;
+  background: #000;
+}
+
+/* when a frame-grid has a dynamically inserted video */
+.frame-grid.has-video {
+  padding: 0; /* remove placeholder padding so video fills the frame */
+}
+.frame-grid.has-video::before { display: none; }
+.frame-grid.has-video video {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
   display: block;
   border-radius: 2px;
+}
+
+/* missing video fallback */
+.frame-grid.video-missing {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #f0f0f0;
+  color: #666;
+  font-size: 13px;
+}
+.frame-grid .missing-label { text-align: center; line-height:1.2; }
+
+/* simple play overlay when autoplay is blocked */
+.video-play-overlay {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  padding: 8px 14px;
+  background: rgba(0,0,0,0.6);
+  color: #fff;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  z-index: 5;
 }
 
 
@@ -261,3 +299,57 @@ body {
   .card.wide .frame-grid { width: 100%; height: 200px; }
   .site-footer { font-size: 11px; padding: 0 8px; }
 }
+
+.topbar {
+  position: fixed;
+  left: 50%;
+  transform: translateX(-50%);
+  top: 20px; 
+  width: calc(100% - 56px);
+  max-width: 900px;
+  z-index: 12; /* above player and canvas */
+  background: transparent;
+  padding: 14px 32px; /* increased padding */
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+/* push page content down so topbar doesn't overlap the header */
+.page { padding-top: 96px; }
+
+/* Bottom navigation bar styled like the topbar */
+.site-footer {
+  position: fixed;
+  left: 50%;
+  transform: translateX(-50%);
+  bottom: 20px; /* more space from bottom */
+  width: calc(100% - 56px);
+  max-width: 900px;
+  z-index: 12;
+  background: transparent;
+  padding: 10px 32px; /* match topbar spacing */
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.site-footer .bottom-link { color: #ffffff; text-decoration: none; padding: 12px 18px; border-radius: 12px; display: inline-block; font-weight: 500; }
+
+/* Hover and active states for top and bottom nav buttons */
+.topbar .top-link, .site-footer .bottom-link { transition: background 150ms ease, transform 120ms ease; }
+.topbar .top-link:hover, .topbar .top-link:focus, .site-footer .bottom-link:hover, .site-footer .bottom-link:focus {
+  background: #f2f2f2;
+  cursor: pointer;
+  transform: translateY(-2px);
+}
+.topbar .top-link.active, .site-footer .bottom-link.active {
+  background: #000;
+  color: #fff;
+}
+
+/* discover button: button that contains the image */
+.discover-btn { background: transparent; border: none; padding: 6px; cursor: pointer; border-radius: 12px; display: inline-flex; align-items: center; justify-content: center; }
+.discover-btn img { display: block; max-width: 567px; width: calc(100% - 120px); height: auto; border-radius: 8px; box-shadow: 0 6px 18px rgba(0,0,0,0.08); transition: transform 120ms ease, box-shadow 120ms ease; }
+.discover-btn:focus { outline: 2px solid rgba(255,255,255,0.9); outline-offset: 6px; }
+.discover-btn:hover img { transform: translateY(-3px); }
