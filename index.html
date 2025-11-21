@@ -1,46 +1,28 @@
 <!doctype html>
 <html lang="en">
 
+
 <head>
+
 
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title>City of Fragments</title>
   <link rel="stylesheet" href="style.css" />
-  <!-- p5 (optional, you'll add your sketch.js later) -->
-  <script defer src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.9.0/p5.min.js"></script>
+  <!-- p5.js library -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.9.0/p5.min.js"></script>
 
-  <!-- Google Playfair Display (remote) -->
-  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&display=swap" rel="stylesheet">
-  <!-- Local Playfair italic (uses local file in assets if available) -->
-    <style>
-      @font-face {
-        font-family: 'Playfair Display';
-        src: url('assets/PlayfairDisplay-Italic-VariableFont_wght.ttf') format('truetype');
-        font-weight: 700;
-        font-style: italic;
-        font-display: swap;
-        /* If the file isn't present the browser will fall back to the remote Google font or system fonts */
-      }
-    </style>
 
 </head>
 
+
 <body>
-  <!-- Top small bar (navigation links) -->
+  <!-- Top small bar (4 navigation) -->
   <div class="topbar">
-    <a class="top-link left" href="people.html">PEOPLE</a>
-    <a class="top-link right" href="info.html">INFO</a>
+    <a class="top-link left" href="PROJECTINTRO.html">PROJECT INTRO</a>
+    <a class="top-link right" href="people.html">PEOPLE</a>
   </div>
 
-  <!-- Header / title moved to main page -->
-  <header class="site-header">
-    <h1 class="site-title">
-      <span class="title-City">City of</span>
-      <span class="title-fragments">Fragments</span>
-    </h1>
-    <div class="subtitle">The city is no longer a place we inhabit — it’s a place we remember.</div>
-  </header>
 
   <!-- Fullscreen video player (new main interface) -->
   <div id="fullscreen-player">
@@ -49,79 +31,21 @@
       <button id="discoverBtn" class="discover-btn" aria-label="Discover Hong Kong">
         <img src="assets/Discover Hong Kong.png" alt="Discover Hong Kong" />
       </button>
-    </div>
-    <div id="videoStatus" aria-hidden="true"></div>
-  </div>
+ 
 
-  <!-- Title overlay image centered at top -->
-  <img id="title-overlay" src="assets/Title White.png" alt="City of Fragments" />
-
-  <!-- Canvas container for p5 (full screen layer) - moved here so orb overlays fullscreen player -->
+  <!-- Canvas container for p5.js orb (full-screen overlay) -->
   <div id="canvas-container"></div>
 
-  <!-- Mini site: the original page moved to a small left-hand panel -->
-  <div id="mini-site" class="mini-site" aria-hidden="true">
-    <button id="miniClose" class="mini-close" aria-label="Close">✕</button>
-    <div class="page">
 
-    <!-- Rectangular canvas/video area removed; canvas now uses #canvas-container -->
+  <div id="title-wrap">
+    <img id="title-overlay" src="assets/Title White.png" alt="City of Fragments" />
+    <a id="overlay-subtitle" class="subtitle overlay-subtitle" href="#" aria-hidden="true">The city is no longer a place we inhabit — it’s a place we remember.</a>
+  </div>
 
-    <!-- Content area -->
-    <main class="content">
-      <section class="grid-row grid-row-top">
-        <article class="card large">
-          <div class="frame-grid video-frame">
-            <!-- video: use muted autoplay loop for autoplay support on browsers -->
-            <video id="heroVideo" autoplay muted loop playsinline preload="auto">
-              <source src="assets/IMG_8770.MP4" type="video/mp4">
-              Your browser does not support the video tag.
-            </video>
-          </div>
-          <p class="caption">Lorem Ipsum...</p>
-        </article>
-
-        <article class="card medium">
-          <div class="frame-grid" data-video="assets/IMG_5619.MP4"></div>
-          <p class="caption">Lorem Ipsum...</p>
-        </article>
-      </section>
-
-      <section class="grid-row grid-row-mid">
-        <article class="card medium-left">
-          <div class="frame-grid" data-video="assets/IMG_6424.MP4"></div>
-          <p class="caption">Lorem Ipsum...</p>
-        </article>
-
-        <article class="card small">
-          <div class="frame-grid" data-video="assets/IMG_7113.MP4"></div>
-          <p class="caption">Lorem Ipsum...</p>
-        </article>
-      </section>
-
-      <section class="grid-row grid-row-wide">
-        <article class="card wide">
-          <div class="frame-grid" data-video="assets/IMG_8774.MP4"></div>
-          <p class="caption">Lorem Ipsum...</p>
-        </article>
-      </section>
-
-      <!-- second row of small thumbnails -->
-      <section class="grid-row grid-row-bottom">
-        <article class="card small">
-          <div class="frame-grid" data-video="assets/IMG_8775.MP4"></div>
-          <p class="caption">Lorem Ipsum...</p>
-        </article>
-        <article class="card small">
-          <div class="frame-grid" data-video="assets/IMG_8776.MP4"></div>
-          <p class="caption">Lorem Ipsum...</p>
-        </article>
-      </section>
-    </main>
 
     <!-- Floating Add button (remains in mini-site) -->
-    <button id="addBtn" title="Add memory">+</button>
-    </div>
-  </div>
+    <button id="addBtn" title="Discover Hong Kong">+</button>
+
 
   <!-- Footer (moved to main page) -->
   <footer class="site-footer">
@@ -130,6 +54,7 @@
     <a class="bottom-link right" href="follow.html">FOLLOW</a>
   </footer>
 
+
   <!-- Optional minimal interaction script (add button) -->
   <script>
     // add button: placeholder action
@@ -137,6 +62,56 @@
       alert('Add page / upload UI will open here.');
     });
   </script>
+  <script>
+    // Prevent video upscaling: size hero video to intrinsic resolution when smaller than its container
+    (function() {
+      const vid = document.getElementById('heroVideo');
+      if (!vid) return;
+      const container = vid.closest('.frame-grid') || vid.parentElement;
+
+
+      function fitVideo() {
+        const vw = vid.videoWidth || vid.naturalWidth || 0;
+        const vh = vid.videoHeight || vid.naturalHeight || 0;
+        const cw = container.clientWidth;
+        const ch = container.clientHeight;
+
+
+        // reset positioning so we can center
+        vid.style.position = 'absolute';
+        vid.style.left = '50%';
+        vid.style.top = '50%';
+        vid.style.transform = 'translate(-50%, -50%)';
+
+
+        if (vw && vh) {
+          // If the intrinsic video size is smaller than container, don't upscale: use intrinsic width.
+          if (vw <= cw && vh <= ch) {
+            vid.style.width = vw + 'px';
+            vid.style.height = 'auto';
+            vid.style.objectFit = 'none';
+          } else {
+            // otherwise fit inside container while preserving aspect ratio
+            vid.style.width = '100%';
+            vid.style.height = '100%';
+            vid.style.objectFit = 'contain';
+          }
+        } else {
+          // fallback: ensure contain
+          vid.style.width = '100%';
+          vid.style.height = '100%';
+          vid.style.objectFit = 'contain';
+        }
+      }
+
+
+      vid.addEventListener('loadedmetadata', fitVideo);
+      window.addEventListener('resize', fitVideo);
+      // try to run once in case metadata already available
+      setTimeout(fitVideo, 150);
+    })();
+  </script>
+
 
   <!-- Initialize videos inside frame-grid elements that have a `data-video` attribute -->
   <script>
@@ -147,6 +122,7 @@
         const src = frame.getAttribute('data-video');
         if (!src) return;
 
+
         // quick HEAD request to check file existence when served over http
         let exists = true;
         try {
@@ -156,11 +132,13 @@
           exists = true; // if fetch fails (eg file://) try to create video anyway
         }
 
+
         if (!exists) {
           frame.classList.add('video-missing');
           frame.innerHTML = '<div class="missing-label">Video missing<br>add file to assets/</div>';
           return;
         }
+
 
         // create video element with explicit properties
         const vid = document.createElement('video');
@@ -174,17 +152,20 @@
         vid.style.height = '100%';
         vid.style.objectFit = 'cover';
 
+
         // source element
         const source = document.createElement('source');
         source.src = src;
         source.type = 'video/mp4';
         vid.appendChild(source);
 
+
         // add a class so CSS can remove padding/overlay
         frame.classList.add('has-video');
         // replace the inner content (if any) with the video
         frame.innerHTML = '';
         frame.appendChild(vid);
+
 
         // playback handling with helpful fallbacks
         vid.addEventListener('canplay', () => {
@@ -196,12 +177,14 @@
           });
         });
 
+
         vid.addEventListener('play', () => frame.classList.add('is-playing'));
         vid.addEventListener('error', () => {
           frame.classList.remove('has-video');
           frame.classList.add('video-missing');
           frame.innerHTML = '<div class="missing-label">Video failed to load</div>';
         });
+
 
         // helper to show a click overlay to start playback when autoplay blocked
         function showPlayOverlay(frameEl, videoEl) {
@@ -219,30 +202,61 @@
     })();
   </script>
 
+
   <!-- placeholder for your p5/sketch.js — add later -->
   <script src="sketch.js" defer></script>
   
-  <!-- More memories: randomize the background player source -->
   <script>
     (function () {
       const moreBtn = document.getElementById('discoverBtn');
       const player = document.getElementById('mainPlayer');
       const status = document.getElementById('videoStatus');
-      // explicit list of available MP4s in the `assets/` folder
-      const sources = [
-        'assets/IMG_8770.MP4',
-        'assets/IMG_5619.MP4',
-        'assets/IMG_6424.MP4',
-        'assets/IMG_7113.MP4'
-      ];
+      
+      // Dynamically build list of MP4 files by scanning frame-grid elements with data-video attribute
+      // plus the hero video, to ensure all videos in the mini-site are included
+      let sources = [];
+      
+      // Add hero video first
+      const heroVid = document.getElementById('heroVideo');
+      if (heroVid && heroVid.querySelector('source')) {
+        sources.push(heroVid.querySelector('source').src);
+      }
+      
+      // Add all videos from data-video attributes in frame-grid elements
+      document.querySelectorAll('.frame-grid[data-video]').forEach(frame => {
+        const src = frame.getAttribute('data-video');
+        if (src && !sources.includes(src)) {
+          sources.push(src);
+        }
+      });
+      
+      // Fallback: if no videos found, use original hardcoded list
+      if (sources.length === 0) {
+        sources = [
+          'assets/IMG_8770.MP4',
+          'assets/IMG_5619.MP4',
+          'assets/IMG_6424.MP4',
+          'assets/IMG_8991.MP4',          
+          'assets/IMG_8910.MP4',
+          'assets/IMG_8805.MP4',
+          'assets/IMG_7414.MP4',
+          'assets/IMG_2723.MP4',
+          'assets/IMG_5193.MP4',
+
+
+        ];
+      }
+
 
       let currentIndex = 0;
+
 
       // helper: update on-screen status (useful for debugging/UX)
       function updateStatus() {
         if (!status) return;
         status.textContent = `Video ${currentIndex + 1} / ${sources.length}`;
       }
+
 
       // robust source swapping: create a fresh <source>, call load(), then try play
       function setSourceIndex(i) {
@@ -251,17 +265,21 @@
         const src = sources[currentIndex];
         console.log('Switching main player to', src);
 
+
         // ensure player is muted for autoplay
         try { player.muted = true; player.playsInline = true; } catch (e) {}
 
+
         // remove any previous sources
         while (player.firstChild) player.removeChild(player.firstChild);
+
 
         // create and append a source element
         const s = document.createElement('source');
         s.src = src;
         s.type = 'video/mp4';
         player.appendChild(s);
+
 
         // force reload and try to play
         try {
@@ -275,19 +293,24 @@
           console.error('Error while switching video:', err);
         }
 
+
         updateStatus();
       }
+
 
 
       // initialize player with the original hero subvideo
       setSourceIndex(0);
 
+
       // ensure player will loop in the background
       try { player.loop = true; player.muted = true; player.playsInline = true; } catch(e) {}
+
 
       function cycleNext() {
         setSourceIndex(currentIndex + 1);
       }
+
 
       if (moreBtn) {
         // click handler
@@ -303,6 +326,7 @@
           } catch (err) { console.warn('Error while attempting play on click', err); }
         });
 
+
         // keyboard support: Enter or Space triggers the same action
         moreBtn.addEventListener('keydown', (ev) => {
           if (ev.key === 'Enter' || ev.key === ' ' || ev.key === 'Spacebar') {
@@ -311,6 +335,7 @@
           }
         });
       }
+
 
       // log playback errors to console and show on status
       if (player) {
@@ -321,6 +346,10 @@
       }
     })();
   </script>
+
+  <!-- p5.js sketch for orb -->
+  <script src="sketch.js"></script>
 </body>
+
 
 </html>
