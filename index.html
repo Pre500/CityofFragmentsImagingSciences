@@ -3,8 +3,7 @@
 
 
 <head>
-
-
+  
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title>City of Fragments</title>
@@ -12,14 +11,13 @@
   <!-- p5.js library -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.9.0/p5.min.js"></script>
 
-
 </head>
 
 
 <body>
   <!-- Top small bar (4 navigation) -->
   <div class="topbar">
-    <a class="top-link left" href="PROJECTINTRO.html">PROJECT INTRO</a>
+    <a class="top-link left" href="proj_intro.html">PROJECT INTRO</a>
     <a class="top-link right" href="people.html">PEOPLE</a>
   </div>
 
@@ -36,32 +34,27 @@
   <!-- Canvas container for p5.js orb (full-screen overlay) -->
   <div id="canvas-container"></div>
 
-
   <div id="title-wrap">
     <img id="title-overlay" src="assets/Title White.png" alt="City of Fragments" />
     <a id="overlay-subtitle" class="subtitle overlay-subtitle" href="#" aria-hidden="true">The city is no longer a place we inhabit — it’s a place we remember.</a>
   </div>
 
-
     <!-- Floating Add button (remains in mini-site) -->
     <button id="addBtn" title="Discover Hong Kong">+</button>
 
 
-  <!-- Footer (moved to main page) -->
   <footer class="site-footer">
     <a class="bottom-link left" href="documentation.html">DOCUMENTATION</a>
     <div class="center small-caption"></div>
     <a class="bottom-link right" href="follow.html">FOLLOW</a>
   </footer>
 
-
-  <!-- Optional minimal interaction script (add button) -->
   <script>
-    // add button: placeholder action
     document.getElementById('addBtn').addEventListener('click', () => {
       alert('Add page / upload UI will open here.');
     });
   </script>
+
   <script>
     // Prevent video upscaling: size hero video to intrinsic resolution when smaller than its container
     (function() {
@@ -234,14 +227,20 @@
       if (sources.length === 0) {
         // fallback list: only include files that are present in the assets folder
         sources = [
-          'assets/IMG_8770.MP4',
-          'assets/IMG_8991.MP4',
-          'assets/IMG_8910.MP4',
-          'assets/IMG_8805.MP4',
-          'assets/IMG_7414.MP4',
           'assets/IMG_2723.MP4',
+          'assets/IMG_5193.MP4',
+          'assets/IMG_5619.MP4',
           'assets/IMG_6021.MP4',
-          'assets/IMG_8758.MP4'
+          'assets/IMG_6424.MP4',
+          'assets/IMG_7113.MP4',
+          'assets/IMG_7414.MP4',
+          'assets/IMG_8758.MP4',
+          'assets/IMG_8766.MP4',
+          'assets/IMG_8805.MP4',
+          'assets/IMG_8910.MP4',
+          'assets/IMG_8991.MP4',
+          'assets/IMG_9147.MP4',
+          'assets/IMG_9639.MP4'        
         ];
 
         // validate that each fallback source actually exists (HEAD request)
