@@ -1,110 +1,173 @@
-<script>
-(function () {
-  const player = document.getElementById('mainPlayer');
-  const discoverBtn = document.getElementById('discoverBtn');
+<!doctype html>
+<html lang="en">
 
-  // List of all videos
-  const sources = [
-    'assets/IMG_8770.MP4',
-    'assets/IMG_8991.MP4',
-    'assets/IMG_8910.MP4',
-    'assets/IMG_8805.MP4',
-    'assets/IMG_7414.MP4',
-    'assets/IMG_2723.MP4',
-    'assets/IMG_6021.MP4',
-    'assets/IMG_5619.MP4',
-    'assets/IMG_5193.MP4',
-    'assets/IMG_8758.MP4'
-  ];
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>City of Fragments</title>
+  <link rel="stylesheet" href="style.css" />
+  <!-- p5.js library -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.9.0/p5.min.js"></script>
+</head>
 
-  let currentIndex = 0;
+<body>
+  <!-- Top small bar -->
+  <div class="topbar">
+    <a class="top-link left" href="PROJECTINTRO.html">PROJECT INTRO</a>
+    <a class="top-link right" href="people.html">PEOPLE</a>
+  </div>
 
-  // --- Preload all videos in hidden elements ---
-  const preloadVideos = sources.map(src => {
-    const vid = document.createElement('video');
-    vid.src = src;
-    vid.preload = 'auto';
-    vid.muted = true;
-    vid.playsInline = true;
-    vid.style.display = 'none';
-    document.body.appendChild(vid);
-    return vid;
-  });
+  <!-- Fullscreen video player -->
+  <div id="fullscreen-player">
+    <video id="mainPlayer" autoplay muted playsinline loop preload="auto">
+      <source src="assets/IMG_8770.MP4" type="video/mp4">
+    </video>
+    <div class="player-controls">
+      <button id="discoverBtn" class="discover-btn" aria-label="Discover Hong Kong">
+        <img src="assets/Discover Hong Kong.png" alt="Discover Hong Kong" />
+      </button>
+    </div>
+  </div>
 
-  // --- Function to switch videos reliably ---
-  function switchVideo(index) {
-    currentIndex = (index + sources.length) % sources.length;
-    const src = sources[currentIndex];
+  <!-- Canvas container for p5.js orb -->
+  <div id="canvas-container"></div>
 
-    player.pause();       // stop current video
-    player.muted = true;  // ensure autoplay
-    player.src = src;
-    player.load();
+  <!-- Title overlay -->
+  <div id="title-wrap">
+    <img id="title-overlay" src="assets/Title White.png" alt="City of Fragments" />
+    <a id="overlay-subtitle" class="subtitle overlay-subtitle" href="#" aria-hidden="true">
+      The city is no longer a place we inhabit — it’s a place we remember.
+    </a>
+  </div>
 
-    // play when ready
-    player.addEventListener('canplay', function playHandler() {
-      player.play().catch(() => {
-        console.warn('Autoplay blocked, waiting for user click.');
-        showPlayOverlay();
+  <!-- Floating Add button -->
+  <button id="addBtn" title="Discover Hong Kong">+</button>
+
+  <!-- Footer -->
+  <footer class="site-footer">
+    <a class="bottom-link left" href="documentation.html">DOCUMENTATION</a>
+    <div class="center small-caption"></div>
+    <a class="bottom-link right" href="follow.html">FOLLOW</a>
+  </footer>
+
+  <!-- Scripts -->
+  <script>
+    // --- Add button placeholder ---
+    document.getElementById('addBtn').addEventListener('click', () => {
+      alert('Add page / upload UI will open here.');
+    });
+
+    // --- Video management ---
+    (function () {
+      const player = document.getElementById('mainPlayer');
+      const discoverBtn = document.getElementById('discoverBtn');
+
+      // List of all videos
+      const sources = [
+        'assets/IMG_8770.MP4',
+        'assets/IMG_8991.MP4',
+        'assets/IMG_8910.MP4',
+        'assets/IMG_8805.MP4',
+        'assets/IMG_7414.MP4',
+        'assets/IMG_2723.MP4',
+        'assets/IMG_6021.MP4',
+        'assets/IMG_5619.MP4',
+        'assets/IMG_5193.MP4',
+        'assets/IMG_8758.MP4'
+      ];
+
+      let currentIndex = 0;
+
+      // --- Preload all videos in hidden elements ---
+      const preloadVideos = sources.map(src => {
+        const vid = document.createElement('video');
+        vid.src = src;
+        vid.preload = 'auto';
+        vid.muted = true;
+        vid.playsInline = true;
+        vid.style.display = 'none';
+        document.body.appendChild(vid);
+        return vid;
       });
-      player.removeEventListener('canplay', playHandler);
-    });
-  }
 
-  // --- Overlay button fallback if autoplay blocked ---
-  function showPlayOverlay() {
-    if (document.getElementById('playOverlay')) return; // already exists
-    const btn = document.createElement('button');
-    btn.id = 'playOverlay';
-    btn.innerText = 'Click to Play';
-    btn.style.position = 'absolute';
-    btn.style.top = '50%';
-    btn.style.left = '50%';
-    btn.style.transform = 'translate(-50%, -50%)';
-    btn.style.padding = '1em 2em';
-    btn.style.zIndex = 1000;
-    btn.style.fontSize = '1.2rem';
-    btn.style.cursor = 'pointer';
-    btn.addEventListener('click', () => {
-      player.play().catch(() => {});
-      btn.remove();
-    });
-    document.body.appendChild(btn);
-  }
+      // --- Function to switch videos reliably ---
+      function switchVideo(index) {
+        currentIndex = (index + sources.length) % sources.length;
+        const src = sources[currentIndex];
 
-  // --- Discover button ---
-  if (discoverBtn) {
-    discoverBtn.addEventListener('click', (e) => {
-      e.preventDefault();
-      switchVideo(currentIndex + 1);
-    });
+        player.pause();       // stop current video
+        player.muted = true;  // ensure autoplay
+        player.src = src;
+        player.load();
 
-    discoverBtn.addEventListener('keydown', (e) => {
-      if (e.key === 'Enter' || e.key === ' ' || e.key === 'Spacebar') {
-        e.preventDefault();
-        discoverBtn.click();
+        // play when ready
+        player.addEventListener('canplay', function playHandler() {
+          player.play().catch(() => {
+            console.warn('Autoplay blocked, waiting for user click.');
+            showPlayOverlay();
+          });
+          player.removeEventListener('canplay', playHandler);
+        });
       }
-    });
-  }
 
-  // --- Responsive fullscreen ---
-  function fitVideo() {
-    if (!player) return;
-    player.style.position = 'absolute';
-    player.style.left = '50%';
-    player.style.top = '50%';
-    player.style.transform = 'translate(-50%, -50%)';
-    player.style.width = '100%';
-    player.style.height = '100%';
-    player.style.objectFit = 'cover';
-  }
-  window.addEventListener('resize', fitVideo);
-  player.addEventListener('loadedmetadata', fitVideo);
-  setTimeout(fitVideo, 100);
+      // --- Overlay button fallback if autoplay blocked ---
+      function showPlayOverlay() {
+        if (document.getElementById('playOverlay')) return; // already exists
+        const btn = document.createElement('button');
+        btn.id = 'playOverlay';
+        btn.innerText = 'Click to Play';
+        btn.style.position = 'absolute';
+        btn.style.top = '50%';
+        btn.style.left = '50%';
+        btn.style.transform = 'translate(-50%, -50%)';
+        btn.style.padding = '1em 2em';
+        btn.style.zIndex = 1000;
+        btn.style.fontSize = '1.2rem';
+        btn.style.cursor = 'pointer';
+        btn.addEventListener('click', () => {
+          player.play().catch(() => {});
+          btn.remove();
+        });
+        document.body.appendChild(btn);
+      }
 
-  // --- Initialize first video ---
-  switchVideo(0);
-})();
-</script>
+      // --- Discover button ---
+      if (discoverBtn) {
+        discoverBtn.addEventListener('click', (e) => {
+          e.preventDefault();
+          switchVideo(currentIndex + 1);
+        });
 
+        discoverBtn.addEventListener('keydown', (e) => {
+          if (e.key === 'Enter' || e.key === ' ' || e.key === 'Spacebar') {
+            e.preventDefault();
+            discoverBtn.click();
+          }
+        });
+      }
 
+      // --- Responsive fullscreen ---
+      function fitVideo() {
+        if (!player) return;
+        player.style.position = 'absolute';
+        player.style.left = '50%';
+        player.style.top = '50%';
+        player.style.transform = 'translate(-50%, -50%)';
+        player.style.width = '100%';
+        player.style.height = '100%';
+        player.style.objectFit = 'cover';
+      }
+      window.addEventListener('resize', fitVideo);
+      player.addEventListener('loadedmetadata', fitVideo);
+      setTimeout(fitVideo, 100);
+
+      // --- Initialize first video ---
+      switchVideo(0);
+    })();
+  </script>
+
+  <!-- p5.js sketch -->
+  <script src="sketch.js"></script>
+</body>
+
+</html>
