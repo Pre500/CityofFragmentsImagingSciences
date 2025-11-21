@@ -20,7 +20,7 @@
   <!-- Fullscreen video player -->
   <div id="fullscreen-player">
     <video id="mainPlayer" autoplay muted playsinline loop preload="auto">
-      <source src="assets/IMG_8770.MP4" type="video/mp4">
+      <source src="assets/IMG_8991.MP4" type="video/mp4">
     </video>
     <div class="player-controls">
       <button id="discoverBtn" class="discover-btn" aria-label="Discover Hong Kong">
@@ -57,14 +57,13 @@
       alert('Add page / upload UI will open here.');
     });
 
-    // --- Video management ---
+    // --- Video management with preloading into memory ---
     (function () {
       const player = document.getElementById('mainPlayer');
       const discoverBtn = document.getElementById('discoverBtn');
 
-      // List of all videos
+      // List of video file paths
       const sources = [
-        'assets/IMG_8770.MP4',
         'assets/IMG_8991.MP4',
         'assets/IMG_8910.MP4',
         'assets/IMG_8805.MP4',
@@ -73,46 +72,52 @@
         'assets/IMG_6021.MP4',
         'assets/IMG_5619.MP4',
         'assets/IMG_5193.MP4',
-        'assets/IMG_8758.MP4'
+        'assets/IMG_8758.MP4',
+        'assets/IMG_8766.MP4',
+        'assets/IMG_9319.MP4',
+        'assets/IMG_9639.MP4'
       ];
 
       let currentIndex = 0;
+      const preloadedBlobs = [];
 
-      // --- Preload all videos in hidden elements ---
-      const preloadVideos = sources.map(src => {
-        const vid = document.createElement('video');
-        vid.src = src;
-        vid.preload = 'auto';
-        vid.muted = true;
-        vid.playsInline = true;
-        vid.style.display = 'none';
-        document.body.appendChild(vid);
-        return vid;
-      });
+      // --- Preload all videos into memory as Blob URLs ---
+      async function preloadAllVideos() {
+        for (const src of sources) {
+          try {
+            const response = await fetch(src);
+            const blob = await response.blob();
+            const blobUrl = URL.createObjectURL(blob);
+            preloadedBlobs.push(blobUrl);
+          } catch (e) {
+            console.warn('Failed to preload', src, e);
+          }
+        }
+      }
+
+      preloadAllVideos();
 
       // --- Function to switch videos reliably ---
       function switchVideo(index) {
-        currentIndex = (index + sources.length) % sources.length;
-        const src = sources[currentIndex];
+        if (preloadedBlobs.length === 0) return; // still loading
+        currentIndex = (index + preloadedBlobs.length) % preloadedBlobs.length;
+        const src = preloadedBlobs[currentIndex];
 
-        player.pause();       // stop current video
-        player.muted = true;  // ensure autoplay
+        player.pause();
+        player.muted = true;
         player.src = src;
         player.load();
 
         // play when ready
         player.addEventListener('canplay', function playHandler() {
-          player.play().catch(() => {
-            console.warn('Autoplay blocked, waiting for user click.');
-            showPlayOverlay();
-          });
+          player.play().catch(() => showPlayOverlay());
           player.removeEventListener('canplay', playHandler);
         });
       }
 
       // --- Overlay button fallback if autoplay blocked ---
       function showPlayOverlay() {
-        if (document.getElementById('playOverlay')) return; // already exists
+        if (document.getElementById('playOverlay')) return;
         const btn = document.createElement('button');
         btn.id = 'playOverlay';
         btn.innerText = 'Click to Play';
@@ -162,7 +167,12 @@
       setTimeout(fitVideo, 100);
 
       // --- Initialize first video ---
-      switchVideo(0);
+      const initInterval = setInterval(() => {
+        if (preloadedBlobs.length > 0) {
+          switchVideo(0);
+          clearInterval(initInterval);
+        }
+      }, 100);
     })();
   </script>
 
@@ -171,3 +181,4 @@
 </body>
 
 </html>
+
