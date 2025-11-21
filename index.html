@@ -48,120 +48,78 @@
   </footer>
 
   <script>
-    document.getElementById('addBtn').addEventListener('click', () => {
-      alert('Add page / upload UI will open here.');
+(function () {
+  const player = document.getElementById('mainPlayer');
+  const discoverBtn = document.getElementById('discoverBtn');
+
+  // Plain array of video URLs
+  const sources = [
+    'assets/IMG_2723.MP4',
+    'assets/IMG_5193.MP4',
+    'assets/IMG_5619.MP4',
+    'assets/IMG_6021.MP4',
+    'assets/IMG_7414.MP4',
+    'assets/IMG_8758.MP4',
+    'assets/IMG_8766.MP4',
+    'assets/IMG_8805.MP4',
+    'assets/IMG_8910.MP4',
+    'assets/IMG_8991.MP4',
+    'assets/IMG_9319.MP4',
+    'assets/IMG_9639.MP4'
+  ];
+
+  let currentIndex = 0;
+
+  function switchVideo(index) {
+    currentIndex = (index + sources.length) % sources.length;
+    const src = sources[currentIndex];
+
+    player.pause();
+    player.src = src;
+    player.load();
+    player.muted = true;
+
+    // Ensure smooth playback after buffering
+    player.addEventListener('canplaythrough', function playHandler() {
+      player.play().catch(() => {
+        console.warn('Autoplay blocked, user interaction required.');
+      });
+      player.removeEventListener('canplaythrough', playHandler);
+    });
+  }
+
+  if (discoverBtn) {
+    discoverBtn.addEventListener('click', (e) => {
+      e.preventDefault();
+      switchVideo(currentIndex + 1);
     });
 
-    (function () {
-      const player = document.getElementById('mainPlayer');
-      const discoverBtn = document.getElementById('discoverBtn');
-
-      const sources = [        
-        'assets/IMG_2723.MP4',
-        'assets/IMG_5193.MP4',
-        'assets/IMG_5619.MP4',
-        'assets/IMG_6021.MP4',
-        'assets/IMG_7414.MP4',
-        'assets/IMG_8758.MP4',
-        'assets/IMG_8766.MP4',
-        'assets/IMG_8805.MP4',
-        'assets/IMG_8910.MP4',
-        'assets/IMG_8991.MP4',
-        'assets/IMG_9319.MP4',
-        'assets/IMG_9639.MP4'
-      ];
-
-      let currentIndex = 0;
-      const preloadedBlobs = [];
-
-      async function preloadAllVideos() {
-        for (const src of sources) {
-          try {
-            const response = await fetch(src);
-            const blob = await response.blob();
-            const blobUrl = URL.createObjectURL(blob);
-            preloadedBlobs.push(blobUrl);
-          } catch (e) {
-            console.warn('Failed to preload', src, e);
-          }
-        }
+    discoverBtn.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter' || e.key === ' ' || e.key === 'Spacebar') {
+        e.preventDefault();
+        discoverBtn.click();
       }
+    });
+  }
 
-      preloadAllVideos();
+  // Fit video in fullscreen
+  function fitVideo() {
+    player.style.position = 'absolute';
+    player.style.left = '50%';
+    player.style.top = '50%';
+    player.style.transform = 'translate(-50%, -50%)';
+    player.style.width = '100%';
+    player.style.height = '100%';
+    player.style.objectFit = 'cover';
+  }
+  window.addEventListener('resize', fitVideo);
+  player.addEventListener('loadedmetadata', fitVideo);
+  setTimeout(fitVideo, 100);
 
-      function switchVideo(index) {
-        if (preloadedBlobs.length === 0) return; // still loading
-        currentIndex = (index + preloadedBlobs.length) % preloadedBlobs.length;
-        const src = preloadedBlobs[currentIndex];
-
-        player.pause();
-        player.muted = true;
-        player.src = src;
-        player.load();
-
-        player.addEventListener('canplay', function playHandler() {
-          player.play().catch(() => showPlayOverlay());
-          player.removeEventListener('canplay', playHandler);
-        });
-      }
-
-      function showPlayOverlay() {
-        if (document.getElementById('playOverlay')) return;
-        const btn = document.createElement('button');
-        btn.id = 'playOverlay';
-        btn.innerText = 'Click to Play';
-        btn.style.position = 'absolute';
-        btn.style.top = '50%';
-        btn.style.left = '50%';
-        btn.style.transform = 'translate(-50%, -50%)';
-        btn.style.padding = '1em 2em';
-        btn.style.zIndex = 1000;
-        btn.style.fontSize = '1.2rem';
-        btn.style.cursor = 'pointer';
-        btn.addEventListener('click', () => {
-          player.play().catch(() => {});
-          btn.remove();
-        });
-        document.body.appendChild(btn);
-      }
-
-      if (discoverBtn) {
-        discoverBtn.addEventListener('click', (e) => {
-          e.preventDefault();
-          switchVideo(currentIndex + 1);
-        });
-
-        discoverBtn.addEventListener('keydown', (e) => {
-          if (e.key === 'Enter' || e.key === ' ' || e.key === 'Spacebar') {
-            e.preventDefault();
-            discoverBtn.click();
-          }
-        });
-      }
-
-      function fitVideo() {
-        if (!player) return;
-        player.style.position = 'absolute';
-        player.style.left = '50%';
-        player.style.top = '50%';
-        player.style.transform = 'translate(-50%, -50%)';
-        player.style.width = '100%';
-        player.style.height = '100%';
-        player.style.objectFit = 'cover';
-      }
-      window.addEventListener('resize', fitVideo);
-      player.addEventListener('loadedmetadata', fitVideo);
-      setTimeout(fitVideo, 100);
-
-      // --- Initialize first video ---
-      const initInterval = setInterval(() => {
-        if (preloadedBlobs.length > 0) {
-          switchVideo(0);
-          clearInterval(initInterval);
-        }
-      }, 100);
-    })();
-  </script>
+  // Initialize first video
+  switchVideo(0);
+})();
+</script>
 
   <script src="sketch.js"></script>
 </body>
