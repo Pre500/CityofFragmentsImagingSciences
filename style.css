@@ -141,16 +141,19 @@ html, body {
 }
 .discover-btn img {
   display: block;
-  width: 140px; /* larger for visibility */
+  width: 3600px;          /* default larger width */
+  max-width: 50vw;       /* responsive on smaller screens */
   height: auto;
-  border-radius: 8px;
-  box-shadow: 0 6px 18px rgba(0,0,0,0.08);
+  border-radius: 12px;
+  box-shadow: 0 6px 18px rgba(0,0,0,0.12);
   transition: transform 120ms ease, box-shadow 120ms ease;
 }
 .discover-btn:hover img {
-  transform: translateY(-3px);
-  box-shadow: 0 10px 20px rgba(0,0,0,0.18);
+  transform: translateY(-4px);
+  box-shadow: 0 10px 24px rgba(0,0,0,0.18);
 }
+
+
 .discover-btn:focus {
   outline: 2px solid rgba(255,255,255,0.9);
   outline-offset: 6px;
