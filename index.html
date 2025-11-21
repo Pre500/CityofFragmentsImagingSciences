@@ -31,7 +31,9 @@
       <button id="discoverBtn" class="discover-btn" aria-label="Discover Hong Kong">
         <img src="assets/Discover Hong Kong.png" alt="Discover Hong Kong" />
       </button>
- 
+    </div>
+    <div id="videoStatus" aria-hidden="true"></div>
+  </div>
 
   <!-- Canvas container for p5.js orb (full-screen overlay) -->
   <div id="canvas-container"></div>
@@ -203,14 +205,14 @@
   </script>
 
 
-  <!-- placeholder for your p5/sketch.js — add later -->
-  <script src="sketch.js" defer></script>
+  <!-- p5 sketch is loaded at the end of the document -->
   
   <script>
     (function () {
       const moreBtn = document.getElementById('discoverBtn');
       const player = document.getElementById('mainPlayer');
       const status = document.getElementById('videoStatus');
+      console.log('video switcher init', { moreBtnExists: !!moreBtn, playerExists: !!player, statusExists: !!status });
       
       // Dynamically build list of MP4 files by scanning frame-grid elements with data-video attribute
       // plus the hero video, to ensure all videos in the mini-site are included
