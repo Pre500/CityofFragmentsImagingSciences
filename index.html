@@ -48,78 +48,134 @@
   </footer>
 
   <script>
-(function () {
-  const player = document.getElementById('mainPlayer');
-  const discoverBtn = document.getElementById('discoverBtn');
+  (function () {
+    const player = document.getElementById('mainPlayer');
+    const discoverBtn = document.getElementById('discoverBtn');
 
-  // Plain array of video URLs
-  const sources = [
-    'assets/IMG_2723.MP4',
-    'assets/IMG_5193.MP4',
-    'assets/IMG_5619.MP4',
-    'assets/IMG_6021.MP4',
-    'assets/IMG_7414.MP4',
-    'assets/IMG_8758.MP4',
-    'assets/IMG_8766.MP4',
-    'assets/IMG_8805.MP4',
-    'assets/IMG_8910.MP4',
-    'assets/IMG_8991.MP4',
-    'assets/IMG_9319.MP4',
-    'assets/IMG_9639.MP4'
-  ];
+    // Plain array of video URLs
+    const sources = [
+      'assets/IMG_2723.MP4',
+      'assets/IMG_5193.MP4',
+      'assets/IMG_5619.MP4',
+      'assets/IMG_6021.MP4',
+      'assets/IMG_7414.MP4',
+      'assets/IMG_8758.MP4',
+      'assets/IMG_8766.MP4',
+      'assets/IMG_8805.MP4',
+      'assets/IMG_8910.MP4',
+      'assets/IMG_8991.MP4',
+      'assets/IMG_9319.MP4',
+      'assets/IMG_9639.MP4'
+    ];
 
-  let currentIndex = 0;
+    let currentIndex = 0;
 
-  function switchVideo(index) {
-    currentIndex = (index + sources.length) % sources.length;
-    const src = sources[currentIndex];
-
-    player.pause();
-    player.src = src;
-    player.load();
-    player.muted = true;
-
-    // Ensure smooth playback after buffering
-    player.addEventListener('canplaythrough', function playHandler() {
-      player.play().catch(() => {
-        console.warn('Autoplay blocked, user interaction required.');
+    function showDiagnosticOverlay(message) {
+      if (document.getElementById('videoDiag')) return;
+      const wrap = document.createElement('div');
+      wrap.id = 'videoDiag';
+      Object.assign(wrap.style, {
+        position: 'fixed',
+        left: '10px',
+        right: '10px',
+        top: '10px',
+        padding: '12px',
+        background: 'rgba(0,0,0,0.8)',
+        color: '#fff',
+        zIndex: 99999,
+        fontSize: '14px',
+        borderRadius: '6px'
       });
-      player.removeEventListener('canplaythrough', playHandler);
-    });
-  }
+      wrap.innerHTML = '<strong>Video diagnostic:</strong> ' + message;
+      document.body.appendChild(wrap);
+    }
 
-  if (discoverBtn) {
-    discoverBtn.addEventListener('click', (e) => {
-      e.preventDefault();
-      switchVideo(currentIndex + 1);
-    });
-
-    discoverBtn.addEventListener('keydown', (e) => {
-      if (e.key === 'Enter' || e.key === ' ' || e.key === 'Spacebar') {
-        e.preventDefault();
-        discoverBtn.click();
+    async function checkAsset(url) {
+      try {
+        const resp = await fetch(url, { method: 'HEAD' });
+        if (!resp.ok) {
+          return { ok: false, status: resp.status, statusText: resp.statusText };
+        }
+        const ct = resp.headers.get('content-type') || '';
+        return { ok: true, contentType: ct };
+      } catch (err) {
+        return { ok: false, error: String(err) };
       }
-    });
-  }
+    }
 
-  // Fit video in fullscreen
-  function fitVideo() {
-    player.style.position = 'absolute';
-    player.style.left = '50%';
-    player.style.top = '50%';
-    player.style.transform = 'translate(-50%, -50%)';
-    player.style.width = '100%';
-    player.style.height = '100%';
-    player.style.objectFit = 'cover';
-  }
-  window.addEventListener('resize', fitVideo);
-  player.addEventListener('loadedmetadata', fitVideo);
-  setTimeout(fitVideo, 100);
+    function switchVideo(index) {
+      currentIndex = (index + sources.length) % sources.length;
+      const src = sources[currentIndex];
 
-  // Initialize first video
-  switchVideo(0);
-})();
-</script>
+      player.pause();
+      player.src = src;
+      player.load();
+      player.muted = true;
+
+      player.addEventListener('canplaythrough', function playHandler() {
+        player.play().catch(() => {
+          console.warn('Autoplay blocked, user interaction required.');
+        });
+        player.removeEventListener('canplaythrough', playHandler);
+      });
+    }
+
+    async function init() {
+      if (!player) {
+        console.warn('#mainPlayer not found');
+        return;
+      }
+
+      // Simple runtime diagnostic: check first video asset
+      const diag = await checkAsset(sources[0]);
+      if (!diag.ok) {
+        showDiagnosticOverlay('Asset check failed for ' + sources[0] + ' — HTTP status: ' + (diag.status || diag.error));
+        return;
+      }
+      if (!diag.contentType.startsWith('video/')) {
+        showDiagnosticOverlay('Asset ' + sources[0] + ' served with content-type: ' + diag.contentType + '. If this is a Git LFS pointer or text file, GitHub Pages will not serve the actual binary. Re-upload the MP4 files without LFS or enable proper hosting.');
+        return;
+      }
+
+      if (discoverBtn) {
+        discoverBtn.addEventListener('click', (e) => {
+          e.preventDefault();
+          switchVideo(currentIndex + 1);
+        });
+
+        discoverBtn.addEventListener('keydown', (e) => {
+          if (e.key === 'Enter' || e.key === ' ' || e.key === 'Spacebar') {
+            e.preventDefault();
+            discoverBtn.click();
+          }
+        });
+      }
+
+      function fitVideo() {
+        player.style.position = 'absolute';
+        player.style.left = '50%';
+        player.style.top = '50%';
+        player.style.transform = 'translate(-50%, -50%)';
+        player.style.width = '100%';
+        player.style.height = '100%';
+        player.style.objectFit = 'cover';
+      }
+      window.addEventListener('resize', fitVideo);
+      player.addEventListener('loadedmetadata', fitVideo);
+      setTimeout(fitVideo, 100);
+
+      // Initialize first video
+      switchVideo(0);
+    }
+
+    // Run init after DOM loaded
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', init);
+    } else {
+      init();
+    }
+  })();
+  </script>
 
   <script src="sketch.js"></script>
 </body>
