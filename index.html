@@ -7,17 +7,40 @@
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title>City of Fragments</title>
   <link rel="stylesheet" href="style.css" />
-  <!-- p5.js library -->
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.9.0/p5.min.js"></script>
+  <!-- p5 (optional, you'll add your sketch.js later) -->
+  <script defer src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.9.0/p5.min.js"></script>
+
+  <!-- Google Playfair Display (remote) -->
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&display=swap" rel="stylesheet">
+  <!-- Local Playfair italic (uses local file in assets if available) -->
+    <style>
+      @font-face {
+        font-family: 'Playfair Display';
+        src: url('assets/PlayfairDisplay-Italic-VariableFont_wght.ttf') format('truetype');
+        font-weight: 700;
+        font-style: italic;
+        font-display: swap;
+        /* If the file isn't present the browser will fall back to the remote Google font or system fonts */
+      }
+    </style>
 
 </head>
 
 <body>
-  <!-- Top small bar (4 navigation) -->
+  <!-- Top small bar (navigation links) -->
   <div class="topbar">
-    <a class="top-link left" href="PROJECTINTRO.html">PROJECT INTRO</a>
-    <a class="top-link right" href="people.html">PEOPLE</a>
+    <a class="top-link left" href="people.html">PEOPLE</a>
+    <a class="top-link right" href="info.html">INFO</a>
   </div>
+
+  <!-- Header / title moved to main page -->
+  <header class="site-header">
+    <h1 class="site-title">
+      <span class="title-City">City of</span>
+      <span class="title-fragments">Fragments</span>
+    </h1>
+    <div class="subtitle">The city is no longer a place we inhabit — it’s a place we remember.</div>
+  </header>
 
   <!-- Fullscreen video player (new main interface) -->
   <div id="fullscreen-player">
@@ -26,18 +49,77 @@
       <button id="discoverBtn" class="discover-btn" aria-label="Discover Hong Kong">
         <img src="assets/Discover Hong Kong.png" alt="Discover Hong Kong" />
       </button>
+    </div>
+    <div id="videoStatus" aria-hidden="true"></div>
   </div>
 
-  <!-- Canvas container for p5.js orb (full-screen overlay) -->
+  <!-- Title overlay image centered at top -->
+  <img id="title-overlay" src="assets/Title White.png" alt="City of Fragments" />
+
+  <!-- Canvas container for p5 (full screen layer) - moved here so orb overlays fullscreen player -->
   <div id="canvas-container"></div>
 
-  <div id="title-wrap">
-    <img id="title-overlay" src="assets/Title White.png" alt="City of Fragments" />
-    <a id="overlay-subtitle" class="subtitle overlay-subtitle" href="#" aria-hidden="true">The city is no longer a place we inhabit — it’s a place we remember.</a>
-  </div>
+  <!-- Mini site: the original page moved to a small left-hand panel -->
+  <div id="mini-site" class="mini-site" aria-hidden="true">
+    <button id="miniClose" class="mini-close" aria-label="Close">✕</button>
+    <div class="page">
+
+    <!-- Rectangular canvas/video area removed; canvas now uses #canvas-container -->
+
+    <!-- Content area -->
+    <main class="content">
+      <section class="grid-row grid-row-top">
+        <article class="card large">
+          <div class="frame-grid video-frame">
+            <!-- video: use muted autoplay loop for autoplay support on browsers -->
+            <video id="heroVideo" autoplay muted loop playsinline preload="auto">
+              <source src="assets/IMG_8770.MP4" type="video/mp4">
+              Your browser does not support the video tag.
+            </video>
+          </div>
+          <p class="caption">Lorem Ipsum...</p>
+        </article>
+
+        <article class="card medium">
+          <div class="frame-grid" data-video="assets/IMG_5619.MP4"></div>
+          <p class="caption">Lorem Ipsum...</p>
+        </article>
+      </section>
+
+      <section class="grid-row grid-row-mid">
+        <article class="card medium-left">
+          <div class="frame-grid" data-video="assets/IMG_6424.MP4"></div>
+          <p class="caption">Lorem Ipsum...</p>
+        </article>
+
+        <article class="card small">
+          <div class="frame-grid" data-video="assets/IMG_7113.MP4"></div>
+          <p class="caption">Lorem Ipsum...</p>
+        </article>
+      </section>
+
+      <section class="grid-row grid-row-wide">
+        <article class="card wide">
+          <div class="frame-grid" data-video="assets/IMG_8774.MP4"></div>
+          <p class="caption">Lorem Ipsum...</p>
+        </article>
+      </section>
+
+      <!-- second row of small thumbnails -->
+      <section class="grid-row grid-row-bottom">
+        <article class="card small">
+          <div class="frame-grid" data-video="assets/IMG_8775.MP4"></div>
+          <p class="caption">Lorem Ipsum...</p>
+        </article>
+        <article class="card small">
+          <div class="frame-grid" data-video="assets/IMG_8776.MP4"></div>
+          <p class="caption">Lorem Ipsum...</p>
+        </article>
+      </section>
+    </main>
 
     <!-- Floating Add button (remains in mini-site) -->
-    <button id="addBtn" title="Discover Hong Kong">+</button>
+    <button id="addBtn" title="Add memory">+</button>
     </div>
   </div>
 
@@ -120,51 +202,39 @@
           frame.classList.add('video-missing');
           frame.innerHTML = '<div class="missing-label">Video failed to load</div>';
         });
+
+        // helper to show a click overlay to start playback when autoplay blocked
+        function showPlayOverlay(frameEl, videoEl) {
+          const btn = document.createElement('button');
+          btn.className = 'video-play-overlay';
+          btn.innerText = 'Play';
+          btn.addEventListener('click', () => {
+            videoEl.muted = false; // let user unmute if desired
+            videoEl.play().catch(()=>{});
+            btn.remove();
+          });
+          frameEl.appendChild(btn);
         }
+      });
+    })();
   </script>
 
-  <!-- p5.js sketch for orb -->
-  <script src="sketch.js"></script>
+  <!-- placeholder for your p5/sketch.js — add later -->
+  <script src="sketch.js" defer></script>
   
+  <!-- More memories: randomize the background player source -->
   <script>
     (function () {
       const moreBtn = document.getElementById('discoverBtn');
       const player = document.getElementById('mainPlayer');
       const status = document.getElementById('videoStatus');
-      
-      // Dynamically build list of MP4 files by scanning frame-grid elements with data-video attribute
-      // plus the hero video, to ensure all videos in the mini-site are included
-      let sources = [];
-      
-      // Add hero video first
-      const heroVid = document.getElementById('heroVideo');
-      if (heroVid && heroVid.querySelector('source')) {
-        sources.push(heroVid.querySelector('source').src);
-      }
-      
-      // Add all videos from data-video attributes in frame-grid elements
-      document.querySelectorAll('.frame-grid[data-video]').forEach(frame => {
-        const src = frame.getAttribute('data-video');
-        if (src && !sources.includes(src)) {
-          sources.push(src);
-        }
-      });
-      
-      // Fallback: if no videos found, use original hardcoded list
-      if (sources.length === 0) {
-        sources = [
-          'assets/IMG_8770.MP4',
-          'assets/IMG_5619.MP4',
-          'assets/IMG_6424.MP4',
-          'assets/IMG_8991.MP4',          
-          'assets/IMG_8910.MP4',
-          'assets/IMG_8805.MP4',
-          'assets/IMG_7414.MP4',
-          'assets/IMG_2723.MP4',
-          'assets/IMG_5193.MP4',
-
-        ];
-      }
+      // explicit list of available MP4s in the `assets/` folder
+      const sources = [
+        'assets/IMG_8770.MP4',
+        'assets/IMG_5619.MP4',
+        'assets/IMG_6424.MP4',
+        'assets/IMG_7113.MP4'
+      ];
 
       let currentIndex = 0;
 
@@ -249,7 +319,7 @@
           if (status) status.textContent = 'Video failed to load';
         });
       }
-    })()
+    })();
   </script>
 </body>
 
