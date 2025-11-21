@@ -1,88 +1,103 @@
-/* Basic reset */
-* { box-sizing: border-box; margin: 0; padding: 0; }
-html,body { width: 100%; height: 100%; overflow: hidden; }
-
-/* Page background + base font */
-body {
-  font-family: "Helvetica Neue", "Apple Garamond", "Playfair Display", "sans-serif";
-  font-size: 15px; /* slightly smaller sentence size */
+/* ===== BASIC RESET ===== */
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+html, body {
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  font-family: "Helvetica Neue", "Apple Garamond", "Playfair Display", serif;
+  font-size: 15px;
   color: #222;
-  -webkit-font-smoothing:antialiased;
-  -moz-osx-font-smoothing:grayscale;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  background: #000;
 }
 
-/* Page wrapper to center content and limit width */
+/* ===== PAGE WRAPPER ===== */
 .page {
   max-width: 900px;
   margin: 0 auto;
   position: relative;
+  padding-top: 96px; /* space for topbar */
   padding-bottom: 80px; /* space for footer */
 }
 
-
-.topbar .left {
-  cursor: pointer; /* make top-left text indicate it is clickable */
-}
-
-.topbar .top-link, .topbar a.top-link { color: #fff9f9; text-decoration: none; padding: 12px 18px; border-radius: 12px; display: inline-block; font-weight: 500; }
-.topbar .top-link { text-shadow: none; }
-
-/* Wrapper for title image and subtitle */
-#title-wrap {
+/* ===== TOPBAR ===== */
+.topbar {
   position: fixed;
+  top: 20px;
   left: 50%;
-  top: 24px;
   transform: translateX(-50%);
-  z-index: 22;
-  pointer-events: none;
-  text-align: center;
+  width: calc(100% - 56px);
+  max-width: 900px;
   display: flex;
-  flex-direction: column;
+  justify-content: space-between;
   align-items: center;
-  gap: 0;
+  padding: 14px 32px;
+  z-index: 12;
+  background: transparent;
+  font-size: 12px;
+  letter-spacing: 0.6px;
 }
-
-/* Title overlay in the center top */
-#title-overlay {
-  position: relative;
-  z-index: 22;
-  pointer-events: none;
-  max-width: 340px;
-  width: calc(100% - 120px);
-  height: auto;
-  display: block;
-}
-
-/* Subtitle positioned directly under the title image */
-.overlay-subtitle {
-  position: relative;
-  margin-top: 8px;
-  color: #ffffff;
-  font-size: 14px;
-  line-height: 1.4;
-  opacity: 1;
-  pointer-events: none;
+.topbar .top-link {
+  color: #fff;
   text-decoration: none;
-  display: block;
-  max-width: 680px;
-  width: calc(100%);
+  padding: 12px 18px;
+  border-radius: 12px;
+  display: inline-block;
+  font-weight: 500;
+  transition: background 150ms ease, transform 120ms ease;
+}
+.topbar .top-link:hover,
+.topbar .top-link:focus {
+  background: rgba(255,255,255,0.9);
+  transform: translateY(-2px);
+}
+.topbar .top-link.active {
+  background: #000;
+  color: #fff;
 }
 
-#moreMemoriesBtn, .control-btn {
-  background: #fff;
-  color: #000;
-  border: none;
-  padding: 18px 28px;
-  border-radius: 16px;
-  font-size: 18px;
-  font-weight: 700;
-  cursor: pointer;
+/* ===== FOOTER ===== */
+.site-footer {
+  position: fixed;
+  bottom: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: calc(100% - 56px);
+  max-width: 900px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 32px;
+  z-index: 12;
+  color: #fff;
+  font-size: 12px;
+  background: transparent;
+}
+.site-footer .bottom-link {
+  color: #fff;
+  text-decoration: none;
+  padding: 12px 18px;
+  border-radius: 12px;
+  display: inline-block;
+  font-weight: 500;
+  transition: background 150ms ease, transform 120ms ease;
+}
+.site-footer .bottom-link:hover,
+.site-footer .bottom-link:focus {
+  background: rgba(255,255,255,0.9);
+  transform: translateY(-2px);
+}
+.site-footer .bottom-link.active {
+  background: #000;
+  color: #fff;
 }
 
-/* remove any text effects site-wide for topbar/nav */
-.topbar .top-link, .control-btn { text-shadow: none; }
-
-/* Fullscreen player styles */
+/* ===== FULLSCREEN VIDEO PLAYER ===== */
 #fullscreen-player {
   position: fixed;
   inset: 0;
@@ -90,9 +105,9 @@ body {
   height: 100vh;
   background: #000;
   display: flex;
-  align-items: stretch;
+  align-items: center;
   justify-content: center;
-  z-index: 1; /* behind canvas (orb) and mini-site */
+  z-index: 1;
 }
 #fullscreen-player video#mainPlayer {
   width: 100%;
@@ -101,172 +116,78 @@ body {
   display: block;
 }
 
+/* ===== PLAYER CONTROLS ===== */
 .player-controls {
   position: absolute;
-  left: 0;
-  right: 0;
-  bottom: 20px; /* raised slightly above footer */
+  bottom: 20px;
+  left: 50%;
+  transform: translateX(-50%);
   display: flex;
   gap: 10px;
   align-items: center;
-  z-index: 140; /* ensure it's above overlays */
-  padding: 6px; /* larger click area around buttons */
   justify-content: center;
+  z-index: 20;
 }
-.source-btn { padding: 8px 12px; border-radius: 4px; border: none; background: rgba(255,255,255,0.9); cursor: pointer; }
-.source-btn.active { background: rgba(40,40,40,0.9); color: #fff; }
-.control-btn { padding: 8px 12px; border-radius: 4px; border: none; background: rgba(255,255,255,0.9); cursor: pointer; }
-
-/* top smallbar */
-.topbar {
-  display:flex;
-  justify-content:space-between;
-  align-items:center;
-  padding: 3px 0;
-  color: #999;
-  font-size: 12px;
-  letter-spacing: 0.6px;
-}
-.topbar .center { text-align:center; flex:1; }
-
-/* big title */
-.site-header {
-  text-align:center;
-  padding: 10px 10px 30px;
+/* Enlarged Discover button */
+.discover-btn {
+  width: 300px;   /* adjust size to match title visually */
+  height: 100px;
+  border: none;
+  background: transparent;
+  cursor: pointer;
 }
 
-/* Title: two fonts on one line */
-.site-header { text-align: center; padding: 10px 10px 18px; margin-top: 80px; margin-bottom: 90px; }
-.site-title {
-  font-size: 56px;
-  line-height: 1;
-  letter-spacing: 1px;
-  display: inline-block;
-  white-space: nowrap;
-}
-
-/* City: Apple Garamond local if available, otherwise Garamond/fallback */
-.title-City {
-  font-family: "Apple Garamond", "Garamond", serif;
-  font-weight: 750; /* make Apple Garamond title bold */
-  font-style: normal;
-  margin-right: 8px; /* smaller space between 'City in' and 'Fragments' */
-  color: #1c1a16;
-  display: inline-block;
-}
-
-/* Fragments: Playfair Display (Google font) in italic */
-.title-fragments {
-  font-family: "Playfair Display", serif;
-  font-weight: 700;
-  font-style: italic;
-  color: #1a1818;
-  display: inline-block;
-}
-
-/* subtitle */
-.site-header .subtitle {
-  margin-top: 8px;
-  font-size: 16px; /* reduced subtitle sentence size */
-  color: #444;
-  opacity: 0.9;
-  display: block;
-}
-.site-header h1 {
-  font-weight:700;
-  font-size: 64px;
-  letter-spacing: 0px;
-  line-height: 0.3px;
-  color: #2b2b2b;
-}
-
-/* canvas container sits absolute behind content (z below overlays) */
-#canvas-container {
-  position: fixed;
-  left: 50%;
-  transform: translateX(-50%);
-  top: 0;
-  width: 100%;
-  height: 100vh;
-  z-index: 3; /* bring canvas above video/content so the orb is visible over the mp4 */
-  pointer-events: none; /* allow mouse events to pass through */
-}
-
-/* content area sits above canvas */
-.content {
-  position: relative;
-  z-index: 2;
-  padding: 10px 18px 40px;
-}
-
-/* when a frame-grid has a dynamically inserted video */
-.frame-grid.has-video {
-  padding: 0; /* remove placeholder padding so video fills the frame */
-}
-.frame-grid.has-video::before { display: none; }
-.frame-grid.has-video video {
+.discover-btn img {
   width: 100%;
   height: 100%;
-  object-fit: cover;
-  display: block;
-  border-radius: 2px;
+  object-fit: contain;
 }
 
-/* missing video fallback */
-.frame-grid.video-missing {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background: #f0f0f0;
-  color: #666;
-  font-size: 13px;
-}
-.frame-grid .missing-label { text-align: center; line-height:1.2; }
-
-/* simple play overlay when autoplay is blocked */
-.video-play-overlay {
-  position: absolute;
-  left: 50%;
-  top: 50%;
-  transform: translate(-50%, -50%);
-  padding: 8px 14px;
-  background: rgba(0,0,0,0.6);
-  color: #fff;
-  border: none;
-  border-radius: 4px;
-  cursor: pointer;
-  z-index: 5;
+.discover-btn:hover img {
+  transform: translateY(-4px);
+  box-shadow: 0 10px 24px rgba(0,0,0,0.18);
 }
 
-
-.caption {
-  margin-top: 12px;
-  color: #9b9b9b;
-  font-size: 12px; /* slightly smaller caption text */
-  text-align:center;
+.discover-btn:focus {
+  outline: 2px solid rgba(255,255,255,0.9);
+  outline-offset: 6px;
 }
 
-/* footer */
-.site-footer {
+/* ===== TITLE & SUBTITLE ===== */
+#title-wrap {
   position: fixed;
-  bottom: 8px;
+  top: 24px;
   left: 50%;
   transform: translateX(-50%);
+  z-index: 22;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0;
+  pointer-events: none;
+}
+#title-overlay {
+  max-width: 340px;
+  width: calc(100% - 120px);
+  height: auto;
+}
+.overlay-subtitle {
+  margin-top: 8px;
+  color: #fff;
+  font-size: 14px;
+  line-height: 1.4;
+  max-width: 680px;
   width: 100%;
-  max-width: 900px;
-  display:flex;
-  justify-content:space-between;
-  align-items:center;
-  color:#999;
-  font-size:12px;
-  z-index: 2;
+  pointer-events: none;
+  text-decoration: none;
 }
 
-/* floating add button */
+/* ===== FLOATING ADD BUTTON ===== */
 #addBtn {
   position: fixed;
-  right: 28px;
   bottom: 28px;
+  right: 28px;
   width: 52px;
   height: 52px;
   border-radius: 50%;
@@ -275,89 +196,75 @@ body {
   font-size: 28px;
   color: #333;
   cursor: pointer;
-  z-index: 4;
+  z-index: 160;
   display: flex;
-  align-items:center;
-  justify-content:center;
+  align-items: center;
+  justify-content: center;
   box-shadow: 0 6px 20px rgba(0,0,0,0.06);
 }
 
-/* responsive */
+/* ===== CANVAS ORB ===== */
+#canvas-container {
+  position: fixed;
+  top: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 100%;
+  height: 100vh;
+  z-index: 3;
+  pointer-events: none;
+}
+
+/* ===== FRAME GRID VIDEO ===== */
+.frame-grid.has-video {
+  padding: 0;
+}
+.frame-grid.has-video::before { display: none; }
+.frame-grid.has-video video {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 2px;
+  display: block;
+}
+.frame-grid.video-missing {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: #f0f0f0;
+  color: #666;
+  font-size: 13px;
+}
+.frame-grid .missing-label {
+  text-align: center;
+  line-height: 1.2;
+}
+
+/* ===== VIDEO PLAY OVERLAY ===== */
+.video-play-overlay {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  padding: 8px 14px;
+  background: rgba(0,0,0,0.6);
+  color: #fff;
+  border-radius: 4px;
+  border: none;
+  cursor: pointer;
+  z-index: 5;
+}
+
+/* ===== RESPONSIVE ===== */
 @media (max-width: 880px) {
-  .page { padding: 0 16px; }
   .site-header h1 { font-size: 34px; }
-  /* reduce title spacing on small screens so it wraps nicely */
-  .title-City { margin-right: 4px; }
-  /* smaller spacing under header on small screens */
-  .site-header { margin-bottom: 40px; margin-top: 20px; }
-  .grid-row-top { grid-template-columns: 1fr; }
-  .grid-row-mid { grid-template-columns: 1fr; }
-  .card.large .frame-grid, .card.medium-left .frame-grid { width: 100%; height: 380px; }
-  .card.medium .frame-grid, .card.small .frame-grid { width: 100%; height: 260px; }
-  .card.wide .frame-grid { width: 100%; height: 200px; }
+  #title-overlay { max-width: 240px; }
+  .discover-btn img { width: 110px; }
+  .page { padding: 20px 16px 40px; }
+  .card.large .frame-grid,
+  .card.medium-left .frame-grid { height: 380px; }
+  .card.medium .frame-grid,
+  .card.small .frame-grid { height: 260px; }
+  .card.wide .frame-grid { height: 200px; }
   .site-footer { font-size: 11px; padding: 0 8px; }
 }
-
-/* Pin the small topbar to the very top of the viewport (full-width area centered to page width) */
-.topbar {
-  position: fixed;
-  left: 50%;
-  transform: translateX(-50%);
-  top: 20px; /* more space from top */
-  width: calc(100% - 56px);
-  max-width: 900px;
-  z-index: 12; /* above player and canvas */
-  background: transparent;
-  padding: 14px 32px; /* increased padding */
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
-
-/* push page content down so topbar doesn't overlap the header */
-.page { padding-top: 96px; }
-
-/* Bottom navigation bar styled like the topbar */
-.site-footer {
-  position: fixed;
-  left: 50%;
-  transform: translateX(-50%);
-  bottom: 20px; /* more space from bottom */
-  width: calc(100% - 56px);
-  max-width: 900px;
-  z-index: 12;
-  background: transparent;
-  padding: 10px 32px; /* match topbar spacing */
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
-
-.site-footer .bottom-link { color: #ffffff; text-decoration: none; padding: 12px 18px; border-radius: 12px; display: inline-block; font-weight: 500; }
-
-/* Hover and active states for top and bottom nav buttons */
-.topbar .top-link, .site-footer .bottom-link { transition: background 150ms ease, transform 120ms ease; }
-.topbar .top-link:hover, .topbar .top-link:focus, .site-footer .bottom-link:hover, .site-footer .bottom-link:focus {
-  background: #f2f2f2;
-  cursor: pointer;
-  transform: translateY(-2px);
-}
-.topbar .top-link.active, .site-footer .bottom-link.active {
-  background: #000;
-  color: #fff;
-}
-
-/* Make the More memories button larger and easier to click */
-#moreMemoriesBtn { display: inline-block; background: rgba(255,255,255,0.95); color: #000; padding: 14px 22px; border-radius: 16px; font-weight:700; text-decoration:none; cursor:pointer; transition: transform 120ms ease, box-shadow 120ms ease; }
-#moreMemoriesBtn:hover, #moreMemoriesBtn:focus { transform: translateY(-3px); box-shadow: 0 6px 18px rgba(0,0,0,0.12); }
-#moreMemoriesBtn:active { transform: translateY(0); }
-/* image control used for Discover Hong Kong */
-.player-controls { left: 0; right: 0; transform: none; justify-content: center; }
-
-/* discover button: button that contains the image */
-.discover-btn { background: transparent; border: none; padding: 6px; cursor: pointer; border-radius: 12px; display: inline-flex; align-items: center; justify-content: center; }
-.discover-btn img { display: block; max-width: 340px; width: calc(100% - 120px); height: auto; border-radius: 8px; box-shadow: 0 6px 18px rgba(0,0,0,0.08); transition: transform 120ms ease, box-shadow 120ms ease; }
-.discover-btn img { display: block; max-width: 340px; width: auto; height: auto; border-radius: 8px; box-shadow: 0 6px 18px rgba(0,0,0,0.08); transition: transform 120ms ease, box-shadow 120ms ease; }
-.discover-btn { z-index: 150; pointer-events: auto; }
-.discover-btn:focus { outline: 2px solid rgba(255,255,255,0.9); outline-offset: 6px; }
-.discover-btn:hover img { transform: translateY(-3px); }
