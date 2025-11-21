@@ -11,16 +11,14 @@
 </head>
 
 <body>
-  <!-- Top small bar -->
   <div class="topbar">
     <a class="top-link left" href="PROJECTINTRO.html">PROJECT INTRO</a>
     <a class="top-link right" href="people.html">PEOPLE</a>
   </div>
 
-  <!-- Fullscreen video player -->
   <div id="fullscreen-player">
     <video id="mainPlayer" autoplay muted playsinline loop preload="auto">
-      <source src="assets/IMG_8991.MP4" type="video/mp4">
+      <source src="assets/IMG_2723.MP4" type="video/mp4">
     </video>
     <div class="player-controls">
       <button id="discoverBtn" class="discover-btn" aria-label="Discover Hong Kong">
@@ -43,37 +41,32 @@
   <!-- Floating Add button -->
   <button id="addBtn" title="Discover Hong Kong">+</button>
 
-  <!-- Footer -->
   <footer class="site-footer">
     <a class="bottom-link left" href="documentation.html">DOCUMENTATION</a>
     <div class="center small-caption"></div>
     <a class="bottom-link right" href="follow.html">FOLLOW</a>
   </footer>
 
-  <!-- Scripts -->
   <script>
-    // --- Add button placeholder ---
     document.getElementById('addBtn').addEventListener('click', () => {
       alert('Add page / upload UI will open here.');
     });
 
-    // --- Video management with preloading into memory ---
     (function () {
       const player = document.getElementById('mainPlayer');
       const discoverBtn = document.getElementById('discoverBtn');
 
-      // List of video file paths
-      const sources = [
-        'assets/IMG_8991.MP4',
-        'assets/IMG_8910.MP4',
-        'assets/IMG_8805.MP4',
-        'assets/IMG_7414.MP4',
+      const sources = [        
         'assets/IMG_2723.MP4',
-        'assets/IMG_6021.MP4',
-        'assets/IMG_5619.MP4',
         'assets/IMG_5193.MP4',
+        'assets/IMG_5619.MP4',
+        'assets/IMG_6021.MP4',
+        'assets/IMG_7414.MP4',
         'assets/IMG_8758.MP4',
         'assets/IMG_8766.MP4',
+        'assets/IMG_8805.MP4',
+        'assets/IMG_8910.MP4',
+        'assets/IMG_8991.MP4',
         'assets/IMG_9319.MP4',
         'assets/IMG_9639.MP4'
       ];
@@ -81,7 +74,6 @@
       let currentIndex = 0;
       const preloadedBlobs = [];
 
-      // --- Preload all videos into memory as Blob URLs ---
       async function preloadAllVideos() {
         for (const src of sources) {
           try {
@@ -97,7 +89,6 @@
 
       preloadAllVideos();
 
-      // --- Function to switch videos reliably ---
       function switchVideo(index) {
         if (preloadedBlobs.length === 0) return; // still loading
         currentIndex = (index + preloadedBlobs.length) % preloadedBlobs.length;
@@ -108,14 +99,12 @@
         player.src = src;
         player.load();
 
-        // play when ready
         player.addEventListener('canplay', function playHandler() {
           player.play().catch(() => showPlayOverlay());
           player.removeEventListener('canplay', playHandler);
         });
       }
 
-      // --- Overlay button fallback if autoplay blocked ---
       function showPlayOverlay() {
         if (document.getElementById('playOverlay')) return;
         const btn = document.createElement('button');
@@ -136,7 +125,6 @@
         document.body.appendChild(btn);
       }
 
-      // --- Discover button ---
       if (discoverBtn) {
         discoverBtn.addEventListener('click', (e) => {
           e.preventDefault();
@@ -151,7 +139,6 @@
         });
       }
 
-      // --- Responsive fullscreen ---
       function fitVideo() {
         if (!player) return;
         player.style.position = 'absolute';
@@ -176,7 +163,6 @@
     })();
   </script>
 
-  <!-- p5.js sketch -->
   <script src="sketch.js"></script>
 </body>
 
