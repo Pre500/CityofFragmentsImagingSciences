@@ -112,7 +112,6 @@
       display: flex;
       justify-content: space-between;
       padding: 1em 2em;
-      background: rgba(0, 0, 0, 0.3);
       color: #fff;
       font-size: 0.9rem;
       z-index: 1000;
@@ -173,7 +172,7 @@
   </footer>
 
   <script>
-    // --- Add button placeholder ---
+    // --- Add button ---
     document.getElementById('addBtn').addEventListener('click', () => {
       alert('Add page / upload UI will open here.');
     });
@@ -267,8 +266,31 @@
     discoverBtn.addEventListener('click', () => switchVideo(currentIndex + 1));
   </script>
 
-  <!-- p5.js sketch -->
-  <script src="sketch.js"></script>
+  <!-- p5.js sketch for mouse-following orb -->
+  <script>
+    let orb;
+
+    function setup() {
+      let canvas = createCanvas(windowWidth, windowHeight);
+      canvas.parent('canvas-container');
+      orb = { x: width / 2, y: height / 2, size: 50 };
+      noStroke();
+      fill(255, 255, 255, 150);
+    }
+
+    function draw() {
+      clear(); // transparent background
+      // Smooth follow
+      orb.x += (mouseX - orb.x) * 0.1;
+      orb.y += (mouseY - orb.y) * 0.1;
+      ellipse(orb.x, orb.y, orb.size);
+    }
+
+    function windowResized() {
+      resizeCanvas(windowWidth, windowHeight);
+    }
+  </script>
+
 </body>
 
 </html>
