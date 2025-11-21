@@ -31,8 +31,6 @@
       <button id="discoverBtn" class="discover-btn" aria-label="Discover Hong Kong">
         <img src="assets/Discover Hong Kong.png" alt="Discover Hong Kong" />
       </button>
-    </div>
-    <div id="videoStatus" aria-hidden="true"></div>
   </div>
 
   <!-- Canvas container for p5.js orb (full-screen overlay) -->
@@ -117,7 +115,7 @@
 
   <!-- Initialize videos inside frame-grid elements that have a `data-video` attribute -->
   <script>
-    (function () {
+    (async function () {
       // find all frame-grid elements with a data-video attribute
       const frames = document.querySelectorAll('.frame-grid[data-video]');
       frames.forEach(async (frame) => {
@@ -208,7 +206,7 @@
   <!-- p5 sketch is loaded at the end of the document -->
   
   <script>
-    (function () {
+    (async function () {
       const moreBtn = document.getElementById('discoverBtn');
       const player = document.getElementById('mainPlayer');
       const status = document.getElementById('videoStatus');
@@ -238,15 +236,31 @@
           'assets/IMG_8770.MP4',
           'assets/IMG_5619.MP4',
           'assets/IMG_6424.MP4',
-          'assets/IMG_8991.MP4',          
+          'assets/IMG_8991.MP4',
           'assets/IMG_8910.MP4',
           'assets/IMG_8805.MP4',
           'assets/IMG_7414.MP4',
           'assets/IMG_2723.MP4',
           'assets/IMG_5193.MP4',
-
-
         ];
+
+        // validate that each fallback source actually exists (HEAD request)
+        async function validateSources(list) {
+          const validated = [];
+          await Promise.all(list.map(async (src) => {
+            try {
+              const resp = await fetch(src, { method: 'HEAD' });
+              if (resp && resp.ok) validated.push(src);
+              else console.warn('Video unavailable (will skip):', src, resp && resp.status);
+            } catch (e) {
+              console.warn('Error checking video (will skip):', src, e);
+            }
+          }));
+          return validated;
+        }
+
+        sources = await validateSources(sources);
+        if (sources.length === 0) console.warn('No valid fallback videos found.');
       }
 
 
