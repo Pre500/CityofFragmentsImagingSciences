@@ -8,6 +8,22 @@
   <link rel="stylesheet" href="style.css" />
   <!-- p5.js library -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.9.0/p5.min.js"></script>
+  <style>
+    /* Enlarged Discover button */
+    .discover-btn {
+      width: 120px;
+      height: 120px;
+      border: none;
+      background: transparent;
+      cursor: pointer;
+    }
+
+    .discover-btn img {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+    }
+  </style>
 </head>
 
 <body>
@@ -50,19 +66,17 @@
     <a class="bottom-link right" href="follow.html">FOLLOW</a>
   </footer>
 
-  <!-- Scripts -->
   <script>
     // --- Add button placeholder ---
     document.getElementById('addBtn').addEventListener('click', () => {
       alert('Add page / upload UI will open here.');
     });
 
-    // --- Video management with preloading into memory ---
+    // --- Video management with robust preloading ---
     (function () {
       const player = document.getElementById('mainPlayer');
       const discoverBtn = document.getElementById('discoverBtn');
 
-      // List of video file paths
       const sources = [
         'assets/IMG_8991.MP4',
         'assets/IMG_8910.MP4',
@@ -86,12 +100,17 @@
         for (const src of sources) {
           try {
             const response = await fetch(src);
+            if (!response.ok) throw new Error('HTTP error ' + response.status);
             const blob = await response.blob();
             const blobUrl = URL.createObjectURL(blob);
             preloadedBlobs.push(blobUrl);
+            console.log('Preloaded:', src);
           } catch (e) {
             console.warn('Failed to preload', src, e);
           }
+        }
+        if (preloadedBlobs.length === 0) {
+          console.error('No videos could be preloaded!');
         }
       }
 
@@ -99,7 +118,10 @@
 
       // --- Function to switch videos reliably ---
       function switchVideo(index) {
-        if (preloadedBlobs.length === 0) return; // still loading
+        if (preloadedBlobs.length === 0) {
+          console.warn('Videos not ready yet.');
+          return;
+        }
         currentIndex = (index + preloadedBlobs.length) % preloadedBlobs.length;
         const src = preloadedBlobs[currentIndex];
 
@@ -108,7 +130,6 @@
         player.src = src;
         player.load();
 
-        // play when ready
         player.addEventListener('canplay', function playHandler() {
           player.play().catch(() => showPlayOverlay());
           player.removeEventListener('canplay', playHandler);
@@ -144,7 +165,7 @@
         });
 
         discoverBtn.addEventListener('keydown', (e) => {
-          if (e.key === 'Enter' || e.key === ' ' || e.key === 'Spacebar') {
+          if (['Enter', ' ', 'Spacebar'].includes(e.key)) {
             e.preventDefault();
             discoverBtn.click();
           }
@@ -173,6 +194,7 @@
           clearInterval(initInterval);
         }
       }, 100);
+
     })();
   </script>
 
@@ -181,4 +203,3 @@
 </body>
 
 </html>
-
