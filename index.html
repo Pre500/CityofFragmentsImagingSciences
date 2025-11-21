@@ -6,22 +6,132 @@
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title>City of Fragments</title>
   <link rel="stylesheet" href="style.css" />
+
   <!-- p5.js library -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.9.0/p5.min.js"></script>
+
   <style>
-    /* Enlarged Discover button */
+    /* --- Top bar links --- */
+    .topbar {
+      position: absolute;
+      top: 0;
+      width: 100%;
+      display: flex;
+      justify-content: space-between;
+      padding: 1em 2em;
+      z-index: 1000;
+    }
+
+    .top-link {
+      text-decoration: none;
+      color: #fff;
+      font-weight: bold;
+      font-size: 0.9rem;
+    }
+
+    /* --- Fullscreen video player --- */
+    #fullscreen-player {
+      position: relative;
+      width: 100%;
+      height: 100vh;
+      overflow: hidden;
+    }
+
+    #mainPlayer {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      position: absolute;
+      left: 50%;
+      top: 50%;
+      transform: translate(-50%, -50%);
+    }
+
+    /* --- Discover button matching main title --- */
     .discover-btn {
-      width: 120px;
-      height: 120px;
+      width: 300px; /* adjust to match title visually */
+      height: 100px;
       border: none;
       background: transparent;
       cursor: pointer;
+      position: absolute;
+      bottom: 5%;
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 1000;
     }
 
     .discover-btn img {
       width: 100%;
       height: 100%;
       object-fit: contain;
+    }
+
+    /* --- Title overlay --- */
+    #title-wrap {
+      position: absolute;
+      top: 10%;
+      left: 50%;
+      transform: translateX(-50%);
+      text-align: center;
+      z-index: 1000;
+    }
+
+    #title-overlay {
+      width: 300px;
+      height: auto;
+    }
+
+    .overlay-subtitle {
+      display: block;
+      margin-top: 0.5em;
+      color: #fff;
+      font-size: 1rem;
+    }
+
+    /* --- Floating Add button --- */
+    #addBtn {
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      width: 50px;
+      height: 50px;
+      border-radius: 50%;
+      border: none;
+      background: rgba(255, 255, 255, 0.8);
+      font-size: 2rem;
+      cursor: pointer;
+      z-index: 1000;
+    }
+
+    /* --- Footer --- */
+    .site-footer {
+      position: absolute;
+      bottom: 0;
+      width: 100%;
+      display: flex;
+      justify-content: space-between;
+      padding: 1em 2em;
+      background: rgba(0, 0, 0, 0.3);
+      color: #fff;
+      font-size: 0.9rem;
+      z-index: 1000;
+    }
+
+    .bottom-link {
+      color: #fff;
+      text-decoration: none;
+    }
+
+    /* --- Canvas container --- */
+    #canvas-container {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      z-index: 500;
     }
   </style>
 </head>
@@ -35,14 +145,10 @@
 
   <!-- Fullscreen video player -->
   <div id="fullscreen-player">
-    <video id="mainPlayer" autoplay muted playsinline loop preload="auto">
-      <source src="assets/IMG_8991.MP4" type="video/mp4">
-    </video>
-    <div class="player-controls">
-      <button id="discoverBtn" class="discover-btn" aria-label="Discover Hong Kong">
-        <img src="assets/Discover Hong Kong.png" alt="Discover Hong Kong" />
-      </button>
-    </div>
+    <video id="mainPlayer" autoplay muted playsinline loop preload="auto"></video>
+    <button id="discoverBtn" class="discover-btn" aria-label="Discover Hong Kong">
+      <img src="assets/Discover Hong Kong.png" alt="Discover Hong Kong" />
+    </button>
   </div>
 
   <!-- Canvas container for p5.js orb -->
@@ -57,7 +163,7 @@
   </div>
 
   <!-- Floating Add button -->
-  <button id="addBtn" title="Discover Hong Kong">+</button>
+  <button id="addBtn" title="Add Content">+</button>
 
   <!-- Footer -->
   <footer class="site-footer">
@@ -72,159 +178,93 @@
       alert('Add page / upload UI will open here.');
     });
 
-    // --- Video management with robust preloading ---
-    (function () {
-      const player = document.getElementById('mainPlayer');
-      const discoverBtn = document.getElementById('discoverBtn');
+    // --- Video management ---
+    const mainPlayer = document.getElementById('mainPlayer');
+    const discoverBtn = document.getElementById('discoverBtn');
 
-     const mainPlayer = document.getElementById('mainPlayer');
-const discoverBtn = document.getElementById('discoverBtn');
-let videoSources = [
-  'assets/IMG_8991.MP4',
-  'assets/IMG_8910.MP4',
-  'assets/IMG_8805.MP4',
-  'assets/IMG_7414.MP4',
-  'assets/IMG_2723.MP4',
-  'assets/IMG_6021.MP4',
-  'assets/IMG_5619.MP4',
-  'assets/IMG_5193.MP4',
-  'assets/IMG_8758.MP4',
-  'assets/IMG_8766.mp4',
-  'assets/IMG_9319.mp4',
-  'assets/IMG_9639.mp4'
-];
-let currentIndex = 0;
+    let videoSources = [
+      'assets/IMG_8991.MP4',
+      'assets/IMG_8910.MP4',
+      'assets/IMG_8805.MP4',
+      'assets/IMG_7414.MP4',
+      'assets/IMG_2723.MP4',
+      'assets/IMG_6021.MP4',
+      'assets/IMG_5619.MP4',
+      'assets/IMG_5193.MP4',
+      'assets/IMG_8758.MP4',
+      'assets/IMG_8766.MP4',
+      'assets/IMG_9319.MP4',
+      'assets/IMG_9639.MP4'
+    ];
 
-function loadVideo(index) {
-  currentIndex = index % videoSources.length;
-  mainPlayer.src = videoSources[currentIndex];
-  mainPlayer.load();
-  mainPlayer.muted = true;
-  mainPlayer.style.opacity = 0;
-  mainPlayer.addEventListener('canplaythrough', function fadeIn() {
-    mainPlayer.style.transition = 'opacity 0.5s ease-in';
-    mainPlayer.style.opacity = 1;
-    mainPlayer.play().catch(() => {
-      console.warn('Autoplay prevented, user must click play.');
-    });
-    mainPlayer.removeEventListener('canplaythrough', fadeIn);
-  });
-}
+    let preloadedBlobs = [];
+    let currentIndex = 0;
 
-if (discoverBtn) {
-  discoverBtn.addEventListener('click', () => {
-    loadVideo(currentIndex + 1);
-  });
-}
-
-// Initialize first video
-loadVideo(0);
-
-
-      let currentIndex = 0;
-      const preloadedBlobs = [];
-
-      // --- Preload all videos into memory as Blob URLs ---
-      async function preloadAllVideos() {
-        for (const src of sources) {
-          try {
-            const response = await fetch(src);
-            if (!response.ok) throw new Error('HTTP error ' + response.status);
-            const blob = await response.blob();
-            const blobUrl = URL.createObjectURL(blob);
-            preloadedBlobs.push(blobUrl);
-            console.log('Preloaded:', src);
-          } catch (e) {
-            console.warn('Failed to preload', src, e);
-          }
-        }
-        if (preloadedBlobs.length === 0) {
-          console.error('No videos could be preloaded!');
+    async function preloadVideos() {
+      for (const src of videoSources) {
+        try {
+          const response = await fetch(src);
+          if (!response.ok) throw new Error('HTTP error ' + response.status);
+          const blob = await response.blob();
+          preloadedBlobs.push(URL.createObjectURL(blob));
+        } catch (e) {
+          console.warn('Failed to preload:', src, e);
         }
       }
+    }
 
-      preloadAllVideos();
+    function switchVideo(index) {
+      if (preloadedBlobs.length === 0) return;
 
-      // --- Function to switch videos reliably ---
-      function switchVideo(index) {
-        if (preloadedBlobs.length === 0) {
-          console.warn('Videos not ready yet.');
-          return;
-        }
-        currentIndex = (index + preloadedBlobs.length) % preloadedBlobs.length;
-        const src = preloadedBlobs[currentIndex];
+      currentIndex = (index + preloadedBlobs.length) % preloadedBlobs.length;
+      mainPlayer.src = preloadedBlobs[currentIndex];
+      mainPlayer.load();
+      mainPlayer.muted = true;
+      mainPlayer.play().catch(() => showPlayOverlay());
+    }
 
-        player.pause();
-        player.muted = true;
-        player.src = src;
-        player.load();
+    function showPlayOverlay() {
+      if (document.getElementById('playOverlay')) return;
+      const btn = document.createElement('button');
+      btn.id = 'playOverlay';
+      btn.innerText = 'Click to Play';
+      Object.assign(btn.style, {
+        position: 'absolute',
+        top: '50%',
+        left: '50%',
+        transform: 'translate(-50%, -50%)',
+        padding: '1em 2em',
+        zIndex: 2000,
+        fontSize: '1.2rem',
+        cursor: 'pointer'
+      });
+      btn.addEventListener('click', () => {
+        mainPlayer.play().catch(() => {});
+        btn.remove();
+      });
+      document.body.appendChild(btn);
+    }
 
-        player.addEventListener('canplay', function playHandler() {
-          player.play().catch(() => showPlayOverlay());
-          player.removeEventListener('canplay', playHandler);
-        });
-      }
+    // Fit video fullscreen
+    function fitVideo() {
+      mainPlayer.style.position = 'absolute';
+      mainPlayer.style.left = '50%';
+      mainPlayer.style.top = '50%';
+      mainPlayer.style.transform = 'translate(-50%, -50%)';
+      mainPlayer.style.width = '100%';
+      mainPlayer.style.height = '100%';
+      mainPlayer.style.objectFit = 'cover';
+    }
 
-      // --- Overlay button fallback if autoplay blocked ---
-      function showPlayOverlay() {
-        if (document.getElementById('playOverlay')) return;
-        const btn = document.createElement('button');
-        btn.id = 'playOverlay';
-        btn.innerText = 'Click to Play';
-        btn.style.position = 'absolute';
-        btn.style.top = '50%';
-        btn.style.left = '50%';
-        btn.style.transform = 'translate(-50%, -50%)';
-        btn.style.padding = '1em 2em';
-        btn.style.zIndex = 1000;
-        btn.style.fontSize = '1.2rem';
-        btn.style.cursor = 'pointer';
-        btn.addEventListener('click', () => {
-          player.play().catch(() => {});
-          btn.remove();
-        });
-        document.body.appendChild(btn);
-      }
+    window.addEventListener('resize', fitVideo);
+    mainPlayer.addEventListener('loadedmetadata', fitVideo);
+    setTimeout(fitVideo, 100);
 
-      // --- Discover button ---
-      if (discoverBtn) {
-        discoverBtn.addEventListener('click', (e) => {
-          e.preventDefault();
-          switchVideo(currentIndex + 1);
-        });
+    // Initialize
+    preloadVideos().then(() => switchVideo(0));
 
-        discoverBtn.addEventListener('keydown', (e) => {
-          if (['Enter', ' ', 'Spacebar'].includes(e.key)) {
-            e.preventDefault();
-            discoverBtn.click();
-          }
-        });
-      }
-
-      // --- Responsive fullscreen ---
-      function fitVideo() {
-        if (!player) return;
-        player.style.position = 'absolute';
-        player.style.left = '50%';
-        player.style.top = '50%';
-        player.style.transform = 'translate(-50%, -50%)';
-        player.style.width = '100%';
-        player.style.height = '100%';
-        player.style.objectFit = 'cover';
-      }
-      window.addEventListener('resize', fitVideo);
-      player.addEventListener('loadedmetadata', fitVideo);
-      setTimeout(fitVideo, 100);
-
-      // --- Initialize first video ---
-      const initInterval = setInterval(() => {
-        if (preloadedBlobs.length > 0) {
-          switchVideo(0);
-          clearInterval(initInterval);
-        }
-      }, 100);
-
-    })();
+    // Discover button click
+    discoverBtn.addEventListener('click', () => switchVideo(currentIndex + 1));
   </script>
 
   <!-- p5.js sketch -->
