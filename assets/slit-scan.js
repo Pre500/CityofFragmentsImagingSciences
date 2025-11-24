@@ -42,17 +42,45 @@
 
     // initialize sizes (if video metadata not loaded yet, wait)
     const initSize = () => {
-      const w = video.videoWidth || video.clientWidth;
-      const h = video.videoHeight || video.clientHeight;
+      // Use the displayed size (bounding rect) so the overlay always covers the visible video
+      const rect = video.getBoundingClientRect();
+      // Fallback to client sizes if rect is zero
+      const w = Math.max(1, Math.round(rect.width || video.clientWidth || 1));
+      const h = Math.max(1, Math.round(rect.height || video.clientHeight || 1));
+
+      // update canvas display size (CSS) and drawing buffer size (pixel dimensions)
       this.bufferCanvas.width = w;
       this.bufferCanvas.height = h;
       this.bufferCanvas.style.width = w + 'px';
       this.bufferCanvas.style.height = h + 'px';
+
+      // HUD canvas same size
+      this.hudCanvas.width = w;
+      this.hudCanvas.height = h;
+      this.hudCanvas.style.width = w + 'px';
+      this.hudCanvas.style.height = h + 'px';
+
+      // compute mapping from display (canvas) pixels to video intrinsic pixels
+      const vidW = video.videoWidth || video.naturalWidth || (w);
+      const vidH = video.videoHeight || video.naturalHeight || (h);
+      this.scaleX = vidW / w;
+      this.scaleY = vidH / h;
+
+      // position the scan line at the right edge of the displayed canvas
       this.currentX = w - this.scanWidth;
     };
 
+    // initialize size once metadata or layout is ready
     if (video.readyState >= 1) initSize();
     video.addEventListener('loadedmetadata', initSize);
+    // observe layout changes to keep canvases matched to displayed video
+    if (window.ResizeObserver) {
+      this._ro = new ResizeObserver(initSize);
+      this._ro.observe(video);
+      this._ro.observe(wrapper);
+    } else {
+      window.addEventListener('resize', initSize);
+    }
 
     wrapper.appendChild(this.bufferCanvas);
 
@@ -98,25 +126,30 @@
     const w = this.bufferCanvas.width;
     const h = this.bufferCanvas.height;
 
-    // if video size changed, resize canvases
-    if (v.videoWidth && (v.videoWidth !== w || v.videoHeight !== h)) {
-      this.bufferCanvas.width = v.videoWidth;
-      this.bufferCanvas.height = v.videoHeight;
-      this.hudCanvas.width = v.videoWidth;
-      this.hudCanvas.height = v.videoHeight;
-      this.currentX = (v.videoWidth || this.bufferCanvas.width) - this.scanWidth;
+    // if intrinsic video size changed, recompute scale factors
+    if (v.videoWidth && (!this.scaleX || v.videoWidth !== (this.scaleX * w))) {
+      this.scaleX = (v.videoWidth || v.naturalWidth) / (w || 1);
+      this.scaleY = (v.videoHeight || v.naturalHeight) / (h || 1);
     }
 
-    // draw the current frame under/behind buffer (we don't draw video itself here)
     // When scanning, copy a vertical slice from the video into the buffer at currentX
     if (this.scanning && v.readyState >= 2) {
-      // source x: wrap to video width if needed
-      const srcX = (this.currentX + 0 + w) % w;
+      // displayX is the horizontal position in canvas/display pixels (wrapped)
+      const displayX = ((this.currentX % w) + w) % w;
+      // map to source (intrinsic video) x using scaleX
+      const srcXVideo = Math.floor(displayX * (this.scaleX || 1));
+      const srcWVideo = Math.max(1, Math.round(this.scanWidth * (this.scaleX || 1)));
+      const destX = Math.floor(displayX);
+
       try {
-        // Efficient copy of a vertical strip from the video element
-        this.ctx.drawImage(v, srcX, 0, this.scanWidth, h, srcX, 0, this.scanWidth, h);
+        // draw the vertical slice from the video intrinsic pixels into the buffer canvas
+        this.ctx.drawImage(
+          v,
+          srcXVideo, 0, srcWVideo, v.videoHeight || (h * (this.scaleY || 1)),
+          destX, 0, this.scanWidth, h
+        );
       } catch (e) {
-        // drawImage might throw if video not from same-origin or not ready; swallow
+        // drawImage might throw for cross-origin sources or if video not ready; ignore
       }
     }
 
