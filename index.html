@@ -362,6 +362,27 @@
   </script>
 
   <!-- p5.js sketch for orb -->
+  <script src="assets/slit-scan.js"></script>
+  <script>
+    // Initialize the slit-scan on all videos (right-to-left default)
+    (function () {
+      function initSlit() {
+        if (window.SlitScan) {
+          // Attach to all <video> elements and use defaults similar to the Processing sketch
+          window.SlitScan.attachAll('video', { scanWidth: 8, dx: 2 });
+        } else {
+          console.warn('SlitScan module not loaded');
+        }
+      }
+
+      // Delay initialization slightly to allow dynamic video elements to be created
+      if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', function () { setTimeout(initSlit, 200); });
+      } else {
+        setTimeout(initSlit, 200);
+      }
+    })();
+  </script>
   <script src="sketch.js"></script>
 </body>
 
