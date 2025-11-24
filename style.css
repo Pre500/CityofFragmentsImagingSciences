@@ -157,12 +157,15 @@ body {
 /* large rectangular canvas/video area — almost screen size */
 .canvas-rect,
 .frame-grid.video-large {
-  width: calc(100% - 40px);
-  max-width: 1200px;
+  /* full-bleed responsive video area */
+  width: 100vw;
+  max-width: none;
+  left: 50%;
+  transform: translateX(-50%);
   height: 70vh; /* tall rectangle for video/animation */
-  margin: 0 auto 80px; /* significantly larger gap below the rectangle */
+  margin: 0 0 80px; /* keep space below the rectangle */
   background: #000; /* black placeholder for video/canvas */
-  border-radius: 4px;
+  border-radius: 0; /* remove rounded corners for edge-to-edge */
   overflow: hidden;
   position: relative;
 }
@@ -306,6 +309,7 @@ body {
 .topbar .top-link, .site-footer .bottom-link { transition: background 150ms ease, transform 120ms ease; }
 .topbar .top-link:hover, .topbar .top-link:focus, .site-footer .bottom-link:hover, .site-footer .bottom-link:focus {
   background: #f2f2f2;
+  color: #000; /* make hover text black */
   cursor: pointer;
   transform: translateY(-2px);
 }
