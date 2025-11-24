@@ -157,7 +157,7 @@
     const hud = this.hudCtx;
     hud.clearRect(0, 0, this.hudCanvas.width, this.hudCanvas.height);
     if (this.scanning) {
-      hud.strokeStyle = 'rgba(255,0,0,0.6)';
+      hud.strokeStyle = 'rgba(255,255,255,0.9)';
       hud.lineWidth = this.scanWidth;
       const linePos = this.currentX + Math.floor(this.scanWidth / 2);
       hud.beginPath();
