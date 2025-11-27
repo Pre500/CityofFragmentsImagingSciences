@@ -13,7 +13,7 @@ body {
 
 /* Page wrapper to center content and limit width */
 .page {
-  max-width: 440px
+  max-width: 900px;
   margin: 0 auto;
   position: relative;
   padding-bottom: 80px; /* space for footer */
@@ -40,6 +40,8 @@ body {
   flex-direction: column;
   align-items: center;
   gap: 0;
+  width: calc(100% - 56px);
+  max-width: 900px;
 }
 
 /* Title overlay in the center top */
@@ -47,8 +49,8 @@ body {
   position: relative;
   z-index: 22;
   pointer-events: none;
-  max-width: 340px;
-  width: calc(100% - 140px);
+  max-width: 380px; /* slightly larger title */
+  width: calc(100% - 100px);
   height: auto;
   display: block;
 }
@@ -323,8 +325,8 @@ body {
 .player-controls { left: 0; right: 0; transform: none; justify-content: center; }
 
 /* discover button: button that contains the image */
-.discover-btn { background: transparent; border: none; padding: 4px; cursor: pointer; border-radius: 120px; display: inline-flex;  align-items: center; justify-content: center; margin: 0 auto; transition: box-shadow 120ms ease, transform 120ms ease; }
-.discover-btn img { display: block; max-width: 500px; width: calc(100% - 120px); height: auto; border-radius: 8px; box-shadow: 0 6px 18px rgba(0,0,0,0.08); transition: transform 120ms ease, box-shadow 120ms ease; }
+.discover-btn { background: transparent; border: none; padding: 3px; cursor: pointer; border-radius: 120px; display: inline-flex;  align-items: center; justify-content: center; margin: 0 auto; transition: box-shadow 120ms ease, transform 120ms ease; }
+.discover-btn img { display: block; max-width: 352px; width: calc(100% - 160px); height: auto; border-radius: 8px; box-shadow: 0 6px 18px rgba(0,0,0,0.08); transition: transform 120ms ease, box-shadow 120ms ease; }
 .discover-btn:focus { outline: 2px solid rgba(255,255,255,0.9); outline-offset: 6px; }
 .discover-btn:hover { outline: 2px solid rgba(255,255,255,0.9); outline-offset: 6px; }
 .discover-btn:hover img { transform: translateY(-3px); }
@@ -337,13 +339,7 @@ body.subpage {
 
 /* Adjust title positioning for subpages */
 body.subpage #title-wrap {
-  position: fixed;
-  left: 50%;
-  top: 20px;
-  transform: translateX(-50%);
-  z-index: 22;
-  width: calc(100% - 56px);
-  max-width: 900px;
+  top: 20px; /* subpage spacing */
 }
 
 /* Page content area for subpages */
@@ -383,3 +379,5 @@ body.subpage #title-wrap {
   background: #f2f2f2;
   color: #000;
 }
+
+
