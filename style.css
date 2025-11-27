@@ -254,24 +254,7 @@ body {
 }
 
 /* floating add button */
-#addBtn {
-  position: fixed;
-  right: 28px;
-  bottom: 28px;
-  width: 52px;
-  height: 52px;
-  border-radius: 50%;
-  border: 1px solid rgba(0,0,0,0.1);
-  background: rgba(255,255,255,0.95);
-  font-size: 28px;
-  color: #333;
-  cursor: pointer;
-  z-index: 4;
-  display: flex;
-  align-items:center;
-  justify-content:center;
-  box-shadow: 0 6px 20px rgba(0,0,0,0.06);
-}
+/* removed addBtn styling */
 
 /* Pin the small topbar to the very top of the viewport (full-width area centered to page width) */
 .topbar {
