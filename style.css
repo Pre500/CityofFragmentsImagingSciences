@@ -68,8 +68,8 @@ body {
   pointer-events: none;
   text-decoration: none;
   display: block;
-  max-width: 680px;
-  width: calc(100% - 120px);
+  max-width: 342px;
+  width: calc(100% - 110px);
 }
 
 /* remove any text effects site-wide for topbar/nav */
