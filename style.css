@@ -44,6 +44,8 @@ body {
   max-width: 900px;
 }
 
+.title-link { pointer-events: auto; display: inline-block; }
+
 /* Title overlay in the center top */
 #title-overlay {
   position: relative;
