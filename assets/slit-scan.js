@@ -25,20 +25,17 @@
     // create wrapper to position overlay correctly
     const wrapper = document.createElement('div');
     wrapper.style.position = 'relative';
-    wrapper.style.display = 'block';
+    wrapper.style.display = 'inline-block';
 
     // wrap video
     video.parentNode.insertBefore(wrapper, video);
     wrapper.appendChild(video);
-    video.style.position = video.style.position || 'relative';
-    video.style.zIndex = '1';
 
     this.bufferCanvas = document.createElement('canvas');
     this.bufferCanvas.style.position = 'absolute';
     this.bufferCanvas.style.left = '0';
     this.bufferCanvas.style.top = '0';
     this.bufferCanvas.style.pointerEvents = 'none';
-    this.bufferCanvas.style.zIndex = '5';
 
     this.overlayCanvas = this.bufferCanvas; // same canvas used for drawing
     this.ctx = this.bufferCanvas.getContext('2d');
@@ -52,8 +49,6 @@
       const h = Math.max(1, Math.round(rect.height || video.clientHeight || 1));
 
       // update canvas display size (CSS) and drawing buffer size (pixel dimensions)
-      wrapper.style.width = w + 'px';
-      wrapper.style.height = h + 'px';
       this.bufferCanvas.width = w;
       this.bufferCanvas.height = h;
       this.bufferCanvas.style.width = w + 'px';
@@ -97,8 +92,6 @@
     this.hudCanvas.style.left = '0';
     this.hudCanvas.style.top = '0';
     this.hudCanvas.style.pointerEvents = 'none';
-    this.hudCanvas.style.zIndex = '6';
-    this.hudCanvas.style.zIndex = '6';
     wrapper.appendChild(this.hudCanvas);
     this.hudCtx = this.hudCanvas.getContext('2d');
 
@@ -162,14 +155,16 @@
 
     // draw HUD (scan line)
     const hud = this.hudCtx;
-    const alpha = this.scanning ? 0.8 : 0.1;
-    hud.strokeStyle = ;
-    hud.lineWidth = this.scanWidth;
-    const linePos = this.currentX + Math.floor(this.scanWidth / 2);
-    hud.beginPath();
-    hud.moveTo(linePos + 0.5, 0);
-    hud.lineTo(linePos + 0.5, this.hudCanvas.height);
-    hud.stroke();
+    hud.clearRect(0, 0, this.hudCanvas.width, this.hudCanvas.height);
+    if (this.scanning) {
+      hud.strokeStyle = 'rgba(255,255,255,0.9)';
+      hud.lineWidth = this.scanWidth;
+      const linePos = this.currentX + Math.floor(this.scanWidth / 2);
+      hud.beginPath();
+      hud.moveTo(linePos + 0.5, 0);
+      hud.lineTo(linePos + 0.5, this.hudCanvas.height);
+      hud.stroke();
+    }
 
     // advance scanline regardless of scanning state so the HUD moves
     this.currentX -= this.dx;
