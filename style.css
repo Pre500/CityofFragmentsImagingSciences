@@ -329,9 +329,9 @@ body {
 
 /* discover button: button that contains the image */
 .discover-btn { background: transparent; border: none; padding: 3px; cursor: pointer; border-radius: 120px; display: inline-flex;  align-items: center; justify-content: center; margin: 0 auto; transition: box-shadow 120ms ease, transform 120ms ease; }
-.discover-btn img { display: block; max-width: 350px; width: calc(100% - 160px); height: auto; border-radius: 8px; box-shadow: 0 6px 18px rgba(0,0,0,0.08); transition: transform 120ms ease, box-shadow 120ms ease; }
-.discover-btn:focus { outline: 1px solid rgba(255,255,255,0.9); outline-offset: 3px }
-.discover-btn:hover { outline: 1px solid rgba(255,255,255,0.9); outline-offset: 3px }
+.discover-btn img { display: block; max-width: 350px; width: 350px; min-height: 60px; height: auto; border-radius: 8px; box-shadow: 0 6px 18px rgba(0,0,0,0.08); transition: transform 120ms ease, box-shadow 120ms ease; }
+.discover-btn:focus { outline: 1px solid rgba(255,255,255,0.9); outline-offset: 2px }
+.discover-btn:hover { outline: 1px solid rgba(255,255,255,0.9); outline-offset: 2px }
 .discover-btn:hover img { transform: translateY(-3px); }
 
 /* Subpage styles */
