@@ -52,7 +52,7 @@ body {
   z-index: 22;
   pointer-events: none;
   max-width: 380px; /* slightly larger title */
-  width: calc(100% - 100px);
+  width: 380px;
   height: auto;
   display: block;
 }
