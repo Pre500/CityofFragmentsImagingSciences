@@ -13,7 +13,7 @@ body {
 
 /* Page wrapper to center content and limit width */
 .page {
-  max-width: 900px;
+  max-width: 440px
   margin: 0 auto;
   position: relative;
   padding-bottom: 80px; /* space for footer */
@@ -48,7 +48,7 @@ body {
   z-index: 22;
   pointer-events: none;
   max-width: 340px;
-  width: calc(100% - 120px);
+  width: calc(100% - 140px);
   height: auto;
   display: block;
 }
@@ -323,9 +323,10 @@ body {
 .player-controls { left: 0; right: 0; transform: none; justify-content: center; }
 
 /* discover button: button that contains the image */
-.discover-btn { background: transparent; border: none; padding: 6px; cursor: pointer; border-radius: 120px; display: inline-flex;  align-items: center; justify-content: center; margin: 0 auto; transition: box-shadow 120ms ease, transform 120ms ease; }
+.discover-btn { background: transparent; border: none; padding: 4px; cursor: pointer; border-radius: 120px; display: inline-flex;  align-items: center; justify-content: center; margin: 0 auto; transition: box-shadow 120ms ease, transform 120ms ease; }
 .discover-btn img { display: block; max-width: 500px; width: calc(100% - 120px); height: auto; border-radius: 8px; box-shadow: 0 6px 18px rgba(0,0,0,0.08); transition: transform 120ms ease, box-shadow 120ms ease; }
 .discover-btn:focus { outline: 2px solid rgba(255,255,255,0.9); outline-offset: 6px; }
+.discover-btn:hover { outline: 2px solid rgba(255,255,255,0.9); outline-offset: 6px; }
 .discover-btn:hover img { transform: translateY(-3px); }
 
 /* Subpage styles */
