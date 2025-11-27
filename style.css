@@ -341,7 +341,7 @@ body.subpage {
 
 /* Adjust title positioning for subpages */
 body.subpage #title-wrap {
-  top: 20px; /* subpage spacing */
+  top: 24px; /* match homepage spacing */
 }
 
 /* Page content area for subpages */
