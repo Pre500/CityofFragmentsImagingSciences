@@ -98,7 +98,7 @@ body {
   position: absolute;
   left: 0;
   right: 0;
-  bottom: 20px; /* raised slightly above footer */
+  bottom: 40px; /* raised slightly above footer */
   display: flex;
   gap: 10px;
   align-items: center;
