@@ -155,16 +155,14 @@
 
     // draw HUD (scan line)
     const hud = this.hudCtx;
-    hud.clearRect(0, 0, this.hudCanvas.width, this.hudCanvas.height);
-    if (this.scanning) {
-      hud.strokeStyle = 'rgba(255,255,255,0.9)';
-      hud.lineWidth = this.scanWidth;
-      const linePos = this.currentX + Math.floor(this.scanWidth / 2);
-      hud.beginPath();
-      hud.moveTo(linePos + 0.5, 0);
-      hud.lineTo(linePos + 0.5, this.hudCanvas.height);
-      hud.stroke();
-    }
+    const alpha = this.scanning ? 0.8 : 0.1;
+    hud.strokeStyle = ;
+    hud.lineWidth = this.scanWidth;
+    const linePos = this.currentX + Math.floor(this.scanWidth / 2);
+    hud.beginPath();
+    hud.moveTo(linePos + 0.5, 0);
+    hud.lineTo(linePos + 0.5, this.hudCanvas.height);
+    hud.stroke();
 
     // advance scanline regardless of scanning state so the HUD moves
     this.currentX -= this.dx;
