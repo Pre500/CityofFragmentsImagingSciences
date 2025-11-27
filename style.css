@@ -334,6 +334,17 @@ body.subpage {
   color: #fff;
 }
 
+/* Adjust title positioning for subpages */
+body.subpage #title-wrap {
+  position: fixed;
+  left: 50%;
+  top: 20px;
+  transform: translateX(-50%);
+  z-index: 22;
+  width: calc(100% - 56px);
+  max-width: 900px;
+}
+
 /* Page content area for subpages */
 .page-content {
   padding: 120px 40px 60px;
@@ -371,4 +382,3 @@ body.subpage {
   background: #f2f2f2;
   color: #000;
 }
-
