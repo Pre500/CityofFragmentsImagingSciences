@@ -30,12 +30,15 @@
     // wrap video
     video.parentNode.insertBefore(wrapper, video);
     wrapper.appendChild(video);
+    video.style.position = video.style.position || 'relative';
+    video.style.zIndex = '1';
 
     this.bufferCanvas = document.createElement('canvas');
     this.bufferCanvas.style.position = 'absolute';
     this.bufferCanvas.style.left = '0';
     this.bufferCanvas.style.top = '0';
     this.bufferCanvas.style.pointerEvents = 'none';
+    this.bufferCanvas.style.zIndex = '5';
 
     this.overlayCanvas = this.bufferCanvas; // same canvas used for drawing
     this.ctx = this.bufferCanvas.getContext('2d');
@@ -94,6 +97,7 @@
     this.hudCanvas.style.left = '0';
     this.hudCanvas.style.top = '0';
     this.hudCanvas.style.pointerEvents = 'none';
+    this.hudCanvas.style.zIndex = '6';
     this.hudCanvas.style.zIndex = '6';
     wrapper.appendChild(this.hudCanvas);
     this.hudCtx = this.hudCanvas.getContext('2d');
