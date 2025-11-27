@@ -25,7 +25,7 @@
     // create wrapper to position overlay correctly
     const wrapper = document.createElement('div');
     wrapper.style.position = 'relative';
-    wrapper.style.display = 'inline-block';
+    wrapper.style.display = 'block';
 
     // wrap video
     video.parentNode.insertBefore(wrapper, video);
@@ -49,6 +49,8 @@
       const h = Math.max(1, Math.round(rect.height || video.clientHeight || 1));
 
       // update canvas display size (CSS) and drawing buffer size (pixel dimensions)
+      wrapper.style.width = w + 'px';
+      wrapper.style.height = h + 'px';
       this.bufferCanvas.width = w;
       this.bufferCanvas.height = h;
       this.bufferCanvas.style.width = w + 'px';
@@ -92,6 +94,7 @@
     this.hudCanvas.style.left = '0';
     this.hudCanvas.style.top = '0';
     this.hudCanvas.style.pointerEvents = 'none';
+    this.hudCanvas.style.zIndex = '6';
     wrapper.appendChild(this.hudCanvas);
     this.hudCtx = this.hudCanvas.getContext('2d');
 
