@@ -318,6 +318,7 @@ body {
   color: #fff;
 }
 
+
 /* image control used for Discover Hong Kong */
 .player-controls { left: 0; right: 0; transform: none; justify-content: center; }
 
@@ -326,3 +327,48 @@ body {
 .discover-btn img { display: block; max-width: 500px; width: calc(100% - 120px); height: auto; border-radius: 8px; box-shadow: 0 6px 18px rgba(0,0,0,0.08); transition: transform 120ms ease, box-shadow 120ms ease; }
 .discover-btn:focus { outline: 2px solid rgba(255,255,255,0.9); outline-offset: 6px; }
 .discover-btn:hover img { transform: translateY(-3px); }
+
+/* Subpage styles */
+body.subpage {
+  background: #2a2a2a;
+  color: #fff;
+}
+
+/* Page content area for subpages */
+.page-content {
+  padding: 120px 40px 60px;
+  max-width: 900px;
+  margin: 0 auto;
+  text-align: center;
+}
+
+.page-content h1 {
+  font-size: 48px;
+  margin-bottom: 24px;
+  font-weight: 700;
+  letter-spacing: -0.5px;
+}
+
+.page-content p {
+  font-size: 16px;
+  line-height: 1.6;
+  margin-bottom: 16px;
+  color: #ccc;
+}
+
+.page-content a {
+  color: #ffffff;
+  text-decoration: underline;
+  font-weight: 500;
+}
+
+.page-content a:hover {
+  color: #f2f2f2;
+}
+
+/* Active nav link state (shown on subpages when that page is open) */
+.topbar .top-link.active {
+  background: #f2f2f2;
+  color: #000;
+}
+
