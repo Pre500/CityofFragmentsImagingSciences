@@ -1,0 +1,234 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Your Stories — City of Fragments</title>
+<link rel="icon" type="image/png" sizes="32x32" href="/favicon.png">
+<link rel="icon" type="image/x-icon" href="/favicon.ico">
+<link rel="stylesheet" href="style.css">
+<style>
+
+
+body.scrapbook-page {
+    background: linear-gradient(#e8e8e8 1px, transparent 1px);
+    background-size: 100% 25px;
+    background-color: #f9f9f9;
+    margin: 0;
+    padding: 0;
+    font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    overflow: auto;
+    min-height: 100vh;
+  }
+
+  body.scrapbook-page::before {
+    content: '';
+    position: fixed;
+    left: 60px;
+    top: 0;
+    bottom: 0;
+    width: 2px;
+    background: #fff8f9;
+    z-index: 0;
+  }
+
+  .scrapbook-header {
+    text-align: center;
+    padding: 40px 20px 20px;
+    position: relative;
+    z-index: 10;
+  }
+
+  .scrapbook-title-logo {
+    font-size: 52px;
+    font-weight: 700;
+    color: #ffffff;
+    margin: 20px 0 10px;
+    font-style: italic;
+    line-height: 1.2;
+  }
+
+  .scrapbook-title-logo span:first-child {
+    display: block;
+  }
+
+  .home-link {
+    position: fixed;
+    top: 20px;
+    right: 30px;
+    color: #666;
+    text-decoration: none;
+    font-size: 14px;
+    padding: 8px 16px;
+    background: white;
+    border-radius: 20px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    z-index: 100;
+    transition: all 0.2s;
+  }
+
+  .home-link:hover {
+    background: #f0f0f0;
+    transform: translateY(-2px);
+  }
+
+  #scrapbook-controls {
+    position: fixed;
+    bottom: 30px;
+    left: 50%;
+    transform: translateX(-50%);
+    text-align: center;
+    background: white;
+    padding: 20px;
+    max-width: 600px;
+    width: calc(100% - 80px);
+    border-radius: 15px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    z-index: 10;
+  }
+
+  .upload-btn {
+    background: linear-gradient(135deg, #fff3f8 0%, #f3fadb 100%);
+    padding: 12px 24px;
+    border-radius: 25px;
+    cursor: pointer;
+    display: inline-block;
+    margin: 10px;
+    border: none;
+    font-size: 16px;
+    font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    box-shadow: 0 4px 10px rgba(255, 179, 198, 0.3);
+    transition: all 0.2s;
+  }
+
+  .upload-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 16px rgba(255, 179, 198, 0.4);
+  }
+
+  .upload-btn input {
+    display: none;
+  }
+
+  #userText {
+    width: calc(100% - 40px);
+    max-width: 400px;
+    height: 60px;
+    border-radius: 12px;
+    border: 2px solid #e0e0e0;
+    font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    resize: none;
+    padding: 12px;
+    margin: 10px;
+    font-size: 14px;
+    transition: border-color 0.2s;
+  }
+
+  #userText:focus {
+    outline: none;
+    border-color: #3366cc;
+  }
+
+  #addBtn {
+    background: linear-gradient(135deg, #eeffa8 0%, #ff9b87 100%);
+    padding: 12px 32px;
+    border-radius: 25px;
+    border: none;
+    cursor: pointer;
+    font-size: 16px;
+    font-weight: 600;
+    font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    color: white;
+    box-shadow: 0 4px 10px rgba(124, 184, 255, 0.3);
+    transition: all 0.2s;
+    margin: 10px;
+  }
+
+  #addBtn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 16px rgba(124, 184, 255, 0.4);
+  }
+
+  #canvas {
+    position: relative;
+    min-height: calc(100vh - 300px);
+    padding: 20px;
+    z-index: 1;
+  }
+
+  .polaroid {
+    position: absolute;
+    width: 220px;
+    border: 12px solid white;
+    border-bottom: 50px solid white;
+    background: white;
+    cursor: grab;
+    box-shadow: 0 6px 20px rgba(0,0,0,0.2);
+    transition: transform 0.15s, box-shadow 0.15s;
+    transform: rotate(calc(var(--rotation)*1deg));
+  }
+
+  .polaroid:hover {
+    box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+  }
+
+  .polaroid:active {
+    cursor: grabbing;
+    transform: scale(1.05) rotate(calc(var(--rotation)*1deg));
+  }
+
+  .polaroid img {
+    width: 100%;
+    display: block;
+    object-fit: cover;
+    aspect-ratio: 1;
+  }
+
+  .polaroid-text {
+    position: absolute;
+    bottom: -38px;
+    width: 100%;
+    text-align: center;
+    font-size: 14px;
+    color: #333;
+    padding: 0 8px;
+    font-family: 'Courier New', monospace;
+  }
+
+  /* Override subtitle color for this page */
+  body.scrapbook-page .overlay-subtitle {
+    color: #000;
+  }
+</style>
+</head>
+<body class="scrapbook-page">
+
+<!-- Top navigation bar -->
+<div class="topbar">
+  <a class="top-link left" href="project_process.html">PROJECT PROCESS</a>
+  <a class="top-link right active" href="your_stories.html">YOUR STORIES</a>
+</div>
+
+<div id="title-wrap">
+  <a class="title-link" href="index.html" aria-label="Back to Home">
+    <img id="title-overlay" src="assets/Title City of Fragments.png" alt="City of Fragments" />
+  </a>
+  <a id="overlay-subtitle" class="subtitle overlay-subtitle" href="#" aria-hidden="true">The city is no longer a place we inhabit — it's a place we remember.</a>
+</div>
+
+<div id="scrapbook-controls">
+  <label class="upload-btn">
+    Upload Your Photo
+    <input type="file" id="imageUpload" accept="image/*">
+  </label>
+  <br>
+  <textarea id="userText" placeholder="Keep your memories and stories here..."></textarea>
+  <br>
+  <button id="addBtn">Add Here as a Collective Collage</button>
+</div>
+
+<div id="canvas"></div>
+
+<script src="script-scrapbook.js"></script>
+
+</body>
+</html>
