@@ -1,14 +1,11 @@
 // Firebase Configuration
-// REPLACE THESE VALUES WITH YOUR ACTUAL FIREBASE CONFIG
-// Get this from Firebase Console → Project Settings → Your apps → Config
-
 const firebaseConfig = {
-  apiKey: "YOUR_API_KEY_HERE",
-  authDomain: "YOUR_PROJECT_ID.firebaseapp.com",
-  projectId: "YOUR_PROJECT_ID",
-  storageBucket: "YOUR_PROJECT_ID.appspot.com",
-  messagingSenderId: "YOUR_MESSAGING_SENDER_ID",
-  appId: "YOUR_APP_ID"
+  apiKey: "AIzaSyD2HT-n41I_FSNYY4zoAceN94JNZHpQEpc",
+  authDomain: "cityoffragments.firebaseapp.com",
+  projectId: "cityoffragments",
+  storageBucket: "cityoffragments.firebasestorage.app",
+  messagingSenderId: "231471667700",
+  appId: "1:231471667700:web:65654a80170919a6be01a1"
 };
 
 // Initialize Firebase
