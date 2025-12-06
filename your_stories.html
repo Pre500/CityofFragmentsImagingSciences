@@ -15,25 +15,13 @@
 
 
 body.scrapbook-page {
-    background: linear-gradient(#e8e8e8 1px, transparent 1px);
-    background-size: 100% 25px;
-    background-color: #f9f9f9;
-    margin: 0;
-    padding: 0;
+  background-image: url('assets/Paper bg3.png');
+      background-size: cover;
+      background-attachment: fixed;
+      background-position: center;
     font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
     overflow: auto;
     min-height: 100vh;
-  }
-
-  body.scrapbook-page::before {
-    content: '';
-    position: fixed;
-    left: 60px;
-    top: 0;
-    bottom: 0;
-    width: 2px;
-    background: #fff8f9;
-    z-index: 0;
   }
 
   .scrapbook-header {
@@ -100,7 +88,7 @@ body.scrapbook-page {
     margin: 10px;
     border: none;
     font-size: 16px;
-    font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    font-family: 'Helvetica Neue', Helvetica, sans-serif;
     box-shadow: 0 4px 10px rgba(255, 179, 198, 0.3);
     transition: all 0.2s;
   }
