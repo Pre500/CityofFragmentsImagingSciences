@@ -6,6 +6,11 @@
 <link rel="icon" type="image/png" sizes="32x32" href="/favicon.png">
 <link rel="icon" type="image/x-icon" href="/favicon.ico">
 <link rel="stylesheet" href="style.css">
+
+<!-- Firebase SDKs -->
+<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-storage-compat.js"></script>
 <style>
 
 
@@ -194,9 +199,55 @@ body.scrapbook-page {
     font-family: 'Courier New', monospace;
   }
 
+  .delete-btn {
+    position: absolute;
+    top: -6px;
+    right: -6px;
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    background: #ff4444;
+    color: white;
+    border: 2px solid white;
+    cursor: pointer;
+    font-size: 18px;
+    line-height: 1;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+    transition: all 0.2s;
+    z-index: 10;
+  }
+
+  .delete-btn:hover {
+    background: #cc0000;
+    transform: scale(1.1);
+  }
+
+  .polaroid:hover .delete-btn {
+    display: flex;
+  }
+
   /* Override subtitle color for this page */
   body.scrapbook-page .overlay-subtitle {
     color: #000;
+  }
+
+  /* Override topbar link colors for this page */
+  body.scrapbook-page .topbar .top-link {
+    color: #000;
+  }
+
+  body.scrapbook-page .topbar .top-link:hover,
+  body.scrapbook-page .topbar .top-link:focus {
+    background: #f2f2f2;
+    color: #000;
+  }
+
+  body.scrapbook-page .topbar .top-link.active {
+    background: #000;
+    color: #fff;
   }
 </style>
 </head>
@@ -228,6 +279,10 @@ body.scrapbook-page {
 
 <div id="canvas"></div>
 
+<!-- Firebase Configuration -->
+<script src="firebase-config.js"></script>
+
+<!-- Scrapbook Script -->
 <script src="script-scrapbook.js"></script>
 
 </body>

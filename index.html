@@ -264,6 +264,24 @@
       }
 
 
+      // Map video files to location subtitles
+      const videoLocations = {
+        'assets/IMG_2723.MP4': 'Location: West Kowloon Art Park',
+        'assets/IMG_5193.MP4': 'Location: Mong Kok',
+        'assets/IMG_5619.MP4': 'Location: Temple Street Night Market',
+        'assets/IMG_6021.MP4': 'Location: Tsim Sha Tsui',
+        'assets/IMG_6424.MP4': 'Location: Central District',
+        'assets/IMG_7113.MP4': 'Location: Victoria Harbour',
+        'assets/IMG_7414.MP4': 'Location: Sham Shui Po',
+        'assets/IMG_8758.MP4': 'Location: Jordan',
+        'assets/IMG_8766.MP4': 'Location: Yau Ma Tei',
+        'assets/IMG_8805.MP4': 'Location: Causeway Bay',
+        'assets/IMG_8910.MP4': 'Location: Wan Chai',
+        'assets/IMG_8991.MP4': 'Location: Sheung Wan',
+        'assets/IMG_9147.MP4': 'Location: Kennedy Town',
+        'assets/IMG_9639.MP4': 'Location: Admiralty'
+      };
+
       // robust source swapping: set video src directly, load and play
       function setSourceIndex(i) {
         if (!player) return;
@@ -295,6 +313,13 @@
             console.warn('Autoplay prevented or play() rejected for', src, err);
             // Leave player ready; user can manually start playback if needed
           });
+
+          // Update subtitle with location
+          const subtitleEl = document.getElementById('overlay-subtitle');
+          if (subtitleEl) {
+            const location = videoLocations[src] || 'Location: Hong Kong';
+            subtitleEl.textContent = location;
+          }
         } catch (err) {
           console.error('Error while switching video:', err);
         }
