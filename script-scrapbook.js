@@ -5,8 +5,21 @@ const canvas = document.getElementById("canvas");
 
 let scrapbook = [];
 
-// Check if Firebase is available
-const useFirebase = typeof firebase !== 'undefined' && firebase.apps.length > 0;
+// Check if Firebase is available and properly configured
+let useFirebase = false;
+try {
+    useFirebase = typeof firebase !== 'undefined' && 
+                  firebase.apps.length > 0 && 
+                  typeof db !== 'undefined' && 
+                  typeof storage !== 'undefined';
+    
+    if (!useFirebase) {
+        console.log("Firebase not configured, using localStorage");
+    }
+} catch (e) {
+    console.log("Firebase error, using localStorage:", e);
+    useFirebase = false;
+}
 
 // Save to localStorage as fallback
 function saveLocal() {
@@ -145,12 +158,37 @@ addBtn.addEventListener("click", async () => {
         timestamp: Date.now()
     };
 
+    // Function to use local storage (fast fallback)
+    const useLocalStorage = () => {
+        const reader = new FileReader();
+        reader.onload = () => {
+            entry.image = reader.result;
+            createEntry(entry);
+            
+            // Re-enable button and reset form
+            addBtn.disabled = false;
+            addBtn.textContent = "✨ Add to Scrapbook";
+            uploadInput.value = "";
+            textInput.value = "";
+        };
+        reader.readAsDataURL(file);
+    };
+
     if (useFirebase) {
         try {
+            // Set a timeout to fallback to localStorage if Firebase is too slow
+            const uploadTimeout = setTimeout(() => {
+                console.warn("Firebase upload timeout, using localStorage");
+                useLocalStorage();
+            }, 5000); // 5 second timeout
+
             // Upload image to Firebase Storage
             const storageRef = storage.ref(`scrapbook/${entry.id}_${file.name}`);
             const snapshot = await storageRef.put(file);
             const imageUrl = await snapshot.ref.getDownloadURL();
+            
+            // Clear timeout if successful
+            clearTimeout(uploadTimeout);
             
             entry.image = imageUrl;
             entry.storagePath = `scrapbook/${entry.id}_${file.name}`;
@@ -161,33 +199,22 @@ addBtn.addEventListener("click", async () => {
             
             createEntry(entry, false);
             scrapbook.push(entry);
+            
+            // Re-enable button and reset form
+            addBtn.disabled = false;
+            addBtn.textContent = "✨ Add to Scrapbook";
+            uploadInput.value = "";
+            textInput.value = "";
         } catch (error) {
             console.error("Error uploading to Firebase:", error);
-            alert("Failed to upload. Using local storage.");
             
             // Fallback to local storage
-            const reader = new FileReader();
-            reader.onload = () => {
-                entry.image = reader.result;
-                createEntry(entry);
-            };
-            reader.readAsDataURL(file);
+            useLocalStorage();
         }
     } else {
         // Use localStorage if Firebase not available
-        const reader = new FileReader();
-        reader.onload = () => {
-            entry.image = reader.result;
-            createEntry(entry);
-        };
-        reader.readAsDataURL(file);
+        useLocalStorage();
     }
-
-    // Re-enable button and reset form
-    addBtn.disabled = false;
-    addBtn.textContent = "✨ Add to Scrapbook";
-    uploadInput.value = "";
-    textInput.value = "";
 });
 
 // Load existing scrapbook entries on page load
