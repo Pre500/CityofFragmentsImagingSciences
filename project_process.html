@@ -8,10 +8,56 @@
   <link rel="icon" type="image/png" sizes="32x32" href="/favicon.png">
   <link rel="icon" type="image/x-icon" href="/favicon.ico">
   <link rel="stylesheet" href="style.css?v=deploy-refresh">
+  <style>
+    body.subpage.project-page {
+      background-image: url('assets/Paper bg2.png');
+      background-size: cover;
+      background-attachment: fixed;
+      background-position: center;
+    }
+
+    /* Override topbar colors for this page */
+    body.project-page .topbar .top-link {
+      color: #000;
+    }
+
+    body.project-page .topbar .top-link:hover,
+    body.project-page .topbar .top-link:focus {
+      background: #f2f2f2;
+      color: #000;
+    }
+
+    body.project-page .topbar .top-link.active {
+      background: #000;
+      color: #fff;
+    }
+
+    /* Override title and subtitle colors */
+    body.project-page .overlay-subtitle {
+      color: #000;
+    }
+
+    /* Override page content colors */
+    body.project-page .page-content {
+      color: #000;
+    }
+
+    body.project-page .page-content h1 {
+      color: #000;
+    }
+
+    body.project-page .page-content p {
+      color: #333;
+    }
+
+    body.project-page .page-content a {
+      color: #000;
+    }
+  </style>
 </head>
 
 
-<body class="subpage">
+<body class="subpage project-page">
   <!-- Top navigation bar -->
   <div class="topbar">
     <a class="top-link left active" href="project_process.html">PROJECT PROCESS</a>
@@ -20,7 +66,7 @@
 
   <div id="title-wrap">
     <a class="title-link" href="index.html" aria-label="Back to Home">
-      <img id="title-overlay" src="assets/Title White.png" alt="City of Fragments" />
+      <img id="title-overlay" src="assets/Title City of Fragments.png" alt="City of Fragments" />
     </a>
     <a id="overlay-subtitle" class="subtitle overlay-subtitle" href="#" aria-hidden="true">The city is no longer a place we inhabit — it's a place we remember.</a>
   </div>
@@ -28,7 +74,7 @@
   <!-- Page content -->
   <div class="page-content">
     <h1>Project Process</h1>
-    <p>This page replaces the previous project intro. Add content about the project process here.</p>
+    <p>This page is the project documentation part.</p>
     <p></p>
   </div>
 </body>

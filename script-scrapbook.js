@@ -26,20 +26,42 @@ function saveLocal() {
     localStorage.setItem("scrapbookPage", JSON.stringify(scrapbook));
 }
 
-// Load from Firestore
-async function loadFromFirebase() {
+// Load from Firestore with real-time updates
+function loadFromFirebase() {
     if (!useFirebase) return;
     
     try {
-        const snapshot = await db.collection('scrapbook').orderBy('timestamp', 'desc').get();
-        snapshot.forEach(doc => {
-            const data = doc.data();
-            data.firestoreId = doc.id;
-            createEntry(data, false);
+        // Set up real-time listener for additions and deletions
+        db.collection('scrapbook').orderBy('timestamp', 'desc').onSnapshot((snapshot) => {
+            snapshot.docChanges().forEach((change) => {
+                const data = change.doc.data();
+                data.firestoreId = change.doc.id;
+                
+                if (change.type === 'added') {
+                    // Check if entry already exists in DOM
+                    const existing = document.querySelector(`.polaroid[data-id="${data.id}"]`);
+                    if (!existing) {
+                        createEntry(data, false);
+                        scrapbook.push(data);
+                    }
+                }
+                
+                if (change.type === 'removed') {
+                    // Remove from DOM
+                    const element = document.querySelector(`.polaroid[data-id="${data.id}"]`);
+                    if (element) {
+                        element.remove();
+                    }
+                    // Remove from scrapbook array
+                    scrapbook = scrapbook.filter(item => item.firestoreId !== change.doc.id);
+                }
+            });
+        }, (error) => {
+            console.error("Error with Firebase listener:", error);
+            loadFromLocal();
         });
     } catch (error) {
         console.error("Error loading from Firebase:", error);
-        // Fallback to localStorage
         loadFromLocal();
     }
 }
