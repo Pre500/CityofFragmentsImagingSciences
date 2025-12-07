@@ -1,6 +1,6 @@
 // Slit-scan module: creates scanning trail effects on video
-// Supports 4 scan types: moving-vertical, moving-horizontal, fixed-vertical, fixed-horizontal
-// Usage: SlitScan.attachAll('video', { scanWidth: 8, dx: 2, scanType: 'moving-vertical' })
+// Supports scan types: moving-vertical, moving-vertical-ltr, moving-horizontal, moving-horizontal-utd, fixed-vertical, fixed-horizontal
+// Usage: SlitScan.attachAll('video', { scanWidth: 8, dx: 2, scanType: 'fixed-vertical' })
 
 ;(function () {
   'use strict';
@@ -10,7 +10,7 @@
     this.video = video;
     this.scanWidth = opts.scanWidth || 8;
     this.dx = opts.dx || 2;
-    this.scanType = opts.scanType || 'moving-vertical'; // moving-vertical, moving-horizontal, fixed-vertical, fixed-horizontal
+    this.scanType = opts.scanType || 'fixed-vertical';
     this.scanning = false;
     this.currentX = 0;
     this.currentY = 0;
@@ -61,10 +61,10 @@
       this.canvas.style.height = h + 'px';
 
       if (this.currentX === 0) {
-        this.currentX = w - this.scanWidth;
+        this.currentX = w / 2; // Center for fixed-vertical
       }
       if (this.currentY === 0) {
-        this.currentY = h - this.scanWidth;
+        this.currentY = h / 2; // Center for fixed-horizontal
       }
     };
 
@@ -88,14 +88,14 @@
     // Reset on video end/seek
     video.addEventListener('ended', () => {
       this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
-      this.currentX = this.canvas.width - this.scanWidth;
-      this.currentY = this.canvas.height - this.scanWidth;
+      this.currentX = this.canvas.width / 2;
+      this.currentY = this.canvas.height / 2;
     });
     video.addEventListener('seeked', () => {
       if (video.currentTime <= 0.05) {
         this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
-        this.currentX = this.canvas.width - this.scanWidth;
-        this.currentY = this.canvas.height - this.scanWidth;
+        this.currentX = this.canvas.width / 2;
+        this.currentY = this.canvas.height / 2;
       }
     });
 
@@ -110,9 +110,9 @@
     const h = this.canvas.height;
 
     if (this.scanning && v.readyState >= 2 && w > 0 && h > 0) {
-      if (this.scanType === 'moving-vertical') {
+      if (this.scanType === 'moving-vertical' || this.scanType === 'moving-vertical-ltr') {
         this.drawVerticalScan(v, w, h);
-      } else if (this.scanType === 'moving-horizontal') {
+      } else if (this.scanType === 'moving-horizontal' || this.scanType === 'moving-horizontal-utd') {
         this.drawHorizontalScan(v, w, h);
       } else if (this.scanType === 'fixed-vertical') {
         this.drawFixedVerticalScan(v, w, h);
@@ -125,12 +125,22 @@
     this.drawScanLine(w, h);
 
     // Move scan line position based on scan type
-    if (this.scanType.includes('vertical')) {
+    if (this.scanType === 'moving-vertical') {
       this.currentX -= this.dx;
       if (this.currentX < -this.scanWidth) {
         this.currentX = w;
       }
-    } else if (this.scanType.includes('horizontal')) {
+    } else if (this.scanType === 'moving-vertical-ltr') {
+      this.currentX += this.dx;
+      if (this.currentX > w) {
+        this.currentX = -this.scanWidth;
+      }
+    } else if (this.scanType === 'moving-horizontal') {
+      this.currentY += this.dx;
+      if (this.currentY > h) {
+        this.currentY = -this.scanWidth;
+      }
+    } else if (this.scanType === 'moving-horizontal-utd') {
       this.currentY -= this.dx;
       if (this.currentY < -this.scanWidth) {
         this.currentY = h;
@@ -141,7 +151,6 @@
   };
 
   SlitScan.prototype.drawVerticalScan = function (v, w, h) {
-    // Copy a vertical slice from video to canvas
     const srcX = Math.floor((this.currentX / w) * (v.videoWidth || w));
     const sliceWidth = Math.max(1, Math.floor((this.scanWidth / w) * (v.videoWidth || w)));
 
@@ -152,12 +161,11 @@
         this.currentX, 0, this.scanWidth, h
       );
     } catch (e) {
-      // Ignore cross-origin or other drawImage errors
+      // Ignore errors
     }
   };
 
   SlitScan.prototype.drawHorizontalScan = function (v, w, h) {
-    // Copy a horizontal slice from video to canvas
     const srcY = Math.floor((this.currentY / h) * (v.videoHeight || h));
     const sliceHeight = Math.max(1, Math.floor((this.scanWidth / h) * (v.videoHeight || h)));
 
@@ -168,12 +176,11 @@
         0, this.currentY, w, this.scanWidth
       );
     } catch (e) {
-      // Ignore cross-origin or other drawImage errors
+      // Ignore errors
     }
   };
 
   SlitScan.prototype.drawFixedVerticalScan = function (v, w, h) {
-    // Scan from center (fixed vertical)
     const fixedX = Math.floor(w / 2);
     const srcX = Math.floor((fixedX / w) * (v.videoWidth || w));
     const sliceWidth = Math.max(1, Math.floor((this.scanWidth / w) * (v.videoWidth || w)));
@@ -190,7 +197,6 @@
   };
 
   SlitScan.prototype.drawFixedHorizontalScan = function (v, w, h) {
-    // Scan from center (fixed horizontal)
     const fixedY = Math.floor(h / 2);
     const srcY = Math.floor((fixedY / h) * (v.videoHeight || h));
     const sliceHeight = Math.max(1, Math.floor((this.scanWidth / h) * (v.videoHeight || h)));
@@ -207,17 +213,14 @@
   };
 
   SlitScan.prototype.drawScanLine = function (w, h) {
-    // Draw visible scan line indicator (thin white line)
     this.ctx.strokeStyle = 'rgba(255, 255, 255, 0.9)';
     this.ctx.lineWidth = 1.5;
     this.ctx.beginPath();
 
-    if (this.scanType.includes('vertical')) {
-      // Vertical scan line
+    if (this.scanType === 'moving-vertical' || this.scanType === 'moving-vertical-ltr' || this.scanType === 'fixed-vertical') {
       this.ctx.moveTo(this.currentX, 0);
       this.ctx.lineTo(this.currentX, h);
-    } else if (this.scanType.includes('horizontal')) {
-      // Horizontal scan line
+    } else if (this.scanType === 'moving-horizontal' || this.scanType === 'moving-horizontal-utd' || this.scanType === 'fixed-horizontal') {
       this.ctx.moveTo(0, this.currentY);
       this.ctx.lineTo(w, this.currentY);
     }
