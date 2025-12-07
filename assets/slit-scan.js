@@ -114,8 +114,8 @@
     const w = this.canvas.width;
     const h = this.canvas.height;
 
-    // Always draw the scan effect if video is ready
-    if (v.readyState >= 2 && w > 0 && h > 0) {
+    // Always draw the scan effect if video is ready AND user is actively scanning
+    if (this.scanning && v.readyState >= 2 && w > 0 && h > 0) {
       if (this.scanType === 'moving-vertical' || this.scanType === 'moving-vertical-ltr') {
         this.drawVerticalScan(v, w, h);
       } else if (this.scanType === 'moving-horizontal' || this.scanType === 'moving-horizontal-utd') {
@@ -127,12 +127,10 @@
       }
     }
     
-    // Draw visible scan line indicator only while actively scanning (user interaction)
-    if (this.scanning && w > 0 && h > 0) {
-      this.drawScanLine(w, h);
-    } else {
-      // Clear scan line when not scanning
+    // Draw visible scan line indicator on EVERY frame (always visible, shows where scan will happen)
+    if (w > 0 && h > 0) {
       this.lineCtx.clearRect(0, 0, w, h);
+      this.drawScanLine(w, h);
     }
 
     // Move scan line position based on scan type
