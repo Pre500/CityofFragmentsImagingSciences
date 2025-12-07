@@ -7,13 +7,13 @@
   function createCanvasOverlay(video) {
     const canvas = document.createElement('canvas');
     canvas.style.position = 'absolute';
-    canvas.style.left = '0';
+    wrapper.style.display = 'block';
     canvas.style.top = '0';
     canvas.style.pointerEvents = 'none';
     canvas.width = video.videoWidth || video.clientWidth;
     canvas.height = video.videoHeight || video.clientHeight;
     return canvas;
-  }
+    } // (legacy helper removed; not used)
 
   function SlitScan(video, opts) {
     this.video = video;
@@ -30,12 +30,19 @@
     // wrap video
     video.parentNode.insertBefore(wrapper, video);
     wrapper.appendChild(video);
+    // ensure video sits below overlays in stacking order
+    video.style.position = video.style.position || 'relative';
+    // ensure video has positioning so overlays can sit over it
 
+      wrapper.style.width = w + 'px';
+      wrapper.style.height = h + 'px';
     this.bufferCanvas = document.createElement('canvas');
     this.bufferCanvas.style.position = 'absolute';
     this.bufferCanvas.style.left = '0';
     this.bufferCanvas.style.top = '0';
     this.bufferCanvas.style.pointerEvents = 'none';
+    this.bufferCanvas.style.zIndex = '5';
+  this.bufferCanvas.style.pointerEvents = 'none';
 
     this.overlayCanvas = this.bufferCanvas; // same canvas used for drawing
     this.ctx = this.bufferCanvas.getContext('2d');
@@ -75,6 +82,8 @@
     video.addEventListener('loadedmetadata', initSize);
     // observe layout changes to keep canvases matched to displayed video
     if (window.ResizeObserver) {
+    this.hudCanvas.style.zIndex = '6'; // Ensure visibility over the video
+        this.hudCanvas.style.pointerEvents = 'none';
       this._ro = new ResizeObserver(initSize);
       this._ro.observe(video);
       this._ro.observe(wrapper);
@@ -92,6 +101,7 @@
     this.hudCanvas.style.left = '0';
     this.hudCanvas.style.top = '0';
     this.hudCanvas.style.pointerEvents = 'none';
+    this.hudCanvas.style.zIndex = '6';
     wrapper.appendChild(this.hudCanvas);
     this.hudCtx = this.hudCanvas.getContext('2d');
 
@@ -156,15 +166,15 @@
     // draw HUD (scan line)
     const hud = this.hudCtx;
     hud.clearRect(0, 0, this.hudCanvas.width, this.hudCanvas.height);
-    if (this.scanning) {
-      hud.strokeStyle = 'rgba(255,255,255,0.9)';
-      hud.lineWidth = this.scanWidth;
-      const linePos = this.currentX + Math.floor(this.scanWidth / 2);
-      hud.beginPath();
-      hud.moveTo(linePos + 0.5, 0);
-      hud.lineTo(linePos + 0.5, this.hudCanvas.height);
-      hud.stroke();
-    }
+    // Always render the scan line: dim (10%) when idle, strong (80%) when scanning
+    const alpha = this.scanning ? 0.8 : 0.1;
+    hud.strokeStyle = `rgba(255,255,255,${alpha})`;
+    hud.lineWidth = this.scanWidth;
+    const linePos = this.currentX + Math.floor(this.scanWidth / 2);
+    hud.beginPath();
+    hud.moveTo(linePos + 0.5, 0);
+    hud.lineTo(linePos + 0.5, this.hudCanvas.height);
+    hud.stroke();
 
     // advance scanline regardless of scanning state so the HUD moves
     this.currentX -= this.dx;
