@@ -101,7 +101,7 @@
   </script>
 
 
-  <!-- Initialize videos inside frame-grid elements that have a `data-video` attribute -->
+  <!-- Initialize videos inside frame-grid elements that have a data-video attribute -->
   <script>
     (async function () {
       // find all frame-grid elements with a data-video attribute
@@ -222,20 +222,18 @@
       if (sources.length === 0) {
         // fallback list: only include files that are present in the assets folder
         sources = [
-          'assets/IMG_2723.MP4',
-          'assets/IMG_5193.MP4',
-          'assets/IMG_5619.MP4',
-          'assets/IMG_6021.MP4',
-          'assets/IMG_6424.MP4',
-          'assets/IMG_7113.MP4',
-          'assets/IMG_7414.MP4',
-          'assets/IMG_8758.MP4',
-          'assets/IMG_8766.MP4',
-          'assets/IMG_8805.MP4',
-          'assets/IMG_8910.MP4',
-          'assets/IMG_8991.MP4',
-          'assets/IMG_9147.MP4',
-          'assets/IMG_9639.MP4'        
+          'assets/1.mp4',
+          'assets/2.mp4',
+          'assets/3.mp4',
+          'assets/4.mp4',
+          'assets/5.mp4',
+          'assets/6.mp4',
+          'assets/7.mp4',
+          'assets/8.mp4',
+          'assets/9.mp4',
+          'assets/10.mp4',
+          'assets/11.mp4',
+          'assets/12.mp4'
         ];
 
         // validate that each fallback source actually exists (HEAD request)
@@ -270,20 +268,18 @@
 
       // Map video files to location subtitles
       const videoLocations = {
-        'assets/IMG_2723.MP4': 'Location: Central Market',
-        'assets/IMG_5193.MP4': 'Location: Lugard Road, The Peak',
-        'assets/IMG_5619.MP4': 'Location: Hung Hom',
-        'assets/IMG_6021.MP4': 'Location: Cheung Wing Restaurant, Ngau Tau Kok',
-        'assets/IMG_6424.MP4': 'Location: Footbridge KF38, Ngau Tau Kok',
-        'assets/IMG_7113.MP4': 'Location: Wan Sha Street, Tai Hang',
-        'assets/IMG_7414.MP4': 'Location: Fung Wong Sun Tsuen',
-        'assets/IMG_8758.MP4': 'Location: Yau Ma Tei Wholesale Fruit Market',
-        'assets/IMG_8766.MP4': 'Location: Yau Ma Tei Wholesale Fruit Market',
-        'assets/IMG_8805.MP4': 'Location: Portland Street, Mong Kok',
-        'assets/IMG_8910.MP4': 'Location: Former Kowloon-Canton Railway Clock Tower',
-        'assets/IMG_8991.MP4': 'Location: Red Incense Burner Summit',
-        'assets/IMG_9147.MP4': 'Location: West Kowloon Art Park',
-        'assets/IMG_9639.MP4': 'Location: Lion Rock Park'
+        'assets/1.mp4': 'Location: West Kowloon Art Park',
+        'assets/2.mp4': 'Location: Central Market',
+        'assets/3.mp4': 'Location: Yau Ma Tei Wholesale Fruit Market',
+        'assets/4.mp4': 'Location: Wan Sha Street, Tai Hang',
+        'assets/5.mp4': 'Location: Hung Hom',
+        'assets/6.mp4': 'Location: Portland Street, Mong Kok',
+        'assets/7.mp4': 'Location: Cheung Wing Restaurant, Ngau Tau Kok',
+        'assets/8.mp4': 'Location: Former Kowloon-Canton Railway Clock Tower',
+        'assets/9.mp4': 'Location: Fung Wong Sun Tsuen',
+        'assets/10.mp4': 'Location: Footbridge KF38, Ngau Tau Kok',
+        'assets/11.mp4': 'Location: Lugard Road, The Peak',
+        'assets/12.mp4': 'Location: Lion Rock Park'
       };
 
       // robust source swapping: set video src directly, load and play
