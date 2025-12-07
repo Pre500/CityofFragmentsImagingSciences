@@ -114,16 +114,21 @@
     const w = this.canvas.width;
     const h = this.canvas.height;
 
-    // Always draw the scan effect if video is ready
+    // Draw scan effect based on scan type
     if (v.readyState >= 2 && w > 0 && h > 0) {
+      // Moving scans always draw
       if (this.scanType === 'moving-vertical' || this.scanType === 'moving-vertical-ltr') {
         this.drawVerticalScan(v, w, h);
       } else if (this.scanType === 'moving-horizontal' || this.scanType === 'moving-horizontal-utd') {
         this.drawHorizontalScan(v, w, h);
-      } else if (this.scanType === 'fixed-vertical') {
-        this.drawFixedVerticalScan(v, w, h);
-      } else if (this.scanType === 'fixed-horizontal') {
-        this.drawFixedHorizontalScan(v, w, h);
+      } 
+      // Fixed scans only draw when user is actively scanning (pressing mouse)
+      else if (this.scanning) {
+        if (this.scanType === 'fixed-vertical') {
+          this.drawFixedVerticalScan(v, w, h);
+        } else if (this.scanType === 'fixed-horizontal') {
+          this.drawFixedHorizontalScan(v, w, h);
+        }
       }
     }
     
