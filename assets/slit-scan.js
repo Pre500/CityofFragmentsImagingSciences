@@ -124,10 +124,13 @@
       } else if (this.scanType === 'fixed-horizontal') {
         this.drawFixedHorizontalScan(v, w, h);
       }
+      
+      // Draw visible scan line indicator (thin white line) only while scanning
+      this.drawScanLine(w, h);
+    } else {
+      // Clear scan line when not scanning
+      this.lineCtx.clearRect(0, 0, w, h);
     }
-
-    // Draw visible scan line indicator (thin white line)
-    this.drawScanLine(w, h);
 
     // Move scan line position based on scan type
     if (this.scanType === 'moving-vertical') {
