@@ -44,26 +44,16 @@ body {
   max-width: 900px;
 }
 
-<<<<<<< HEAD
 /* Allow clicking the title image link even when wrap blocks events */
 .title-link { pointer-events: auto; display: inline-block; }
 
-=======
-.title-link { pointer-events: auto; display: inline-block; }
-
->>>>>>> 8d9189b0ca65c42df232a751ac6485140dedc9b2
 /* Title overlay in the center top */
 #title-overlay {
   position: relative;
   z-index: 22;
   pointer-events: none;
-<<<<<<< HEAD
-  max-width: 342px; /* reduce ~10% from 380px */
-  width: calc(100% - 110px);
-=======
   max-width: 380px; /* slightly larger title */
   width: 380px;
->>>>>>> 8d9189b0ca65c42df232a751ac6485140dedc9b2
   height: auto;
   display: block;
 }
@@ -109,11 +99,7 @@ body {
   position: absolute;
   left: 0;
   right: 0;
-<<<<<<< HEAD
-  bottom: 40px; /* move higher from bottom margin */
-=======
   bottom: 40px; /* raised slightly above footer */
->>>>>>> 8d9189b0ca65c42df232a751ac6485140dedc9b2
   display: flex;
   gap: 10px;
   align-items: center;
@@ -326,24 +312,10 @@ body {
 .player-controls { left: 0; right: 0; transform: none; justify-content: center; }
 
 /* discover button: button that contains the image */
-<<<<<<< HEAD
-<<<<<<< HEAD
 .discover-btn { background: transparent; border: none; padding: 3px; cursor: pointer; border-radius: 120px; display: inline-flex;  align-items: center; justify-content: center; margin: 0 auto; transition: box-shadow 120ms ease, transform 120ms ease; }
-.discover-btn img { display: block; max-width: 370px; width: calc(100% - 155px); height: auto; border-radius: 8px; box-shadow: 0 6px 18px rgba(0,0,0,0.08); transition: transform 120ms ease, box-shadow 120ms ease; }
-.discover-btn:focus { outline: 2px solid rgba(255,255,255,0.9); outline-offset: 3px; }
-.discover-btn:hover { outline: 2px solid rgba(255,255,255,0.9); outline-offset: 3px; }
-=======
-.discover-btn { background: transparent; border: none; padding: 3px; cursor: pointer; border-radius: 120px; display: inline-flex;  align-items: center; justify-content: center; margin: 0 auto; transition: box-shadow 120ms ease, transform 120ms ease; }
-=======
-.discover-btn { background: transparent; border: none; padding: 3px; cursor: pointer; border-radius: 120px; display: inline-flex;  align-items: center; justify-content: center; margin: 0 auto;}
->>>>>>> 99b158393a7e73d1c57b3e90c9b2f182b7f5597f
 .discover-btn img { display: block; max-width: 350px; width: 350px; min-height: 60px; height: auto; border-radius: 8px; box-shadow: 0 6px 18px rgba(0,0,0,0.08); transition: transform 120ms ease, box-shadow 120ms ease; }
-<<<<<<< HEAD
 .discover-btn:focus { outline: 1px solid rgba(255,255,255,0.9); outline-offset: 2px }
 .discover-btn:hover { outline: 1px solid rgba(255,255,255,0.9); outline-offset: 2px }
->>>>>>> 8d9189b0ca65c42df232a751ac6485140dedc9b2
-=======
->>>>>>> 99b158393a7e73d1c57b3e90c9b2f182b7f5597f
 .discover-btn:hover img { transform: translateY(-3px); }
 
 /* Subpage styles */
@@ -352,19 +324,11 @@ body.subpage {
   color: #fff;
 }
 
-<<<<<<< HEAD
-/* Adjust title positioning for subpages */
-body.subpage #title-wrap {
-  top: 20px; /* subpage spacing */
-}
-
-=======
 /* Adjust title positioning for subpages */
 body.subpage #title-wrap {
   top: 24px; /* match homepage spacing */
 }
 
->>>>>>> 8d9189b0ca65c42df232a751ac6485140dedc9b2
 /* Page content area for subpages */
 .page-content {
   padding: 180px 40px 60px;
