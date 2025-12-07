@@ -4,48 +4,53 @@
 ;(function () {
   'use strict';
 
-  function createCanvasOverlay(video) {
-    const canvas = document.createElement('canvas');
-    canvas.style.position = 'absolute';
-    wrapper.style.display = 'block';
-    canvas.style.top = '0';
-    canvas.style.pointerEvents = 'none';
-    canvas.width = video.videoWidth || video.clientWidth;
-    canvas.height = video.videoHeight || video.clientHeight;
-    return canvas;
-    } // (legacy helper removed; not used)
-
   function SlitScan(video, opts) {
     this.video = video;
     this.scanWidth = opts.scanWidth || 8;
     this.dx = opts.dx || 2; // pixels per frame
     this.scanning = false;
-    this.currentX = (video.videoWidth || video.clientWidth) - this.scanWidth;
+    this.scaleX = 1;
+    this.scaleY = 1;
 
     // create wrapper to position overlay correctly
     const wrapper = document.createElement('div');
     wrapper.style.position = 'relative';
     wrapper.style.display = 'inline-block';
+    wrapper.style.width = '100%';
+    wrapper.style.height = '100%';
 
     // wrap video
     video.parentNode.insertBefore(wrapper, video);
     wrapper.appendChild(video);
     // ensure video sits below overlays in stacking order
-    video.style.position = video.style.position || 'relative';
-    // ensure video has positioning so overlays can sit over it
+    video.style.position = 'relative';
+    video.style.display = 'block';
 
-      wrapper.style.width = w + 'px';
-      wrapper.style.height = h + 'px';
+    // Buffer canvas for accumulating slit-scan data
     this.bufferCanvas = document.createElement('canvas');
     this.bufferCanvas.style.position = 'absolute';
     this.bufferCanvas.style.left = '0';
     this.bufferCanvas.style.top = '0';
     this.bufferCanvas.style.pointerEvents = 'none';
     this.bufferCanvas.style.zIndex = '5';
-  this.bufferCanvas.style.pointerEvents = 'none';
-
-    this.overlayCanvas = this.bufferCanvas; // same canvas used for drawing
+    this.bufferCanvas.style.width = '100%';
+    this.bufferCanvas.style.height = '100%';
     this.ctx = this.bufferCanvas.getContext('2d');
+
+    // HUD canvas for visible scan line
+    this.hudCanvas = document.createElement('canvas');
+    this.hudCanvas.style.position = 'absolute';
+    this.hudCanvas.style.left = '0';
+    this.hudCanvas.style.top = '0';
+    this.hudCanvas.style.pointerEvents = 'none';
+    this.hudCanvas.style.zIndex = '6';
+    this.hudCanvas.style.width = '100%';
+    this.hudCanvas.style.height = '100%';
+    this.hudCtx = this.hudCanvas.getContext('2d');
+
+    // Append canvases to wrapper
+    wrapper.appendChild(this.bufferCanvas);
+    wrapper.appendChild(this.hudCanvas);
 
     // initialize sizes (if video metadata not loaded yet, wait)
     const initSize = () => {
@@ -58,18 +63,14 @@
       // update canvas display size (CSS) and drawing buffer size (pixel dimensions)
       this.bufferCanvas.width = w;
       this.bufferCanvas.height = h;
-      this.bufferCanvas.style.width = w + 'px';
-      this.bufferCanvas.style.height = h + 'px';
 
       // HUD canvas same size
       this.hudCanvas.width = w;
       this.hudCanvas.height = h;
-      this.hudCanvas.style.width = w + 'px';
-      this.hudCanvas.style.height = h + 'px';
 
       // compute mapping from display (canvas) pixels to video intrinsic pixels
-      const vidW = video.videoWidth || video.naturalWidth || (w);
-      const vidH = video.videoHeight || video.naturalHeight || (h);
+      const vidW = video.videoWidth || video.naturalWidth || w;
+      const vidH = video.videoHeight || video.naturalHeight || h;
       this.scaleX = vidW / w;
       this.scaleY = vidH / h;
 
@@ -77,33 +78,21 @@
       this.currentX = w - this.scanWidth;
     };
 
+    // Bind initSize to this context
+    const boundInitSize = initSize.bind(this);
+
     // initialize size once metadata or layout is ready
-    if (video.readyState >= 1) initSize();
-    video.addEventListener('loadedmetadata', initSize);
+    if (video.readyState >= 1) boundInitSize();
+    video.addEventListener('loadedmetadata', boundInitSize);
+    
     // observe layout changes to keep canvases matched to displayed video
     if (window.ResizeObserver) {
-    this.hudCanvas.style.zIndex = '6'; // Ensure visibility over the video
-        this.hudCanvas.style.pointerEvents = 'none';
-      this._ro = new ResizeObserver(initSize);
+      this._ro = new ResizeObserver(boundInitSize);
       this._ro.observe(video);
       this._ro.observe(wrapper);
     } else {
-      window.addEventListener('resize', initSize);
+      window.addEventListener('resize', boundInitSize);
     }
-
-    wrapper.appendChild(this.bufferCanvas);
-
-    // HUD line canvas (for visible scan line when scanning)
-    this.hudCanvas = document.createElement('canvas');
-    this.hudCanvas.width = this.bufferCanvas.width;
-    this.hudCanvas.height = this.bufferCanvas.height;
-    this.hudCanvas.style.position = 'absolute';
-    this.hudCanvas.style.left = '0';
-    this.hudCanvas.style.top = '0';
-    this.hudCanvas.style.pointerEvents = 'none';
-    this.hudCanvas.style.zIndex = '6';
-    wrapper.appendChild(this.hudCanvas);
-    this.hudCtx = this.hudCanvas.getContext('2d');
 
     // events
     video.addEventListener('pointerdown', (e) => {
