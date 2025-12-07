@@ -60,6 +60,11 @@
       this.canvas.style.width = w + 'px';
       this.canvas.style.height = h + 'px';
 
+      this.lineCanvas.width = w;
+      this.lineCanvas.height = h;
+      this.lineCanvas.style.width = w + 'px';
+      this.lineCanvas.style.height = h + 'px';
+
       if (this.currentX === 0) {
         this.currentX = w / 2; // Center for fixed-vertical
       }
