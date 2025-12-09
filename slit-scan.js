@@ -318,12 +318,15 @@
   // Fixed vertical scan: draw captured slices
   SlitScan.prototype.drawFixedVerticalScan = function (v, w, h) {
     try {
-      // Keep only last 50 slices for performance
-      if (this.capturedSlices.length > 50) {
+      // Draw all captured slices extending from cursor to left edge
+      const slicesNeeded = Math.ceil(this.currentX / this.dx) + 1;
+      
+      // Keep only needed slices for performance
+      while (this.capturedSlices.length > slicesNeeded + 10) {
         this.capturedSlices.shift();
       }
       
-      // Draw captured slices trailing from the current mouse position
+      // Draw captured slices trailing from the current mouse position to edge
       for (let i = 0; i < this.capturedSlices.length; i++) {
         const slice = this.capturedSlices[i];
         const offset = (this.capturedSlices.length - 1 - i) * this.dx;
@@ -340,12 +343,15 @@
   // Fixed horizontal scan: draw captured slices
   SlitScan.prototype.drawFixedHorizontalScan = function (v, w, h) {
     try {
-      // Keep only last 50 slices for performance
-      if (this.capturedSlices.length > 50) {
+      // Draw all captured slices extending from cursor to top edge
+      const slicesNeeded = Math.ceil(this.currentY / this.dx) + 1;
+      
+      // Keep only needed slices for performance
+      while (this.capturedSlices.length > slicesNeeded + 10) {
         this.capturedSlices.shift();
       }
       
-      // Draw captured slices trailing from the current mouse position
+      // Draw captured slices trailing from the current mouse position to edge
       for (let i = 0; i < this.capturedSlices.length; i++) {
         const slice = this.capturedSlices[i];
         const offset = (this.capturedSlices.length - 1 - i) * this.dx;

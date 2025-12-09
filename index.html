@@ -119,11 +119,15 @@
             const scanType = videoScanTypes[src] || 'fixed-vertical';
             if (!player._slitScan) {
               window.SlitScan.attachTo(player, { scanWidth: 10, dx: 3, scanType });
+              console.log('Slit-scan attached with type:', scanType);
             } else {
               player._slitScan.scanType = scanType;
               player._slitScan.scanWidth = 10;
               player._slitScan.dx = 3;
+              console.log('Slit-scan updated to type:', scanType);
             }
+          } else {
+            console.error('SlitScan module not loaded!');
           }
 
           const subtitle = document.getElementById('overlay-subtitle');
@@ -209,28 +213,6 @@
       })();
   </script>
 
-  <script>
-    (() => {
-      function initSlit() {
-        if (window.SlitScan) {
-          window.SlitScan.attachAll('video', { scanWidth: 8, dx: 2 });
-        } else {
-          console.warn('SlitScan module not loaded');
-        }
-      }
-
-      if (document.readyState === 'loading') {
-        document.addEventListener('DOMContentLoaded', () => setTimeout(initSlit, 100));
-      } else {
-        setTimeout(initSlit, 100);
-      }
-    })();
-  </script>
-
   <script src="sketch.js"></script>
 </body>
 </html>
-cd "/Users/spatika/Documents/Img Science Studio"
-rm -rf CityofFragmentsImagingSciences
-git clone https://github.com/Pre500/CityofFragmentsImagingSciences.git
-cd CityofFragmentsImagingSciences
