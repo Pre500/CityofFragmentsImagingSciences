@@ -511,19 +511,20 @@ body.subpage #title-wrap {
   width: 60px;
   height: 60px;
   border-radius: 50%;
-  border: 2px solid #000;
-  background: #fff;
+  border: 2px solid rgba(255, 255, 255, 0.8);
+  background: transparent;
   cursor: pointer;
   display: flex;
   align-items: center;
   justify-content: center;
-  transition: background 200ms ease, transform 200ms ease;
+  transition: background 200ms ease, transform 200ms ease, border-color 200ms ease;
   padding: 0;
   flex-shrink: 0;
 }
 
 .circle-btn:hover {
-  background: #f0f0f0;
+  background: rgba(255, 255, 255, 0.15);
+  border-color: rgba(255, 255, 255, 1);
   transform: scale(1.05);
 }
 
