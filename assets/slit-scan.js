@@ -1,11 +1,15 @@
 // Slit-scan module: creates scanning trail effects on video
-// Supports scan types: moving-vertical, moving-vertical-ltr, moving-horizontal, moving-horizontal-utd, fixed-vertical, fixed-horizontal
-// Usage: SlitScan.attachAll('video', { scanWidth: 8, dx: 2, scanType: 'fixed-vertical' })
+// Supports 6 scan types: moving vertical (RTL/LTR), moving horizontal (down/up), fixed vertical/horizontal
 
 ;(function () {
   'use strict';
 
   function SlitScan(video, opts) {
+    if (!video) {
+      console.error('SlitScan: video element required');
+      return;
+    }
+
     opts = opts || {};
     this.video = video;
     this.scanWidth = opts.scanWidth || 8;
@@ -14,23 +18,26 @@
     this.scanning = false;
     this.currentX = 0;
     this.currentY = 0;
+    
+    // Time-based capture system for fixed scans
+    this.capturedSlices = [];
+    this.lastCaptureTime = 0;
+    this.captureInterval = 50; // ms between captures
 
-    // Create a container wrapper if video doesn't have one already
+    // Set up container as parent element
     let container = video.parentElement;
-    if (!container || container.className !== 'slit-scan-container') {
+    if (!container?.classList?.contains('slit-scan-container')) {
       container = document.createElement('div');
       container.className = 'slit-scan-container';
       video.parentNode.insertBefore(container, video);
       container.appendChild(video);
     }
 
-    // Set up container styles to enable absolute positioning of overlay
     container.style.position = 'relative';
     container.style.display = 'inline-block';
     container.style.width = '100%';
     container.style.height = '100%';
 
-    // Set video to relative positioning
     video.style.position = 'relative';
     video.style.display = 'block';
     video.style.width = '100%';
@@ -46,30 +53,64 @@
     this.canvas.style.pointerEvents = 'none';
     this.ctx = this.canvas.getContext('2d', { alpha: true });
 
+    // Create separate canvas for scan line indicator
+    this.lineCanvas = document.createElement('canvas');
+    this.lineCanvas.className = 'slit-scan-line';
+    this.lineCanvas.style.position = 'absolute';
+    this.lineCanvas.style.left = '0';
+    this.lineCanvas.style.top = '0';
+    this.lineCanvas.style.zIndex = '11';
+    this.lineCanvas.style.pointerEvents = 'none';
+    this.lineCtx = this.lineCanvas.getContext('2d', { alpha: true });
+    
+    // Verify contexts were created
+    if (!this.ctx || !this.lineCtx) {
+      console.error('SlitScan: Failed to create canvas contexts');
+      return;
+    }
+
     container.appendChild(this.canvas);
+    container.appendChild(this.lineCanvas);
     this.container = container;
+
+    // Progress bar UI
+    this.progressBar = document.createElement('div');
+    this.progressBar.className = 'slit-scan-progress-bar';
+    this.progressBar.style.cssText = 'position:absolute;bottom:0;left:0;width:0%;height:3px;background-color:#ffffff;z-index:12;transition:width 0.1s linear';
+    
+    container.appendChild(this.progressBar);
+    
+    // Track loop completion
+    this.lastProgress = 0;
+    this.loopCount = 0;
 
     // Resize canvas to match video display size
     const resizeCanvas = () => {
       const rect = video.getBoundingClientRect();
-      const w = Math.max(1, Math.round(rect.width || video.offsetWidth || 640));
-      const h = Math.max(1, Math.round(rect.height || video.offsetHeight || 480));
+      let w = Math.max(1, Math.round(rect.width || video.offsetWidth || 0));
+      let h = Math.max(1, Math.round(rect.height || video.offsetHeight || 0));
+      
+      if (w === 0 || h === 0) {
+        w = window.innerWidth || 640;
+        h = window.innerHeight || 480;
+      }
 
+      // Resize canvases
       this.canvas.width = w;
       this.canvas.height = h;
-      this.canvas.style.width = w + 'px';
-      this.canvas.style.height = h + 'px';
-
       this.lineCanvas.width = w;
       this.lineCanvas.height = h;
-      this.lineCanvas.style.width = w + 'px';
-      this.lineCanvas.style.height = h + 'px';
 
+      // Initialize scan position based on type
       if (this.currentX === 0) {
-        this.currentX = w / 2; // Center for fixed-vertical
+        this.currentX = this.scanType === 'moving-vertical' ? w : 
+                        this.scanType === 'moving-vertical-ltr' ? -this.scanWidth :
+                        w / 2;
       }
       if (this.currentY === 0) {
-        this.currentY = h / 2; // Center for fixed-horizontal
+        this.currentY = this.scanType === 'moving-horizontal' ? -this.scanWidth :
+                        this.scanType === 'moving-horizontal-utd' ? h :
+                        h / 2;
       }
     };
 
@@ -80,27 +121,37 @@
     video.addEventListener('loadedmetadata', resizeCanvas.bind(this));
     window.addEventListener('resize', resizeCanvas.bind(this));
 
-    // Pointer events for user interaction
-    video.addEventListener('pointerdown', () => {
+    // Pointer event handlers
+    const startScanning = () => {
       this.scanning = true;
       this.container.classList.add('scanning');
-    });
-    document.addEventListener('pointerup', () => {
+      this.capturedSlices = [];
+      this.lastCaptureTime = 0;
+    };
+    
+    const stopScanning = () => {
       this.scanning = false;
       this.container.classList.remove('scanning');
-    });
+    };
+    
+    video.addEventListener('pointerdown', startScanning);
+    container.addEventListener('pointerdown', startScanning);
+    this.canvas.addEventListener('pointerdown', startScanning);
+    this.lineCanvas.addEventListener('pointerdown', startScanning);
+    
+    document.addEventListener('pointerup', stopScanning);
+    window.addEventListener('pointerup', stopScanning);
 
-    // Reset on video end/seek
+    // Video event handlers
     video.addEventListener('ended', () => {
-      this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
-      this.currentX = this.canvas.width / 2;
-      this.currentY = this.canvas.height / 2;
+      this.currentX = this.canvas.width - this.scanWidth;
+      this.currentY = this.canvas.height - this.scanWidth;
     });
+    
     video.addEventListener('seeked', () => {
       if (video.currentTime <= 0.05) {
-        this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
-        this.currentX = this.canvas.width / 2;
-        this.currentY = this.canvas.height / 2;
+        this.currentX = this.canvas.width - this.scanWidth;
+        this.currentY = this.canvas.height - this.scanWidth;
       }
     });
 
@@ -113,18 +164,38 @@
     const v = this.video;
     const w = this.canvas.width;
     const h = this.canvas.height;
+    
+    // Safety check for contexts
+    if (!this.ctx || !this.lineCtx) {
+      requestAnimationFrame(this.animate);
+      return;
+    }
+    
+    // Update progress bar if available
+    if (v.duration && v.duration > 0) {
+      const progress = (v.currentTime / v.duration) * 100;
+      this.progressBar.style.width = progress + '%';
+      this.lastProgress = progress;
+    }
 
-    // Draw scan effect based on scan type
+    // Only process if video is ready and canvas is sized
     if (v.readyState >= 2 && w > 0 && h > 0) {
-      // Moving scans always draw
-      if (this.scanType === 'moving-vertical' || this.scanType === 'moving-vertical-ltr') {
-        this.drawVerticalScan(v, w, h);
-      } else if (this.scanType === 'moving-horizontal' || this.scanType === 'moving-horizontal-utd') {
-        this.drawHorizontalScan(v, w, h);
-      } 
-      // Fixed scans only draw when user is actively scanning (pressing mouse)
-      else if (this.scanning) {
-        if (this.scanType === 'fixed-vertical') {
+      // Capture slices for fixed scans
+      if (this.scanning && (this.scanType === 'fixed-vertical' || this.scanType === 'fixed-horizontal')) {
+        const now = Date.now();
+        if (now - this.lastCaptureTime > this.captureInterval) {
+          this.captureSlice(v, w, h);
+          this.lastCaptureTime = now;
+        }
+      }
+      
+      // Draw based on scan type
+      if (this.scanning) {
+        if (this.scanType === 'moving-vertical' || this.scanType === 'moving-vertical-ltr') {
+          this.drawMovingVerticalScan(v, w, h);
+        } else if (this.scanType === 'moving-horizontal' || this.scanType === 'moving-horizontal-utd') {
+          this.drawMovingHorizontalScan(v, w, h);
+        } else if (this.scanType === 'fixed-vertical') {
           this.drawFixedVerticalScan(v, w, h);
         } else if (this.scanType === 'fixed-horizontal') {
           this.drawFixedHorizontalScan(v, w, h);
@@ -132,114 +203,146 @@
       }
     }
     
-    // Draw visible scan line indicator on EVERY frame (always visible, shows where scan will happen)
+    // Always show scan line
     if (w > 0 && h > 0) {
       this.lineCtx.clearRect(0, 0, w, h);
       this.drawScanLine(w, h);
     }
 
-    // Move scan line position based on scan type
+    // Update position based on scan type
     if (this.scanType === 'moving-vertical') {
       this.currentX -= this.dx;
-      if (this.currentX < -this.scanWidth) {
-        this.currentX = w;
-      }
+      if (this.currentX < -this.scanWidth) this.currentX = w;
     } else if (this.scanType === 'moving-vertical-ltr') {
       this.currentX += this.dx;
-      if (this.currentX > w) {
-        this.currentX = -this.scanWidth;
-      }
+      if (this.currentX > w) this.currentX = -this.scanWidth;
     } else if (this.scanType === 'moving-horizontal') {
       this.currentY += this.dx;
-      if (this.currentY > h) {
-        this.currentY = -this.scanWidth;
-      }
+      if (this.currentY > h) this.currentY = -this.scanWidth;
     } else if (this.scanType === 'moving-horizontal-utd') {
       this.currentY -= this.dx;
-      if (this.currentY < -this.scanWidth) {
-        this.currentY = h;
-      }
+      if (this.currentY < -this.scanWidth) this.currentY = h;
+    } else if (this.scanType === 'fixed-vertical' && this.scanning) {
+      this.currentX += this.dx;
+      if (this.currentX > w) this.currentX = w / 2;
+    } else if (this.scanType === 'fixed-horizontal' && this.scanning) {
+      this.currentY += this.dx;
+      if (this.currentY > h) this.currentY = h / 2;
     }
 
     requestAnimationFrame(this.animate);
   };
 
-  SlitScan.prototype.drawVerticalScan = function (v, w, h) {
+  // Capture video slice at current moment
+  SlitScan.prototype.captureSlice = function (v, w, h) {
+    if (this.scanType === 'fixed-vertical') {
+      const centerX = Math.floor(w / 2);
+      const srcX = Math.floor((centerX / w) * (v.videoWidth || w));
+      const sliceWidth = Math.max(1, Math.floor((this.scanWidth / w) * (v.videoWidth || w)));
+      
+      try {
+        const sliceCanvas = document.createElement('canvas');
+        sliceCanvas.width = this.scanWidth;
+        sliceCanvas.height = h;
+        const ctx = sliceCanvas.getContext('2d');
+        ctx.drawImage(v, srcX, 0, sliceWidth, v.videoHeight || h, 0, 0, this.scanWidth, h);
+        
+        this.capturedSlices.push({
+          canvas: sliceCanvas,
+          x: w / 2,
+          width: this.scanWidth,
+          height: h
+        });
+      } catch (e) {
+        // Ignore cross-origin errors
+      }
+    } else if (this.scanType === 'fixed-horizontal') {
+      const centerY = Math.floor(h / 2);
+      const srcY = Math.floor((centerY / h) * (v.videoHeight || h));
+      const sliceHeight = Math.max(1, Math.floor((this.scanWidth / h) * (v.videoHeight || h)));
+      
+      try {
+        const sliceCanvas = document.createElement('canvas');
+        sliceCanvas.width = w;
+        sliceCanvas.height = this.scanWidth;
+        const ctx = sliceCanvas.getContext('2d');
+        ctx.drawImage(v, 0, srcY, v.videoWidth || w, sliceHeight, 0, 0, w, this.scanWidth);
+        
+        this.capturedSlices.push({
+          canvas: sliceCanvas,
+          y: h / 2,
+          width: w,
+          height: this.scanWidth
+        });
+      } catch (e) {
+        // Ignore cross-origin errors
+      }
+    }
+  };
+
+  // Moving vertical scan
+  SlitScan.prototype.drawMovingVerticalScan = function (v, w, h) {
     const srcX = Math.floor((this.currentX / w) * (v.videoWidth || w));
     const sliceWidth = Math.max(1, Math.floor((this.scanWidth / w) * (v.videoWidth || w)));
-
     try {
-      this.ctx.drawImage(
-        v,
-        srcX, 0, sliceWidth, v.videoHeight || h,
-        this.currentX, 0, this.scanWidth, h
-      );
-    } catch (e) {
-      // Ignore errors
-    }
+      this.ctx.drawImage(v, srcX, 0, sliceWidth, v.videoHeight || h, this.currentX, 0, this.scanWidth, h);
+    } catch (e) {}
   };
 
-  SlitScan.prototype.drawHorizontalScan = function (v, w, h) {
+  // Moving horizontal scan
+  SlitScan.prototype.drawMovingHorizontalScan = function (v, w, h) {
     const srcY = Math.floor((this.currentY / h) * (v.videoHeight || h));
     const sliceHeight = Math.max(1, Math.floor((this.scanWidth / h) * (v.videoHeight || h)));
-
     try {
-      this.ctx.drawImage(
-        v,
-        0, srcY, v.videoWidth || w, sliceHeight,
-        0, this.currentY, w, this.scanWidth
-      );
-    } catch (e) {
-      // Ignore errors
-    }
+      this.ctx.drawImage(v, 0, srcY, v.videoWidth || w, sliceHeight, 0, this.currentY, w, this.scanWidth);
+    } catch (e) {}
   };
 
+  // Fixed vertical scan: draw captured slices
   SlitScan.prototype.drawFixedVerticalScan = function (v, w, h) {
-    const fixedX = Math.floor(w / 2);
-    const srcX = Math.floor((fixedX / w) * (v.videoWidth || w));
-    const sliceWidth = Math.max(1, Math.floor((this.scanWidth / w) * (v.videoWidth || w)));
-
     try {
-      this.ctx.drawImage(
-        v,
-        srcX, 0, sliceWidth, v.videoHeight || h,
-        fixedX, 0, this.scanWidth, h
-      );
-    } catch (e) {
-      // Ignore errors
-    }
+      for (let i = 0; i < this.capturedSlices.length; i++) {
+        const slice = this.capturedSlices[i];
+        const offset = (this.capturedSlices.length - 1 - i) * this.dx;
+        const drawX = slice.x + offset;
+        if (drawX + this.scanWidth > 0 && drawX < w) {
+          this.ctx.drawImage(slice.canvas, drawX, 0);
+        }
+      }
+    } catch (e) {}
   };
 
+  // Fixed horizontal scan: draw captured slices
   SlitScan.prototype.drawFixedHorizontalScan = function (v, w, h) {
-    const fixedY = Math.floor(h / 2);
-    const srcY = Math.floor((fixedY / h) * (v.videoHeight || h));
-    const sliceHeight = Math.max(1, Math.floor((this.scanWidth / h) * (v.videoHeight || h)));
-
     try {
-      this.ctx.drawImage(
-        v,
-        0, srcY, v.videoWidth || w, sliceHeight,
-        0, fixedY, w, this.scanWidth
-      );
-    } catch (e) {
-      // Ignore errors
-    }
+      for (let i = 0; i < this.capturedSlices.length; i++) {
+        const slice = this.capturedSlices[i];
+        const offset = (this.capturedSlices.length - 1 - i) * this.dx;
+        const drawY = slice.y + offset;
+        if (drawY + this.scanWidth > 0 && drawY < h) {
+          this.ctx.drawImage(slice.canvas, 0, drawY);
+        }
+      }
+    } catch (e) {}
   };
 
+  // Draw scan line indicator
   SlitScan.prototype.drawScanLine = function (w, h) {
-    this.ctx.strokeStyle = 'rgba(255, 255, 255, 0.9)';
-    this.ctx.lineWidth = 1.5;
-    this.ctx.beginPath();
+    this.lineCtx.strokeStyle = 'rgba(255, 255, 255, 0.9)';
+    this.lineCtx.lineWidth = 1.5;
+    this.lineCtx.beginPath();
 
-    if (this.scanType === 'moving-vertical' || this.scanType === 'moving-vertical-ltr' || this.scanType === 'fixed-vertical') {
-      this.ctx.moveTo(this.currentX, 0);
-      this.ctx.lineTo(this.currentX, h);
-    } else if (this.scanType === 'moving-horizontal' || this.scanType === 'moving-horizontal-utd' || this.scanType === 'fixed-horizontal') {
-      this.ctx.moveTo(0, this.currentY);
-      this.ctx.lineTo(w, this.currentY);
+    if (this.scanType.includes('vertical')) {
+      const lineX = this.scanType.includes('fixed') ? w / 2 : this.currentX;
+      this.lineCtx.moveTo(lineX, 0);
+      this.lineCtx.lineTo(lineX, h);
+    } else if (this.scanType.includes('horizontal')) {
+      const lineY = this.scanType.includes('fixed') ? h / 2 : this.currentY;
+      this.lineCtx.moveTo(0, lineY);
+      this.lineCtx.lineTo(w, lineY);
     }
 
-    this.ctx.stroke();
+    this.lineCtx.stroke();
   };
 
   // Static methods
@@ -266,5 +369,8 @@
     return instances;
   };
 
-  window.SlitScan = SlitScan;
+  // Export to window
+  if (typeof window !== 'undefined') {
+    window.SlitScan = SlitScan;
+  }
 })();
