@@ -2,43 +2,48 @@
 <!doctype html>
 <html lang="en">
 
-
 <head>
-  
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <!-- Cache bust meta -->
   <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
   <meta http-equiv="Pragma" content="no-cache" />
   <meta http-equiv="Expires" content="0" />
   <title>City of Fragments</title>
   <link rel="icon" type="image/png" sizes="32x32" href="/favicon.png">
   <link rel="icon" type="image/x-icon" href="/favicon.ico">
-  <link rel="stylesheet" href="style.css?v=deploy-refresh" />
-  <!-- p5.js library -->
+  <link rel="stylesheet" href="style.css?v=2025-12-09-v2" />
   <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.9.0/p5.min.js"></script>
-
 </head>
 
-
 <body>
-  <!-- Top small bar (4 navigation) -->
   <div class="topbar">
     <a class="top-link left" href="project_process.html">PROJECT PROCESS</a>
     <a class="top-link right" href="your_stories.html">YOUR STORIES</a>
   </div>
 
-
-  <!-- Fullscreen video player (new main interface) -->
   <div id="fullscreen-player">
-    <video id="mainPlayer" autoplay muted playsinline preload="auto" loop></video>
+    <div class="slit-scan-container">
+      <video id="mainPlayer" autoplay muted playsinline preload="auto" loop></video>
+    </div>
     <div class="player-controls">
+      <button id="pausePlayBtn" class="control-btn pause-play-btn" aria-label="Pause/Play">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path class="play-icon" d="M5 3l14 9-14 9V3z" fill="currentColor"></path>
+          <path class="pause-icon" style="display:none" d="M6 4h4v16H6V4zm8 0h4v16h-4V4z" fill="currentColor"></path>
+        </svg>
+      </button>
+      <button id="screenshotBtn" class="control-btn screenshot-btn" aria-label="Screenshot">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"></path>
+          <circle cx="12" cy="13" r="4"></circle>
+        </svg>
+      </button>
       <button id="discoverBtn" class="discover-btn" aria-label="Discover Hong Kong">
         <img src="assets/Discover Hong Kong.png" alt="Discover Hong Kong" />
       </button>
+    </div>
   </div>
 
-  <!-- Canvas container for p5.js orb (full-screen overlay) -->
   <div id="canvas-container"></div>
 
   <div id="title-wrap">
@@ -49,224 +54,27 @@
   <footer class="site-footer">
     <div class="center small-caption"></div>
   </footer>
+  </div>
 
+  <!-- Floating Add button -->
+  <button id="addBtn" title="Discover Hong Kong">+</button>
+
+  <footer class="site-footer">
+    <a class="bottom-link left" href="documentation.html">DOCUMENTATION</a>
+    <div class="center small-caption"></div>
+    <a class="bottom-link right" href="follow.html">FOLLOW</a>
+  </footer>
+
+  <script src="assets/slit-scan.js?v=2025-12-09"></script>
   <script>
-    // Prevent video upscaling: size hero video to intrinsic resolution when smaller than its container
-    (function() {
-      const vid = document.getElementById('heroVideo');
-      if (!vid) return;
-      const container = vid.closest('.frame-grid') || vid.parentElement;
-
-
-      function fitVideo() {
-        const vw = vid.videoWidth || vid.naturalWidth || 0;
-        const vh = vid.videoHeight || vid.naturalHeight || 0;
-        const cw = container.clientWidth;
-        const ch = container.clientHeight;
-
-
-        // reset positioning so we can center
-        vid.style.position = 'absolute';
-        vid.style.left = '50%';
-        vid.style.top = '50%';
-        vid.style.transform = 'translate(-50%, -50%)';
-
-
-        if (vw && vh) {
-          // If the intrinsic video size is smaller than container, don't upscale: use intrinsic width.
-          if (vw <= cw && vh <= ch) {
-            vid.style.width = vw + 'px';
-            vid.style.height = 'auto';
-            vid.style.objectFit = 'none';
-          } else {
-            // otherwise fit inside container while preserving aspect ratio
-            vid.style.width = '100%';
-            vid.style.height = '100%';
-            vid.style.objectFit = 'contain';
-          }
-        } else {
-          // fallback: ensure contain
-          vid.style.width = '100%';
-          vid.style.height = '100%';
-          vid.style.objectFit = 'contain';
-        }
-      }
-
-
-      vid.addEventListener('loadedmetadata', fitVideo);
-      window.addEventListener('resize', fitVideo);
-      // try to run once in case metadata already available
-      setTimeout(fitVideo, 150);
-    })();
-  </script>
-
-
-  <!-- Initialize videos inside frame-grid elements that have a data-video attribute -->
-  <script>
-    (async function () {
-      // find all frame-grid elements with a data-video attribute
-      const frames = document.querySelectorAll('.frame-grid[data-video]');
-      frames.forEach(async (frame) => {
-        const src = frame.getAttribute('data-video');
-        if (!src) return;
-
-
-        // quick HEAD request to check file existence when served over http
-        let exists = true;
-        try {
-          const resp = await fetch(src, { method: 'HEAD' });
-          exists = resp && resp.ok;
-        } catch (e) {
-          exists = true; // if fetch fails (eg file://) try to create video anyway
-        }
-
-
-        if (!exists) {
-          frame.classList.add('video-missing');
-          frame.innerHTML = '<div class="missing-label">Video missing<br>add file to assets/</div>';
-          return;
-        }
-
-
-        // create video element with explicit properties
-        const vid = document.createElement('video');
-        vid.playsInline = true;
-        vid.muted = true;
-        vid.autoplay = true;
-        vid.loop = true;
-        vid.preload = 'auto';
-        vid.style.display = 'block';
-        vid.style.width = '100%';
-        vid.style.height = '100%';
-        vid.style.objectFit = 'cover';
-
-
-        // source element
-        const source = document.createElement('source');
-        source.src = src;
-        source.type = 'video/mp4';
-        vid.appendChild(source);
-
-
-        // add a class so CSS can remove padding/overlay
-        frame.classList.add('has-video');
-        // replace the inner content (if any) with the video
-        frame.innerHTML = '';
-        frame.appendChild(vid);
-
-
-        // playback handling with helpful fallbacks
-        vid.addEventListener('canplay', () => {
-          // try to play; modern browsers return a promise
-          const p = vid.play();
-          if (p && p.catch) p.catch(() => {
-            // if autoplay was blocked, show a play overlay
-            showPlayOverlay(frame, vid);
-          });
-        });
-
-
-        vid.addEventListener('play', () => frame.classList.add('is-playing'));
-        vid.addEventListener('error', () => {
-          frame.classList.remove('has-video');
-          frame.classList.add('video-missing');
-          frame.innerHTML = '<div class="missing-label">Video failed to load</div>';
-        });
-
-
-        // helper to show a click overlay to start playback when autoplay blocked
-        function showPlayOverlay(frameEl, videoEl) {
-          const btn = document.createElement('button');
-          btn.className = 'video-play-overlay';
-          btn.innerText = 'Play';
-          btn.addEventListener('click', () => {
-            videoEl.muted = false; // let user unmute if desired
-            videoEl.play().catch(()=>{});
-            btn.remove();
-          });
-          frameEl.appendChild(btn);
-        }
-      });
-    })();
-  </script>
-
-
-  <!-- p5 sketch is loaded at the end of the document -->
-  
-  <script>
-    (async function () {
-      const moreBtn = document.getElementById('discoverBtn');
-      const player = document.getElementById('mainPlayer');
-      const status = document.getElementById('videoStatus');
-      console.log('video switcher init', { moreBtnExists: !!moreBtn, playerExists: !!player, statusExists: !!status });
+    // Initialize slit-scan FIRST, then video
+    (function () {
+      const sources = [
+        'assets/1.mp4', 'assets/2.mp4', 'assets/3.mp4', 'assets/4.mp4', 'assets/5.mp4',
+        'assets/6.mp4', 'assets/7.mp4', 'assets/8.mp4', 'assets/9.mp4', 'assets/10.mp4',
+        'assets/11.mp4', 'assets/12.mp4'
+      ];
       
-      // Dynamically build list of MP4 files by scanning frame-grid elements with data-video attribute
-      // plus the hero video, to ensure all videos in the mini-site are included
-      let sources = [];
-      
-      // Add hero video first
-      const heroVid = document.getElementById('heroVideo');
-      if (heroVid && heroVid.querySelector('source')) {
-        sources.push(heroVid.querySelector('source').src);
-      }
-      
-      // Add all videos from data-video attributes in frame-grid elements
-      document.querySelectorAll('.frame-grid[data-video]').forEach(frame => {
-        const src = frame.getAttribute('data-video');
-        if (src && !sources.includes(src)) {
-          sources.push(src);
-        }
-      });
-      
-      // Fallback: if no videos found, use original hardcoded list
-      if (sources.length === 0) {
-        // fallback list: only include files that are present in the assets folder
-        sources = [
-          'assets/1.mp4',
-          'assets/2.mp4',
-          'assets/3.mp4',
-          'assets/4.mp4',
-          'assets/5.mp4',
-          'assets/6.mp4',
-          'assets/7.mp4',
-          'assets/8.mp4',
-          'assets/9.mp4',
-          'assets/10.mp4',
-          'assets/11.mp4',
-          'assets/12.mp4'
-        ];
-
-        // validate that each fallback source actually exists (HEAD request)
-        async function validateSources(list) {
-          const validated = [];
-          await Promise.all(list.map(async (src) => {
-            try {
-              const resp = await fetch(src, { method: 'HEAD' });
-              if (resp && resp.ok) validated.push(src);
-              else console.warn('Video unavailable (will skip):', src, resp && resp.status);
-            } catch (e) {
-              console.warn('Error checking video (will skip):', src, e);
-            }
-          }));
-          return validated;
-        }
-
-        sources = await validateSources(sources);
-        if (sources.length === 0) console.warn('No valid fallback videos found.');
-      }
-
-
-      let currentIndex = 0;
-
-
-      // helper: update on-screen status (useful for debugging/UX)
-      function updateStatus() {
-        if (!status) return;
-        status.textContent = `Video ${currentIndex + 1} / ${sources.length}`;
-      }
-
-
-      // Map video files to location subtitles
       const videoLocations = {
         'assets/1.mp4': 'Location: Portland Street, Mong Kok',
         'assets/2.mp4': 'Location: Former Kowloon-Canton Railway Clock Tower',
@@ -281,8 +89,7 @@
         'assets/11.mp4': 'Location: Fung Wong Sun Tsuen',
         'assets/12.mp4': 'Location: West Kowloon Art Park'
       };
-
-      // Map video files to scan types
+      
       const videoScanTypes = {
         'assets/1.mp4': 'fixed-vertical',
         'assets/2.mp4': 'moving-vertical',
@@ -297,133 +104,120 @@
         'assets/11.mp4': 'fixed-vertical',
         'assets/12.mp4': 'fixed-vertical'
       };
-
-      // robust source swapping: set video src directly, load and play
-      function setSourceIndex(i) {
-        if (!player) return;
-        if (!sources || sources.length === 0) return;
-        currentIndex = ((i % sources.length) + sources.length) % sources.length;
-        const src = sources[currentIndex];
-        console.log('Switching main player to', src);
-
-        try {
-          // ensure player properties
-          player.muted = true;
-          player.playsInline = true;
-          player.loop = true;
-
-          // set src directly (simpler and more reliable than creating <source> nodes)
-          if (player.src !== src) {
-            player.pause();
-            // remove child sources for cleanliness
-            while (player.firstChild) player.removeChild(player.firstChild);
-            player.removeAttribute('src');
-            player.src = src;
-          }
-
-          // reset and try to play
-          player.load();
-          player.currentTime = 0;
-          const p = player.play();
-          if (p && p.catch) p.catch((err) => {
-            console.warn('Autoplay prevented or play() rejected for', src, err);
-            // Leave player ready; user can manually start playback if needed
-          });
-
-          // Update subtitle with location and apply scan type to video
-          const subtitleEl = document.getElementById('overlay-subtitle');
-          if (subtitleEl) {
-            const location = videoLocations[src] || 'Location: Hong Kong';
-            subtitleEl.textContent = location;
-          }
-
-          // Apply scan type to the video element
-          if (window.SlitScan && player._slitScan) {
-            const scanType = videoScanTypes[src] || 'fixed-vertical';
-            player._slitScan.scanType = scanType;
-            console.log('Applied scan type:', scanType, 'to', src);
-          }
-        } catch (err) {
-          console.error('Error while switching video:', err);
+      
+      function initializeAll() {
+        const player = document.getElementById('mainPlayer');
+        const moreBtn = document.getElementById('discoverBtn');
+        const pausePlayBtn = document.getElementById('pausePlayBtn');
+        const screenshotBtn = document.getElementById('screenshotBtn');
+        
+        if (!player) {
+          console.error('Player not found');
+          return;
         }
-
-        updateStatus();
-      }
-
-
-
-      // initialize player with the original hero subvideo
-      setSourceIndex(0);
-
-
-      // ensure player will loop in the background
-      try { player.loop = true; player.muted = true; player.playsInline = true; } catch(e) {}
-
-
-      function cycleNext() {
-        setSourceIndex(currentIndex + 1);
-      }
-
-
-      if (moreBtn) {
-        // click handler
-        moreBtn.addEventListener('click', (ev) => {
-          ev.preventDefault();
-          console.log('discoverBtn clicked — cycling video');
-          cycleNext();
-          try {
-            player.currentTime = 0;
-            player.muted = true;
-            const p = player.play();
-            if (p && p.catch) p.catch(err => console.warn('play() rejected after click:', err));
-          } catch (err) { console.warn('Error while attempting play on click', err); }
-        });
-
-
-        // keyboard support: Enter or Space triggers the same action
-        moreBtn.addEventListener('keydown', (ev) => {
-          if (ev.key === 'Enter' || ev.key === ' ' || ev.key === 'Spacebar') {
-            ev.preventDefault();
-            moreBtn.click();
-          }
-        });
-      }
-
-
-      // log playback errors to console and show on status
-      if (player) {
-        player.addEventListener('error', (e) => {
-          console.error('Main player error', e);
-          if (status) status.textContent = 'Video failed to load';
-        });
-      }
-    })();
-  </script>
-
-  <!-- p5.js sketch for orb -->
-  <script src="assets/slit-scan.js?v=2025-12-06"></script>
-  <script>
-    // Initialize the slit-scan on all videos (right-to-left default)
-    (function () {
-      function initSlit() {
+        
+        // First: Attach slit-scan to video
         if (window.SlitScan) {
-          // Attach to all <video> elements and use defaults similar to the Processing sketch
           window.SlitScan.attachAll('video', { scanWidth: 8, dx: 2 });
+          console.log('Slit-scan attached');
         } else {
-          console.warn('SlitScan module not loaded');
+          console.error('SlitScan not loaded');
         }
+        
+        let currentIndex = 0;
+        
+        // Video switching function
+        function setVideo(index) {
+          currentIndex = ((index % sources.length) + sources.length) % sources.length;
+          const src = sources[currentIndex];
+          
+          console.log('Loading:', src);
+          
+          player.src = src;
+          player.load();
+          
+          // Update scan type
+          if (player._slitScan && videoScanTypes[src]) {
+            player._slitScan.scanType = videoScanTypes[src];
+          }
+          
+          // Update subtitle
+          const subtitle = document.getElementById('overlay-subtitle');
+          if (subtitle && videoLocations[src]) {
+            subtitle.textContent = videoLocations[src];
+          }
+          
+          // Play
+          player.play().catch(e => console.warn('Autoplay blocked:', e));
+        }
+        
+        // Second: Load first video
+        setVideo(0);
+        
+        // Discover button
+        if (moreBtn) {
+          moreBtn.addEventListener('click', (ev) => {
+            ev.preventDefault();
+            setVideo(currentIndex + 1);
+          });
+        }
+        
+        // Pause/play button
+        if (pausePlayBtn) {
+          pausePlayBtn.addEventListener('click', () => {
+            if (player.paused) {
+              player.play();
+              pausePlayBtn.querySelector('.play-icon').style.display = 'none';
+              pausePlayBtn.querySelector('.pause-icon').style.display = 'block';
+            } else {
+              player.pause();
+              pausePlayBtn.querySelector('.play-icon').style.display = 'block';
+              pausePlayBtn.querySelector('.pause-icon').style.display = 'none';
+            }
+          });
+          
+          pausePlayBtn.querySelector('.play-icon').style.display = 'none';
+          pausePlayBtn.querySelector('.pause-icon').style.display = 'block';
+        }
+        
+        // Screenshot button
+        if (screenshotBtn) {
+          screenshotBtn.addEventListener('click', () => {
+            const container = player.parentElement;
+            const slitCanvas = container.querySelector('.slit-scan-canvas');
+            
+            if (slitCanvas) {
+              const canvas = document.createElement('canvas');
+              canvas.width = slitCanvas.width;
+              canvas.height = slitCanvas.height;
+              const ctx = canvas.getContext('2d');
+              
+              ctx.drawImage(player, 0, 0, canvas.width, canvas.height);
+              ctx.drawImage(slitCanvas, 0, 0);
+              
+              canvas.toBlob((blob) => {
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = city-fragments-.jpg;
+                a.click();
+                URL.revokeObjectURL(url);
+              }, 'image/jpeg', 0.95);
+            }
+          });
+        }
+        
+        console.log('Video system ready');
       }
-
-      // Delay initialization slightly to allow dynamic video elements to be created
+      
+      // Wait for DOM, then initialize
       if (document.readyState === 'loading') {
-        document.addEventListener('DOMContentLoaded', function () { setTimeout(initSlit, 200); });
+        document.addEventListener('DOMContentLoaded', () => setTimeout(initializeAll, 100));
       } else {
-        setTimeout(initSlit, 200);
+        setTimeout(initializeAll, 100);
       }
     })();
   </script>
   <script src="sketch.js"></script>
 </body>
-
-
 </html>
