@@ -145,13 +145,7 @@
     const pointerUp = () => {
       this.mouseActive = false;
       this.container.classList.remove('scanning');
-<<<<<<< HEAD
       // leave captured slices in place; next press will clear
-=======
-      console.log('Mouse left - slit-scan inactive');
-      // Don't clear canvas or slices - keep the effect visible for screenshot
-      // User can re-enter to start a new scan
->>>>>>> 1e94427f98949dcb5094e963a4b1f9baedea293b
     };
 
     // Track pointer movement over the container (position only)
