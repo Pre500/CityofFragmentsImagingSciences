@@ -371,11 +371,13 @@
     this.lineCtx.beginPath();
 
     if (this.scanType.includes('vertical')) {
-      const lineX = this.scanType.includes('fixed') ? w / 2 : this.currentX;
+      // Always follow mouse position for vertical scans
+      const lineX = this.currentX;
       this.lineCtx.moveTo(lineX, 0);
       this.lineCtx.lineTo(lineX, h);
     } else if (this.scanType.includes('horizontal')) {
-      const lineY = this.scanType.includes('fixed') ? h / 2 : this.currentY;
+      // Always follow mouse position for horizontal scans
+      const lineY = this.currentY;
       this.lineCtx.moveTo(0, lineY);
       this.lineCtx.lineTo(w, lineY);
     }
