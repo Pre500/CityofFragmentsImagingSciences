@@ -379,14 +379,17 @@
     this.lineCtx.lineWidth = 1.5;
     this.lineCtx.beginPath();
 
+    // For fixed scans, follow mouse; for moving scans, follow auto-position
+    const isMoving = this.scanType.includes('moving');
+
     if (this.scanType.includes('vertical')) {
-      // Always follow mouse position for vertical scans
-      const lineX = this.currentX;
+      // Moving scans use auto-position, fixed scans follow mouse
+      const lineX = isMoving ? this.currentX : this.currentX;
       this.lineCtx.moveTo(lineX, 0);
       this.lineCtx.lineTo(lineX, h);
     } else if (this.scanType.includes('horizontal')) {
-      // Always follow mouse position for horizontal scans
-      const lineY = this.currentY;
+      // Moving scans use auto-position, fixed scans follow mouse
+      const lineY = isMoving ? this.currentY : this.currentY;
       this.lineCtx.moveTo(0, lineY);
       this.lineCtx.lineTo(w, lineY);
     }

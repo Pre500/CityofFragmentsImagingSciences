@@ -9,8 +9,10 @@
   <meta http-equiv="Pragma" content="no-cache" />
   <meta http-equiv="Expires" content="0" />
   <title>City of Fragments</title>
-  <link rel="icon" type="image/png" sizes="32x32" href="/favicon.png">
-  <link rel="icon" type="image/x-icon" href="/favicon.ico">
+  <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+  <link rel="manifest" href="/site.webmanifest">
   <link rel="stylesheet" href="style.css?v=2025-12-09-v3" />
   <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.9.0/p5.min.js"></script>
 </head>
@@ -149,10 +151,10 @@
         'assets/1.mp4': 'fixed-vertical',
         'assets/2.mp4': 'moving-vertical',
         'assets/3.mp4': 'fixed-vertical',
-        'assets/4.mp4': 'moving-vertical-ltr',
+        'assets/4.mp4': 'fixed-horizontal',
         'assets/5.mp4': 'moving-horizontal',
         'assets/6.mp4': 'fixed-vertical',
-        'assets/7.mp4': 'fixed-vertical',
+        'assets/7.mp4': 'fixed-horizontal',
         'assets/8.mp4': 'moving-vertical',
         'assets/9.mp4': 'moving-horizontal-utd',
         'assets/10.mp4': 'fixed-vertical',
@@ -206,6 +208,13 @@
               window.SlitScan.attachTo(player, { scanWidth: 10, dx: 3, scanType });
               console.log('Slit-scan attached with type:', scanType);
             } else {
+              // Clear accumulated trails when switching videos
+              if (player._slitScan.capturedSlices) {
+                player._slitScan.capturedSlices = [];
+              }
+              if (player._slitScan.ctx && player._slitScan.canvas) {
+                player._slitScan.ctx.clearRect(0, 0, player._slitScan.canvas.width, player._slitScan.canvas.height);
+              }
               player._slitScan.scanType = scanType;
               player._slitScan.scanWidth = 10;
               player._slitScan.dx = 3;
