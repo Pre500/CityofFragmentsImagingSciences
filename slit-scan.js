@@ -155,12 +155,8 @@
       this.mouseActive = false;
       this.container.classList.remove('scanning');
       console.log('Mouse left - slit-scan inactive');
-      // Clear captured slices when mouse leaves
-      this.capturedSlices = [];
-      // Clear the canvas
-      if (this.ctx && this.canvas.width > 0) {
-        this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
-      }
+      // Don't clear canvas or slices - keep the effect visible for screenshot
+      // User can re-enter to start a new scan
     };
     
     // Track mouse movement over the container - no click required
