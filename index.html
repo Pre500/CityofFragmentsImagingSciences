@@ -183,23 +183,34 @@
             const container = player.parentElement;
             const slitCanvas = container.querySelector('.slit-scan-canvas');
             
-            if (slitCanvas) {
+            if (slitCanvas && slitCanvas.width > 0 && slitCanvas.height > 0) {
               const canvas = document.createElement('canvas');
               canvas.width = slitCanvas.width;
               canvas.height = slitCanvas.height;
               const ctx = canvas.getContext('2d');
               
+              // Draw video first
               ctx.drawImage(player, 0, 0, canvas.width, canvas.height);
+              // Draw slit-scan effect on top
               ctx.drawImage(slitCanvas, 0, 0);
               
               canvas.toBlob((blob) => {
-                const url = URL.createObjectURL(blob);
-                const a = document.createElement('a');
-                a.href = url;
-                a.download = `city-fragments-${Date.now()}.jpg`;
-                a.click();
-                URL.revokeObjectURL(url);
+                if (blob) {
+                  const url = URL.createObjectURL(blob);
+                  const a = document.createElement('a');
+                  a.href = url;
+                  a.download = `city-fragments-${Date.now()}.jpg`;
+                  document.body.appendChild(a);
+                  a.click();
+                  document.body.removeChild(a);
+                  URL.revokeObjectURL(url);
+                  console.log('Screenshot saved');
+                } else {
+                  console.error('Failed to create blob');
+                }
               }, 'image/jpeg', 0.95);
+            } else {
+              console.warn('Slit-scan canvas not found or not ready');
             }
           });
         }

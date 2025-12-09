@@ -23,7 +23,7 @@
     // Time-based capture system for fixed scans
     this.capturedSlices = [];
     this.lastCaptureTime = 0;
-    this.captureInterval = 30; // ms between captures
+    this.captureInterval = 16; // ms between captures (faster fill)
 
     // Set up container as parent element
     let container = video.parentElement;
@@ -49,13 +49,13 @@
     // Create main buffer canvas for slit-scan accumulation
     this.canvas = document.createElement('canvas');
     this.canvas.className = 'slit-scan-canvas';
-    this.canvas.style.cssText = 'position:absolute;left:0;top:0;width:100%;height:100%;z-index:9999;pointer-events:none;display:block;';
+    this.canvas.style.cssText = 'position:absolute;left:0;top:0;width:100%;height:100%;z-index:10;pointer-events:none;display:block;';
     this.ctx = this.canvas.getContext('2d', { alpha: true, willReadFrequently: true });
 
     // Create separate canvas for scan line indicator
     this.lineCanvas = document.createElement('canvas');
     this.lineCanvas.className = 'slit-scan-line';
-    this.lineCanvas.style.cssText = 'position:absolute;left:0;top:0;width:100%;height:100%;z-index:10000;pointer-events:none;display:block;';
+    this.lineCanvas.style.cssText = 'position:absolute;left:0;top:0;width:100%;height:100%;z-index:11;pointer-events:none;display:block;';
     this.lineCtx = this.lineCanvas.getContext('2d', { alpha: true });
     
     // Verify contexts were created
@@ -143,6 +143,11 @@
     const mouseEnter = () => {
       this.mouseActive = true;
       this.container.classList.add('scanning');
+      // Clear canvas when starting new scan
+      this.capturedSlices = [];
+      if (this.ctx && this.canvas.width > 0) {
+        this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+      }
       console.log('Mouse entered - slit-scan active', this.scanType);
     };
     
@@ -200,8 +205,7 @@
       this.lastProgress = progress;
     }
 
-    // Clear canvas first
-    this.ctx.clearRect(0, 0, w, h);
+    // Only clear canvas when mouse leaves (let slices accumulate)
     
     // Only process if video is ready and canvas is sized and mouse is active
     if (v.readyState >= 2 && w > 0 && h > 0 && this.mouseActive) {
