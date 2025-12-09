@@ -224,7 +224,7 @@ addBtn.addEventListener("click", async () => {
             
             // Re-enable button and reset form
             addBtn.disabled = false;
-            addBtn.textContent = "✨ Add to Scrapbook";
+            addBtn.textContent = "Add to Scrapbook";
             uploadInput.value = "";
             textInput.value = "";
         } catch (error) {
