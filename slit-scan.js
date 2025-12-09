@@ -50,6 +50,12 @@
     this.canvas.className = 'slit-scan-canvas';
     this.canvas.style.cssText = 'position:absolute;left:0;top:0;width:100%;height:100%;z-index:10;pointer-events:none;display:block;';
     this.ctx = this.canvas.getContext('2d', { alpha: true, willReadFrequently: true });
+    
+    // Ensure canvas content is opaque when drawn
+    if (this.ctx) {
+      this.ctx.globalAlpha = 1.0;
+      this.ctx.globalCompositeOperation = 'source-over';
+    }
 
     // Create separate canvas for scan line indicator
     this.lineCanvas = document.createElement('canvas');
@@ -140,6 +146,7 @@
       if (this.ctx && this.canvas.width > 0) {
         this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
       }
+      console.log('Slit-scan activated - press and move mouse to draw effect');
     };
 
     const pointerUp = () => {

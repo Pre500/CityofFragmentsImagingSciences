@@ -143,7 +143,17 @@ body {
 .discover-btn:hover img { transform: translateY(-3px); }
 
 /* Slit-scan overlays */
-.slit-scan-canvas, .slit-scan-line { background-color: transparent !important; display: block; z-index: 10 !important; position: absolute; pointer-events: none; }
+.slit-scan-canvas, .slit-scan-line { 
+  background-color: transparent !important; 
+  display: block; 
+  z-index: 10 !important; 
+  position: absolute; 
+  pointer-events: none;
+  opacity: 1 !important;
+  mix-blend-mode: normal;
+}
+.slit-scan-canvas { z-index: 10 !important; }
+.slit-scan-line { z-index: 11 !important; }
 
 /* Subpage styles */
 body.subpage { background: #2a2a2a; color: #fff; }
