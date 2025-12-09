@@ -475,3 +475,10 @@ body.subpage #title-wrap {
     text-align: center;
     font-size: 16px;
 }
+
+/* Slit-scan overlay canvases - ensure they are transparent */
+.slit-scan-canvas,
+.slit-scan-line {
+  background-color: transparent !important;
+  display: block;
+}
