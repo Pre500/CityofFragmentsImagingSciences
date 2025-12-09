@@ -11,7 +11,7 @@
   <title>City of Fragments</title>
   <link rel="icon" type="image/png" sizes="32x32" href="/favicon.png">
   <link rel="icon" type="image/x-icon" href="/favicon.ico">
-  <link rel="stylesheet" href="style.css?v=2025-12-09-v2" />
+  <link rel="stylesheet" href="style.css?v=2025-12-09-v3" />
   <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.9.0/p5.min.js"></script>
 </head>
 
@@ -53,7 +53,6 @@
 
   <script src="assets/slit-scan.js?v=2025-12-09"></script>
   <script>
-    // Initialize slit-scan FIRST, then video
     (function () {
       const sources = [
         'assets/1.mp4', 'assets/2.mp4', 'assets/3.mp4', 'assets/4.mp4', 'assets/5.mp4',
@@ -102,7 +101,6 @@
           return;
         }
         
-        // First: Attach slit-scan to video
         if (window.SlitScan) {
           window.SlitScan.attachAll('video', { scanWidth: 8, dx: 2 });
           console.log('Slit-scan attached');
@@ -112,35 +110,42 @@
         
         let currentIndex = 0;
         
-        // Video switching function
         function setVideo(index) {
           currentIndex = ((index % sources.length) + sources.length) % sources.length;
           const src = sources[currentIndex];
-          
+
           console.log('Loading:', src);
-          
+
+          player.muted = true;
+          player.playsInline = true;
+          player.loop = true;
           player.src = src;
           player.load();
-          
-          // Update scan type
+
           if (player._slitScan && videoScanTypes[src]) {
             player._slitScan.scanType = videoScanTypes[src];
           }
-          
-          // Update subtitle
+
           const subtitle = document.getElementById('overlay-subtitle');
           if (subtitle && videoLocations[src]) {
             subtitle.textContent = videoLocations[src];
           }
-          
-          // Play
-          player.play().catch(e => console.warn('Autoplay blocked:', e));
+
+          const playVideo = () => {
+            player.play()
+              .then(() => console.log('Video playing'))
+              .catch(e => console.warn('Autoplay blocked:', e));
+          };
+
+          if (player.readyState >= 2) {
+            playVideo();
+          } else {
+            player.addEventListener('loadeddata', playVideo, { once: true });
+          }
         }
-        
-        // Second: Load first video
+
         setVideo(0);
         
-        // Discover button
         if (moreBtn) {
           moreBtn.addEventListener('click', (ev) => {
             ev.preventDefault();
@@ -148,7 +153,6 @@
           });
         }
         
-        // Pause/play button
         if (pausePlayBtn) {
           pausePlayBtn.addEventListener('click', () => {
             if (player.paused) {
@@ -166,7 +170,6 @@
           pausePlayBtn.querySelector('.pause-icon').style.display = 'block';
         }
         
-        // Screenshot button
         if (screenshotBtn) {
           screenshotBtn.addEventListener('click', () => {
             const container = player.parentElement;
@@ -185,7 +188,7 @@
                 const url = URL.createObjectURL(blob);
                 const a = document.createElement('a');
                 a.href = url;
-                a.download = city-fragments-.jpg;
+                a.download = `city-fragments-${Date.now()}.jpg`;
                 a.click();
                 URL.revokeObjectURL(url);
               }, 'image/jpeg', 0.95);
@@ -196,7 +199,6 @@
         console.log('Video system ready');
       }
       
-      // Wait for DOM, then initialize
       if (document.readyState === 'loading') {
         document.addEventListener('DOMContentLoaded', () => setTimeout(initializeAll, 100));
       } else {
