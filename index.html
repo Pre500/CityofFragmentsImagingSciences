@@ -103,12 +103,8 @@
           return;
         }
         
-        if (window.SlitScan) {
-          window.SlitScan.attachAll('video', { scanWidth: 8, dx: 2 });
-          console.log('Slit-scan attached');
-        } else {
-          console.error('SlitScan not loaded');
-        }
+        // Slit-scan will be attached when video loads
+        console.log('Ready to attach slit-scan');
         
         let currentIndex = 0;
         
@@ -124,8 +120,18 @@
           player.src = src;
           player.load();
 
-          if (player._slitScan && videoScanTypes[src]) {
-            player._slitScan.scanType = videoScanTypes[src];
+          // Attach or update slit-scan with correct scan type
+          if (window.SlitScan) {
+            const scanType = videoScanTypes[src] || 'fixed-vertical';
+            if (!player._slitScan) {
+              window.SlitScan.attachTo(player, { scanWidth: 10, dx: 3, scanType: scanType });
+              console.log('Slit-scan attached with type:', scanType);
+            } else {
+              player._slitScan.scanType = scanType;
+              player._slitScan.scanWidth = 10;
+              player._slitScan.dx = 3;
+              console.log('Slit-scan updated to type:', scanType);
+            }
           }
 
           const subtitle = document.getElementById('overlay-subtitle');

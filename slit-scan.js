@@ -141,11 +141,13 @@
     const mouseEnter = () => {
       this.mouseActive = true;
       this.container.classList.add('scanning');
+      console.log('Mouse entered - slit-scan active', this.scanType);
     };
     
     const mouseLeave = () => {
       this.mouseActive = false;
       this.container.classList.remove('scanning');
+      console.log('Mouse left - slit-scan inactive');
       // Clear captured slices when mouse leaves
       this.capturedSlices = [];
       // Clear the canvas
@@ -315,6 +317,11 @@
   // Fixed vertical scan: draw captured slices
   SlitScan.prototype.drawFixedVerticalScan = function (v, w, h) {
     try {
+      // Keep only last 50 slices for performance
+      if (this.capturedSlices.length > 50) {
+        this.capturedSlices.shift();
+      }
+      
       // Draw captured slices trailing from the current mouse position
       for (let i = 0; i < this.capturedSlices.length; i++) {
         const slice = this.capturedSlices[i];
@@ -324,12 +331,19 @@
           this.ctx.drawImage(slice.canvas, drawX, 0);
         }
       }
-    } catch (e) {}
+    } catch (e) {
+      console.error('Draw error:', e);
+    }
   };
 
   // Fixed horizontal scan: draw captured slices
   SlitScan.prototype.drawFixedHorizontalScan = function (v, w, h) {
     try {
+      // Keep only last 50 slices for performance
+      if (this.capturedSlices.length > 50) {
+        this.capturedSlices.shift();
+      }
+      
       // Draw captured slices trailing from the current mouse position
       for (let i = 0; i < this.capturedSlices.length; i++) {
         const slice = this.capturedSlices[i];
@@ -339,7 +353,9 @@
           this.ctx.drawImage(slice.canvas, 0, drawY);
         }
       }
-    } catch (e) {}
+    } catch (e) {
+      console.error('Draw error:', e);
+    }
   };
 
   // Draw scan line indicator
