@@ -1,0 +1,213 @@
+<!-- build: 2025-12-06T00:00:00Z -->
+<!doctype html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
+  <meta http-equiv="Pragma" content="no-cache" />
+  <meta http-equiv="Expires" content="0" />
+  <title>City of Fragments</title>
+  <link rel="icon" type="image/png" sizes="32x32" href="/favicon.png">
+  <link rel="icon" type="image/x-icon" href="/favicon.ico">
+  <link rel="stylesheet" href="style.css?v=2025-12-09-v3" />
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.9.0/p5.min.js"></script>
+</head>
+
+<body>
+  <div class="topbar">
+    <a class="top-link left" href="project_process.html">PROJECT PROCESS</a>
+    <a class="top-link right" href="your_stories.html">YOUR STORIES</a>
+  </div>
+
+  <div id="fullscreen-player">
+    <div class="slit-scan-container">
+      <video id="mainPlayer" autoplay muted playsinline preload="auto" loop crossorigin="anonymous" style="width: 100%; height: 100%; object-fit: cover; display: block;"></video>
+    </div>
+    <div class="player-controls">
+      <div class="controls-row">
+        <button id="pausePlayBtn" class="circle-btn pause-play-btn" aria-label="Pause/Play">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path class="play-icon" d="M5 3l14 9-14 9V3z" fill="black"></path>
+            <path class="pause-icon" style="display:none" d="M6 4h4v16H6V4zm8 0h4v16h-4V4z" fill="black"></path>
+          </svg>
+        </button>
+        <button id="discoverBtn" class="discover-btn" aria-label="Discover Hong Kong">
+          <img src="assets/Discover Hong Kong.png" alt="Discover Hong Kong" />
+        </button>
+        <button id="screenshotBtn" class="circle-btn screenshot-btn" aria-label="Screenshot">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z" fill="black" stroke="black"></path>
+            <circle cx="12" cy="13" r="4" fill="black"></circle>
+          </svg>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <div id="canvas-container"></div>
+
+  <div id="title-wrap">
+    <img id="title-overlay" src="assets/Title White.png" alt="City of Fragments" />
+    <a id="overlay-subtitle" class="subtitle overlay-subtitle" href="#" aria-hidden="true">Location: West Kowloon Art Park</a>
+  </div>
+
+  <script src="assets/slit-scan.js?v=2025-12-09-fix"></script>
+  <script>
+    (function () {
+      const sources = [
+        'assets/1.mp4', 'assets/2.mp4', 'assets/3.mp4', 'assets/4.mp4', 'assets/5.mp4',
+        'assets/6.mp4', 'assets/7.mp4', 'assets/8.mp4', 'assets/9.mp4', 'assets/10.mp4',
+        'assets/11.mp4', 'assets/12.mp4'
+      ];
+      
+      const videoLocations = {
+        'assets/1.mp4': 'Location: Portland Street, Mong Kok',
+        'assets/2.mp4': 'Location: Former Kowloon-Canton Railway Clock Tower',
+        'assets/3.mp4': 'Location: Red Incense Burner Summit',
+        'assets/4.mp4': 'Location: The Peak',
+        'assets/5.mp4': 'Location: Footbridge KF38, Ngau Tau Kok',
+        'assets/6.mp4': 'Location: Wan Sha Street, Tai Hang',
+        'assets/7.mp4': 'Location: Hung Hom',
+        'assets/8.mp4': 'Location: Cheung Wing Restaurant, Ngau Tau Kok',
+        'assets/9.mp4': 'Location: Yau Ma Tei Wholesale Fruit Market',
+        'assets/10.mp4': 'Location: Yau Ma Tei Wholesale Fruit Market',
+        'assets/11.mp4': 'Location: Fung Wong Sun Tsuen',
+        'assets/12.mp4': 'Location: West Kowloon Art Park'
+      };
+      
+      const videoScanTypes = {
+        'assets/1.mp4': 'fixed-vertical',
+        'assets/2.mp4': 'moving-vertical',
+        'assets/3.mp4': 'fixed-vertical',
+        'assets/4.mp4': 'moving-vertical-ltr',
+        'assets/5.mp4': 'moving-horizontal',
+        'assets/6.mp4': 'fixed-vertical',
+        'assets/7.mp4': 'fixed-vertical',
+        'assets/8.mp4': 'moving-vertical',
+        'assets/9.mp4': 'moving-horizontal-utd',
+        'assets/10.mp4': 'fixed-vertical',
+        'assets/11.mp4': 'fixed-vertical',
+        'assets/12.mp4': 'fixed-vertical'
+      };
+      
+      function initializeAll() {
+        const player = document.getElementById('mainPlayer');
+        const moreBtn = document.getElementById('discoverBtn');
+        const pausePlayBtn = document.getElementById('pausePlayBtn');
+        const screenshotBtn = document.getElementById('screenshotBtn');
+        
+        if (!player) {
+          console.error('Player not found');
+          return;
+        }
+        
+        if (window.SlitScan) {
+          window.SlitScan.attachAll('video', { scanWidth: 8, dx: 2 });
+          console.log('Slit-scan attached');
+        } else {
+          console.error('SlitScan not loaded');
+        }
+        
+        let currentIndex = 0;
+        
+        function setVideo(index) {
+          currentIndex = ((index % sources.length) + sources.length) % sources.length;
+          const src = sources[currentIndex];
+
+          console.log('Loading:', src);
+
+          player.muted = true;
+          player.playsInline = true;
+          player.loop = true;
+          player.src = src;
+          player.load();
+
+          if (player._slitScan && videoScanTypes[src]) {
+            player._slitScan.scanType = videoScanTypes[src];
+          }
+
+          const subtitle = document.getElementById('overlay-subtitle');
+          if (subtitle && videoLocations[src]) {
+            subtitle.textContent = videoLocations[src];
+          }
+
+          const playVideo = () => {
+            player.play()
+              .then(() => console.log('Video playing'))
+              .catch(e => console.warn('Autoplay blocked:', e));
+          };
+
+          if (player.readyState >= 2) {
+            playVideo();
+          } else {
+            player.addEventListener('loadeddata', playVideo, { once: true });
+          }
+        }
+
+        setVideo(0);
+        
+        if (moreBtn) {
+          moreBtn.addEventListener('click', (ev) => {
+            ev.preventDefault();
+            setVideo(currentIndex + 1);
+          });
+        }
+        
+        if (pausePlayBtn) {
+          pausePlayBtn.addEventListener('click', () => {
+            if (player.paused) {
+              player.play();
+              pausePlayBtn.querySelector('.play-icon').style.display = 'none';
+              pausePlayBtn.querySelector('.pause-icon').style.display = 'block';
+            } else {
+              player.pause();
+              pausePlayBtn.querySelector('.play-icon').style.display = 'block';
+              pausePlayBtn.querySelector('.pause-icon').style.display = 'none';
+            }
+          });
+          
+          pausePlayBtn.querySelector('.play-icon').style.display = 'none';
+          pausePlayBtn.querySelector('.pause-icon').style.display = 'block';
+        }
+        
+        if (screenshotBtn) {
+          screenshotBtn.addEventListener('click', () => {
+            const container = player.parentElement;
+            const slitCanvas = container.querySelector('.slit-scan-canvas');
+            
+            if (slitCanvas) {
+              const canvas = document.createElement('canvas');
+              canvas.width = slitCanvas.width;
+              canvas.height = slitCanvas.height;
+              const ctx = canvas.getContext('2d');
+              
+              ctx.drawImage(player, 0, 0, canvas.width, canvas.height);
+              ctx.drawImage(slitCanvas, 0, 0);
+              
+              canvas.toBlob((blob) => {
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = `city-fragments-${Date.now()}.jpg`;
+                a.click();
+                URL.revokeObjectURL(url);
+              }, 'image/jpeg', 0.95);
+            }
+          });
+        }
+        
+        console.log('Video system ready');
+      }
+      
+      if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', () => setTimeout(initializeAll, 100));
+      } else {
+        setTimeout(initializeAll, 100);
+      }
+    })();
+  </script>
+  <script src="sketch.js"></script>
+</body>
+</html>
