@@ -83,6 +83,7 @@
     // Track loop completion
     this.lastProgress = 0;
     this.loopCount = 0;
+    this.loopCleared = false;
 
     // Resize canvas to match video display size
     const resizeCanvas = () => {
@@ -141,11 +142,6 @@
       updateScanPosition(e);
       this.mouseActive = true;
       this.container.classList.add('scanning');
-      // Clear canvas when starting new scan
-      this.capturedSlices = [];
-      if (this.ctx && this.canvas.width > 0) {
-        this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
-      }
       console.log('Slit-scan activated - press and move mouse to draw effect');
     };
 
@@ -193,17 +189,18 @@
       return;
     }
     
-    // Update progress bar if available and clear when loop completes
+    // Update progress bar if available
     if (v.duration && v.duration > 0) {
       const progress = (v.currentTime / v.duration) * 100;
       this.progressBar.style.width = progress + '%';
 
-      // Detect loop/reset: if we were near end and progress wrapped, clear accumulation
-      if (this.lastProgress > 95 && progress < 5) {
-        this.capturedSlices = [];
-        if (this.ctx && w > 0 && h > 0) {
-          this.ctx.clearRect(0, 0, w, h);
-        }
+      // Detect loop end (progress wrapping) to clear accumulation once per loop
+      const nearEnd = (v.duration - v.currentTime) <= 0.08;
+      if (nearEnd && !this.loopCleared) {
+        this.clearAccumulation();
+        this.loopCleared = true;
+      } else if (!nearEnd) {
+        this.loopCleared = false;
       }
 
       this.lastProgress = progress;
@@ -395,6 +392,22 @@
     }
 
     this.lineCtx.stroke();
+  };
+
+  // Clear accumulated slices and canvas
+  SlitScan.prototype.clearAccumulation = function () {
+    this.capturedSlices = [];
+    if (this.ctx && this.canvas.width > 0 && this.canvas.height > 0) {
+      this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+    }
+  };
+
+  // Clear accumulated slices and canvas
+  SlitScan.prototype.clearAccumulation = function () {
+    this.capturedSlices = [];
+    if (this.ctx && this.canvas && this.canvas.width > 0 && this.canvas.height > 0) {
+      this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+    }
   };
 
   // Static methods
