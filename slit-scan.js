@@ -35,33 +35,27 @@
     }
 
     container.style.position = 'relative';
-    container.style.display = 'inline-block';
+    container.style.display = 'block';
     container.style.width = '100%';
     container.style.height = '100%';
+    container.style.overflow = 'visible';
 
     video.style.position = 'relative';
     video.style.display = 'block';
     video.style.width = '100%';
     video.style.height = '100%';
+    video.style.zIndex = '1';
 
     // Create main buffer canvas for slit-scan accumulation
     this.canvas = document.createElement('canvas');
     this.canvas.className = 'slit-scan-canvas';
-    this.canvas.style.position = 'absolute';
-    this.canvas.style.left = '0';
-    this.canvas.style.top = '0';
-    this.canvas.style.zIndex = '10';
-    this.canvas.style.pointerEvents = 'none';
-    this.ctx = this.canvas.getContext('2d', { alpha: true });
+    this.canvas.style.cssText = 'position:absolute;left:0;top:0;width:100%;height:100%;z-index:9999;pointer-events:none;display:block;';
+    this.ctx = this.canvas.getContext('2d', { alpha: true, willReadFrequently: true });
 
     // Create separate canvas for scan line indicator
     this.lineCanvas = document.createElement('canvas');
     this.lineCanvas.className = 'slit-scan-line';
-    this.lineCanvas.style.position = 'absolute';
-    this.lineCanvas.style.left = '0';
-    this.lineCanvas.style.top = '0';
-    this.lineCanvas.style.zIndex = '11';
-    this.lineCanvas.style.pointerEvents = 'none';
+    this.lineCanvas.style.cssText = 'position:absolute;left:0;top:0;width:100%;height:100%;z-index:10000;pointer-events:none;display:block;';
     this.lineCtx = this.lineCanvas.getContext('2d', { alpha: true });
     
     // Verify contexts were created
@@ -73,6 +67,12 @@
     container.appendChild(this.canvas);
     container.appendChild(this.lineCanvas);
     this.container = container;
+    
+    console.log('SlitScan: Canvases created and appended', {
+      canvas: this.canvas,
+      lineCanvas: this.lineCanvas,
+      container: container
+    });
 
     // Progress bar UI
     this.progressBar = document.createElement('div');
@@ -101,6 +101,8 @@
       this.canvas.height = h;
       this.lineCanvas.width = w;
       this.lineCanvas.height = h;
+      
+      console.log('SlitScan: Canvas resized to', w, 'x', h);
 
       // Initialize scan position based on type
       if (this.currentX === 0) {
