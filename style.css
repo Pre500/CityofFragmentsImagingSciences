@@ -100,6 +100,8 @@ body {
   width: 100%;
   height: 100%;
   flex: 1;
+  position: relative;
+  overflow: visible;
 }
 #fullscreen-player video#mainPlayer {
   width: 100%;
@@ -483,15 +485,17 @@ body.subpage #title-wrap {
   display: block;
 }
 
-/* Ensure video displays above overlay canvases */
-#fullscreen-player video#mainPlayer {
-  position: relative;
-  z-index: 2;
+.slit-scan-canvas,
+.slit-scan-line {
+  z-index: 9999 !important;
+  position: absolute;
+  pointer-events: none;
 }
 
-/* Override - ensure video z-index is higher than slit-scan canvases (10, 11) */
+/* Video should be BELOW slit-scan canvases so the effect shows on top */
 #fullscreen-player video#mainPlayer {
-  z-index: 12 !important;
+  position: relative;
+  z-index: 1;
 }
 
 /* Buttons in row layout with discover image in middle */
