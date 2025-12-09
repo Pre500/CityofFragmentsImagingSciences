@@ -15,14 +15,15 @@
     this.scanWidth = opts.scanWidth || 8;
     this.dx = opts.dx || 2;
     this.scanType = opts.scanType || 'fixed-vertical';
-    this.scanning = false;
+    this.scanning = true; // Always active for mouse movement
     this.currentX = 0;
     this.currentY = 0;
+    this.mouseActive = false; // Track if mouse is over video
     
     // Time-based capture system for fixed scans
     this.capturedSlices = [];
     this.lastCaptureTime = 0;
-    this.captureInterval = 50; // ms between captures
+    this.captureInterval = 30; // ms between captures
 
     // Set up container as parent element
     let container = video.parentElement;
@@ -121,24 +122,13 @@
     video.addEventListener('loadedmetadata', resizeCanvas.bind(this));
     window.addEventListener('resize', resizeCanvas.bind(this));
 
-    // Pointer event handlers
-    const startScanning = () => {
-      this.scanning = true;
-      this.container.classList.add('scanning');
-      this.capturedSlices = [];
-      this.lastCaptureTime = 0;
-    };
-    
-    const stopScanning = () => {
-      this.scanning = false;
-      this.container.classList.remove('scanning');
-    };
-    
     // Mouse movement tracking for scan position
     const updateScanPosition = (e) => {
       const rect = this.container.getBoundingClientRect();
       const mouseX = e.clientX - rect.left;
       const mouseY = e.clientY - rect.top;
+      
+      this.mouseActive = true;
       
       // Update position based on scan type
       if (this.scanType.includes('vertical')) {
@@ -148,18 +138,27 @@
       }
     };
     
-    video.addEventListener('pointerdown', startScanning);
-    container.addEventListener('pointerdown', startScanning);
-    this.canvas.addEventListener('pointerdown', startScanning);
-    this.lineCanvas.addEventListener('pointerdown', startScanning);
+    const mouseEnter = () => {
+      this.mouseActive = true;
+      this.container.classList.add('scanning');
+    };
     
-    document.addEventListener('pointerup', stopScanning);
-    window.addEventListener('pointerup', stopScanning);
+    const mouseLeave = () => {
+      this.mouseActive = false;
+      this.container.classList.remove('scanning');
+      // Clear captured slices when mouse leaves
+      this.capturedSlices = [];
+      // Clear the canvas
+      if (this.ctx && this.canvas.width > 0) {
+        this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+      }
+    };
     
-    // Track mouse movement over the container
+    // Track mouse movement over the container - no click required
     container.addEventListener('pointermove', updateScanPosition);
-    this.canvas.addEventListener('pointermove', updateScanPosition);
-    this.lineCanvas.addEventListener('pointermove', updateScanPosition);
+    container.addEventListener('mouseenter', mouseEnter);
+    container.addEventListener('mouseleave', mouseLeave);
+    video.addEventListener('pointermove', updateScanPosition);
 
     // Video event handlers
     video.addEventListener('ended', () => {
@@ -197,10 +196,13 @@
       this.lastProgress = progress;
     }
 
-    // Only process if video is ready and canvas is sized
-    if (v.readyState >= 2 && w > 0 && h > 0) {
+    // Clear canvas first
+    this.ctx.clearRect(0, 0, w, h);
+    
+    // Only process if video is ready and canvas is sized and mouse is active
+    if (v.readyState >= 2 && w > 0 && h > 0 && this.mouseActive) {
       // Capture slices for fixed scans
-      if (this.scanning && (this.scanType === 'fixed-vertical' || this.scanType === 'fixed-horizontal')) {
+      if (this.scanType === 'fixed-vertical' || this.scanType === 'fixed-horizontal') {
         const now = Date.now();
         if (now - this.lastCaptureTime > this.captureInterval) {
           this.captureSlice(v, w, h);
@@ -209,22 +211,20 @@
       }
       
       // Draw based on scan type
-      if (this.scanning) {
-        if (this.scanType === 'moving-vertical' || this.scanType === 'moving-vertical-ltr') {
-          this.drawMovingVerticalScan(v, w, h);
-        } else if (this.scanType === 'moving-horizontal' || this.scanType === 'moving-horizontal-utd') {
-          this.drawMovingHorizontalScan(v, w, h);
-        } else if (this.scanType === 'fixed-vertical') {
-          this.drawFixedVerticalScan(v, w, h);
-        } else if (this.scanType === 'fixed-horizontal') {
-          this.drawFixedHorizontalScan(v, w, h);
-        }
+      if (this.scanType === 'moving-vertical' || this.scanType === 'moving-vertical-ltr') {
+        this.drawMovingVerticalScan(v, w, h);
+      } else if (this.scanType === 'moving-horizontal' || this.scanType === 'moving-horizontal-utd') {
+        this.drawMovingHorizontalScan(v, w, h);
+      } else if (this.scanType === 'fixed-vertical') {
+        this.drawFixedVerticalScan(v, w, h);
+      } else if (this.scanType === 'fixed-horizontal') {
+        this.drawFixedHorizontalScan(v, w, h);
       }
     }
     
-    // Always show scan line
-    if (w > 0 && h > 0) {
-      this.lineCtx.clearRect(0, 0, w, h);
+    // Show scan line only when mouse is active
+    this.lineCtx.clearRect(0, 0, w, h);
+    if (w > 0 && h > 0 && this.mouseActive) {
       this.drawScanLine(w, h);
     }
 
