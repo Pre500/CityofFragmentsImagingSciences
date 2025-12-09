@@ -482,3 +482,14 @@ body.subpage #title-wrap {
   background-color: transparent !important;
   display: block;
 }
+
+/* Ensure video displays above overlay canvases */
+#fullscreen-player video#mainPlayer {
+  position: relative;
+  z-index: 2;
+}
+
+/* Override - ensure video z-index is higher than slit-scan canvases (10, 11) */
+#fullscreen-player video#mainPlayer {
+  z-index: 12 !important;
+}
