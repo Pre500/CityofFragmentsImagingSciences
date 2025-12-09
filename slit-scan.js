@@ -15,7 +15,6 @@
     this.scanWidth = opts.scanWidth || 8;
     this.dx = opts.dx || 2;
     this.scanType = opts.scanType || 'fixed-vertical';
-    this.scanning = true; // Always active for mouse movement
     this.currentX = 0;
     this.currentY = 0;
     this.mouseActive = false; // Track if mouse is over video
@@ -51,6 +50,12 @@
     this.canvas.className = 'slit-scan-canvas';
     this.canvas.style.cssText = 'position:absolute;left:0;top:0;width:100%;height:100%;z-index:10;pointer-events:none;display:block;';
     this.ctx = this.canvas.getContext('2d', { alpha: true, willReadFrequently: true });
+    
+    // Ensure canvas content is opaque when drawn
+    if (this.ctx) {
+      this.ctx.globalAlpha = 1.0;
+      this.ctx.globalCompositeOperation = 'source-over';
+    }
 
     // Create separate canvas for scan line indicator
     this.lineCanvas = document.createElement('canvas');
@@ -68,12 +73,6 @@
     container.appendChild(this.lineCanvas);
     this.container = container;
     
-    console.log('SlitScan: Canvases created and appended', {
-      canvas: this.canvas,
-      lineCanvas: this.lineCanvas,
-      container: container
-    });
-
     // Progress bar UI
     this.progressBar = document.createElement('div');
     this.progressBar.className = 'slit-scan-progress-bar';
@@ -84,6 +83,7 @@
     // Track loop completion
     this.lastProgress = 0;
     this.loopCount = 0;
+    this.loopCleared = false;
 
     // Resize canvas to match video display size
     const resizeCanvas = () => {
@@ -102,8 +102,6 @@
       this.lineCanvas.width = w;
       this.lineCanvas.height = h;
       
-      console.log('SlitScan: Canvas resized to', w, 'x', h);
-
       // Initialize scan position based on type
       if (this.currentX === 0) {
         this.currentX = this.scanType === 'moving-vertical' ? w : 
@@ -124,46 +122,43 @@
     video.addEventListener('loadedmetadata', resizeCanvas.bind(this));
     window.addEventListener('resize', resizeCanvas.bind(this));
 
-    // Mouse movement tracking for scan position
+    // Pointer movement updates scan position (does NOT activate the effect)
     const updateScanPosition = (e) => {
       const rect = this.container.getBoundingClientRect();
       const mouseX = e.clientX - rect.left;
       const mouseY = e.clientY - rect.top;
-      
-      this.mouseActive = true;
-      
-      // Update position based on scan type
+
+      // Update position based on scan type (do not toggle activation here)
       if (this.scanType.includes('vertical')) {
         this.currentX = Math.max(0, Math.min(mouseX, this.canvas.width - this.scanWidth));
       } else if (this.scanType.includes('horizontal')) {
         this.currentY = Math.max(0, Math.min(mouseY, this.canvas.height - this.scanWidth));
       }
     };
-    
-    const mouseEnter = () => {
+
+    // Activation occurs only while the pointer is pressed.
+    const pointerDown = (e) => {
+      // ensure position is current for this event
+      updateScanPosition(e);
       this.mouseActive = true;
       this.container.classList.add('scanning');
-      // Clear canvas when starting new scan
-      this.capturedSlices = [];
-      if (this.ctx && this.canvas.width > 0) {
-        this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
-      }
-      console.log('Mouse entered - slit-scan active', this.scanType);
+      console.log('Slit-scan activated - press and move mouse to draw effect');
     };
-    
-    const mouseLeave = () => {
+
+    const pointerUp = () => {
       this.mouseActive = false;
       this.container.classList.remove('scanning');
-      console.log('Mouse left - slit-scan inactive');
-      // Don't clear canvas or slices - keep the effect visible for screenshot
-      // User can re-enter to start a new scan
+      // leave captured slices in place; next press will clear
     };
-    
-    // Track mouse movement over the container - no click required
+
+    // Track pointer movement over the container (position only)
     container.addEventListener('pointermove', updateScanPosition);
-    container.addEventListener('mouseenter', mouseEnter);
-    container.addEventListener('mouseleave', mouseLeave);
     video.addEventListener('pointermove', updateScanPosition);
+
+    // Activate only when pointer is pressed inside the container
+    container.addEventListener('pointerdown', pointerDown);
+    // Deactivate on pointer release anywhere
+    window.addEventListener('pointerup', pointerUp);
 
     // Video event handlers
     video.addEventListener('ended', () => {
@@ -198,6 +193,16 @@
     if (v.duration && v.duration > 0) {
       const progress = (v.currentTime / v.duration) * 100;
       this.progressBar.style.width = progress + '%';
+
+      // Detect loop end (progress wrapping) to clear accumulation once per loop
+      const nearEnd = (v.duration - v.currentTime) <= 0.08;
+      if (nearEnd && !this.loopCleared) {
+        this.clearAccumulation();
+        this.loopCleared = true;
+      } else if (!nearEnd) {
+        this.loopCleared = false;
+      }
+
       this.lastProgress = progress;
     }
 
@@ -226,9 +231,9 @@
       }
     }
     
-    // Show scan line only when mouse is active
+    // Always show scan line indicator (low opacity when inactive)
     this.lineCtx.clearRect(0, 0, w, h);
-    if (w > 0 && h > 0 && this.mouseActive) {
+    if (w > 0 && h > 0) {
       this.drawScanLine(w, h);
     }
 
@@ -319,12 +324,15 @@
   // Fixed vertical scan: draw captured slices
   SlitScan.prototype.drawFixedVerticalScan = function (v, w, h) {
     try {
-      // Keep only last 50 slices for performance
-      if (this.capturedSlices.length > 50) {
+      // Draw all captured slices extending from cursor to left edge
+      const slicesNeeded = Math.ceil(this.currentX / this.dx) + 1;
+      
+      // Keep only needed slices for performance
+      while (this.capturedSlices.length > slicesNeeded + 10) {
         this.capturedSlices.shift();
       }
       
-      // Draw captured slices trailing from the current mouse position
+      // Draw captured slices trailing from the current mouse position to edge
       for (let i = 0; i < this.capturedSlices.length; i++) {
         const slice = this.capturedSlices[i];
         const offset = (this.capturedSlices.length - 1 - i) * this.dx;
@@ -341,12 +349,15 @@
   // Fixed horizontal scan: draw captured slices
   SlitScan.prototype.drawFixedHorizontalScan = function (v, w, h) {
     try {
-      // Keep only last 50 slices for performance
-      if (this.capturedSlices.length > 50) {
+      // Draw all captured slices extending from cursor to top edge
+      const slicesNeeded = Math.ceil(this.currentY / this.dx) + 1;
+      
+      // Keep only needed slices for performance
+      while (this.capturedSlices.length > slicesNeeded + 10) {
         this.capturedSlices.shift();
       }
       
-      // Draw captured slices trailing from the current mouse position
+      // Draw captured slices trailing from the current mouse position to edge
       for (let i = 0; i < this.capturedSlices.length; i++) {
         const slice = this.capturedSlices[i];
         const offset = (this.capturedSlices.length - 1 - i) * this.dx;
@@ -362,7 +373,9 @@
 
   // Draw scan line indicator
   SlitScan.prototype.drawScanLine = function (w, h) {
-    this.lineCtx.strokeStyle = 'rgba(255, 255, 255, 0.9)';
+    // Use higher opacity when actively scanning, lower when idle
+    const opacity = this.mouseActive ? 0.9 : 0.3;
+    this.lineCtx.strokeStyle = `rgba(255, 255, 255, ${opacity})`;
     this.lineCtx.lineWidth = 1.5;
     this.lineCtx.beginPath();
 
@@ -379,6 +392,22 @@
     }
 
     this.lineCtx.stroke();
+  };
+
+  // Clear accumulated slices and canvas
+  SlitScan.prototype.clearAccumulation = function () {
+    this.capturedSlices = [];
+    if (this.ctx && this.canvas.width > 0 && this.canvas.height > 0) {
+      this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+    }
+  };
+
+  // Clear accumulated slices and canvas
+  SlitScan.prototype.clearAccumulation = function () {
+    this.capturedSlices = [];
+    if (this.ctx && this.canvas && this.canvas.width > 0 && this.canvas.height > 0) {
+      this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+    }
   };
 
   // Static methods
