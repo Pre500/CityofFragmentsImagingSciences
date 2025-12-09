@@ -193,10 +193,19 @@
       return;
     }
     
-    // Update progress bar if available
+    // Update progress bar if available and clear when loop completes
     if (v.duration && v.duration > 0) {
       const progress = (v.currentTime / v.duration) * 100;
       this.progressBar.style.width = progress + '%';
+
+      // Detect loop/reset: if we were near end and progress wrapped, clear accumulation
+      if (this.lastProgress > 95 && progress < 5) {
+        this.capturedSlices = [];
+        if (this.ctx && w > 0 && h > 0) {
+          this.ctx.clearRect(0, 0, w, h);
+        }
+      }
+
       this.lastProgress = progress;
     }
 
@@ -225,9 +234,9 @@
       }
     }
     
-    // Show scan line only when mouse is active
+    // Always show scan line indicator (low opacity when inactive)
     this.lineCtx.clearRect(0, 0, w, h);
-    if (w > 0 && h > 0 && this.mouseActive) {
+    if (w > 0 && h > 0) {
       this.drawScanLine(w, h);
     }
 
@@ -367,7 +376,9 @@
 
   // Draw scan line indicator
   SlitScan.prototype.drawScanLine = function (w, h) {
-    this.lineCtx.strokeStyle = 'rgba(255, 255, 255, 0.9)';
+    // Use higher opacity when actively scanning, lower when idle
+    const opacity = this.mouseActive ? 0.9 : 0.3;
+    this.lineCtx.strokeStyle = `rgba(255, 255, 255, ${opacity})`;
     this.lineCtx.lineWidth = 1.5;
     this.lineCtx.beginPath();
 
