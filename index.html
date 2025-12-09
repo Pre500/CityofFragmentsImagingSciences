@@ -55,13 +55,13 @@
 
   <script src="slit-scan.js?v=2025-12-09-fix"></script>
   <script>
-    (function () {
+    (() => {
       const sources = [
         'assets/1.mp4', 'assets/2.mp4', 'assets/3.mp4', 'assets/4.mp4', 'assets/5.mp4',
         'assets/6.mp4', 'assets/7.mp4', 'assets/8.mp4', 'assets/9.mp4', 'assets/10.mp4',
         'assets/11.mp4', 'assets/12.mp4'
       ];
-      
+
       const videoLocations = {
         'assets/1.mp4': 'Location: Portland Street, Mong Kok',
         'assets/2.mp4': 'Location: West Kowloon Art Park',
@@ -76,7 +76,7 @@
         'assets/11.mp4': 'Location: Fung Wong Sun Tsuen',
         'assets/12.mp4': 'Location: Lung Fu Shan Morning Trail'
       };
-      
+
       const videoScanTypes = {
         'assets/1.mp4': 'fixed-vertical',
         'assets/2.mp4': 'moving-vertical',
@@ -91,28 +91,23 @@
         'assets/11.mp4': 'fixed-vertical',
         'assets/12.mp4': 'fixed-vertical'
       };
-      
+
       function initializeAll() {
         const player = document.getElementById('mainPlayer');
         const moreBtn = document.getElementById('discoverBtn');
         const pausePlayBtn = document.getElementById('pausePlayBtn');
         const screenshotBtn = document.getElementById('screenshotBtn');
-        
+
         if (!player) {
           console.error('Player not found');
           return;
         }
-        
-        // Slit-scan will be attached when video loads
-        console.log('Ready to attach slit-scan');
-        
+
         let currentIndex = 0;
-        
+
         function setVideo(index) {
           currentIndex = ((index % sources.length) + sources.length) % sources.length;
           const src = sources[currentIndex];
-
-          console.log('Loading:', src);
 
           player.muted = true;
           player.playsInline = true;
@@ -120,17 +115,14 @@
           player.src = src;
           player.load();
 
-          // Attach or update slit-scan with correct scan type
           if (window.SlitScan) {
             const scanType = videoScanTypes[src] || 'fixed-vertical';
             if (!player._slitScan) {
-              window.SlitScan.attachTo(player, { scanWidth: 10, dx: 3, scanType: scanType });
-              console.log('Slit-scan attached with type:', scanType);
+              window.SlitScan.attachTo(player, { scanWidth: 10, dx: 3, scanType });
             } else {
               player._slitScan.scanType = scanType;
               player._slitScan.scanWidth = 10;
               player._slitScan.dx = 3;
-              console.log('Slit-scan updated to type:', scanType);
             }
           }
 
@@ -140,9 +132,7 @@
           }
 
           const playVideo = () => {
-            player.play()
-              .then(() => console.log('Video playing'))
-              .catch(e => console.warn('Autoplay blocked:', e));
+            player.play().catch(e => console.warn('Autoplay blocked:', e));
           };
 
           if (player.readyState >= 2) {
@@ -153,14 +143,14 @@
         }
 
         setVideo(0);
-        
+
         if (moreBtn) {
           moreBtn.addEventListener('click', (ev) => {
             ev.preventDefault();
             setVideo(currentIndex + 1);
           });
         }
-        
+
         if (pausePlayBtn) {
           pausePlayBtn.addEventListener('click', () => {
             if (player.paused) {
@@ -173,58 +163,70 @@
               pausePlayBtn.querySelector('.pause-icon').style.display = 'none';
             }
           });
-          
+
           pausePlayBtn.querySelector('.play-icon').style.display = 'none';
           pausePlayBtn.querySelector('.pause-icon').style.display = 'block';
         }
-        
-        if (screenshotBtn) {
-          screenshotBtn.addEventListener('click', () => {
-            const container = player.parentElement;
-            const slitCanvas = container.querySelector('.slit-scan-canvas');
-            
-            if (slitCanvas && slitCanvas.width > 0 && slitCanvas.height > 0) {
-              const canvas = document.createElement('canvas');
-              canvas.width = slitCanvas.width;
-              canvas.height = slitCanvas.height;
-              const ctx = canvas.getContext('2d');
-              
-              // Draw video first
-              ctx.drawImage(player, 0, 0, canvas.width, canvas.height);
-              // Draw slit-scan effect on top
-              ctx.drawImage(slitCanvas, 0, 0);
-              
-              canvas.toBlob((blob) => {
-                if (blob) {
-                  const url = URL.createObjectURL(blob);
-                  const a = document.createElement('a');
-                  a.href = url;
-                  a.download = `city-fragments-${Date.now()}.jpg`;
-                  document.body.appendChild(a);
-                  a.click();
-                  document.body.removeChild(a);
-                  URL.revokeObjectURL(url);
-                  console.log('Screenshot saved');
-                } else {
-                  console.error('Failed to create blob');
-                }
-              }, 'image/jpeg', 0.95);
-            } else {
-              console.warn('Slit-scan canvas not found or not ready');
-            }
-          });
+
+          if (screenshotBtn) {
+            screenshotBtn.addEventListener('click', () => {
+              const container = player.parentElement;
+              const slitCanvas = container.querySelector('.slit-scan-canvas');
+
+              if (slitCanvas && slitCanvas.width > 0 && slitCanvas.height > 0) {
+                const canvas = document.createElement('canvas');
+                canvas.width = slitCanvas.width;
+                canvas.height = slitCanvas.height;
+                const ctx = canvas.getContext('2d');
+
+                ctx.drawImage(player, 0, 0, canvas.width, canvas.height);
+                ctx.drawImage(slitCanvas, 0, 0);
+
+                canvas.toBlob((blob) => {
+                  if (blob) {
+                    const url = URL.createObjectURL(blob);
+                    const a = document.createElement('a');
+                    a.href = url;
+                    a.download = `city-fragments-${Date.now()}.jpg`;
+                    document.body.appendChild(a);
+                    a.click();
+                    document.body.removeChild(a);
+                    URL.revokeObjectURL(url);
+                  }
+                }, 'image/jpeg', 0.95);
+              } else {
+                console.warn('Slit-scan canvas not found or not ready');
+              }
+            });
+          }
         }
-        
-        console.log('Video system ready');
+
+        if (document.readyState === 'loading') {
+          document.addEventListener('DOMContentLoaded', initializeAll);
+        } else {
+          initializeAll();
+        }
+      })();
+  </script>
+
+  <script>
+    (() => {
+      function initSlit() {
+        if (window.SlitScan) {
+          window.SlitScan.attachAll('video', { scanWidth: 8, dx: 2 });
+        } else {
+          console.warn('SlitScan module not loaded');
+        }
       }
-      
+
       if (document.readyState === 'loading') {
-        document.addEventListener('DOMContentLoaded', () => setTimeout(initializeAll, 100));
+        document.addEventListener('DOMContentLoaded', () => setTimeout(initSlit, 100));
       } else {
-        setTimeout(initializeAll, 100);
+        setTimeout(initSlit, 100);
       }
     })();
   </script>
+
   <script src="sketch.js"></script>
 </body>
 </html>
