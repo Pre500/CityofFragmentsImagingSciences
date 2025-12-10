@@ -14,6 +14,8 @@
       background-size: cover;
       background-attachment: fixed;
       background-position: center;
+      overflow-y: auto;
+      min-height: 100vh;
     }
 
     /* Override topbar colors for this page */
@@ -53,6 +55,35 @@
     body.project-page .page-content a {
       color: #000;
     }
+
+    /* Embedded process slides */
+    .process-section {
+      margin: 32px 0 48px;
+    }
+
+    .process-section h2 {
+      margin-bottom: 12px;
+    }
+
+    .image-embed {
+      margin: 0 auto;
+      max-width: 1200px;
+      text-align: center;
+    }
+
+    .image-embed img {
+      width: 100%;
+      height: auto;
+      display: block;
+      margin: 0 auto;
+      border: none;
+    }
+
+    .image-embed figcaption {
+      margin-top: 8px;
+      font-size: 14px;
+      color: #444;
+    }
   </style>
 </head>
 
@@ -74,8 +105,19 @@
   <!-- Page content -->
   <div class="page-content">
     <h1>Project Process</h1>
-    <p>This page is the project documentation part.</p>
-    <p></p>
+
+    <section class="process-section">
+      <figure class="image-embed">
+        <img src="assets/Project Outcome.png" alt="Project outcome slides for City of Fragments" loading="lazy" />
+      </figure>
+    </section>
+
+    <section class="process-section">
+      <figure class="image-embed">
+        <img src="assets/Key Inspirations.png" alt="Key inspirations: Khronos Projector, Liquid Time Series, Static No.23 – Revolve" loading="lazy" />
+        <figcaption>Inspirations behind the slit-scan interaction</figcaption>
+      </figure>
+    </section>
   </div>
 </body>
 </html>
