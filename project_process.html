@@ -400,7 +400,29 @@
         </div>
       </div>
 
+
       <section class="process-section" id="section-1-1">
+        <h2>Artist Statement </h2>
+        <ul>
+
+          <p>
+            City of Fragments reinterprets the city as a shifting archive of memories rather than a fixed physical
+            space. Using slit-scan distortion and user-generated uploads, the project reveals how urban moments stretch,
+            fragment, and transform as they are remembered and retold.
+            <br><br>
+            The slit-scan engine becomes a metaphor for memory itself, being unstable, reconstructed, and shaped by
+            time.
+            Each scanned fragment shows the city not as a singular narrative but as layered impressions, blurred
+            transitions, and partial traces.
+            <br><br>
+            Through temporal self-controlled graphic distortion and collective participation,
+            the work invites viewers to experience the city through shifting
+            perspectives, highlighting how technology mediates what we see,
+            recall, and ultimately understand about the world around us.
+          </p>
+
+
+        </ul>
         <figure class="image-embed">
           <img src="assets/Project Outcome.png" loading="lazy" />
         </figure>
@@ -575,83 +597,84 @@ void movieEvent(Movie m) {
           Video Demo of Prototype on Processing
         </div>
 
-        </section>
+      </section>
 
-        <section class="process-section" id="section-2-3">
-          <h2>Checklist of Improvements After the Prototype</h2>
-          <div class="content-section">
-            <h3>Slit-Scan Variations</h3>
-            <ul>
-          Applying different types of slit-scans <br>
-          Moving or fixed <br>
-          Left, right, up or down
-            </ul>
+      <section class="process-section" id="section-2-3">
+        <h2>Checklist of Improvements After the Prototype</h2>
+        <div class="content-section">
+          <h3>Slit-Scan Variations</h3>
+          <ul>
+            Applying different types of slit-scans <br>
+            Moving or fixed <br>
+            Left, right, up or down
+          </ul>
 
-            <h3>Content Expansion</h3>
-            <ul>
-          Cycle through more videos <br>
-          Each clip with a set optimal scan type depending on the motion
-            </ul>
+          <h3>Content Expansion</h3>
+          <ul>
+            Cycle through more videos <br>
+            Each clip with a set optimal scan type depending on the motion
+          </ul>
 
-            <h3>User Interactivity</h3>
-            <ul>
-          Create a function for users to download their custom slit-scan images <br>
-          Scan line to follow user's cursor <br>
-          → adds an extra dimension of interactivity beyond the 4 scan types
-            </ul>
+          <h3>User Interactivity</h3>
+          <ul>
+            Create a function for users to download their custom slit-scan images <br>
+            Scan line to follow user's cursor <br>
+            → adds an extra dimension of interactivity beyond the 4 scan types
+          </ul>
 
-            <h3>Technical Optimization</h3>
-            <ul>
-          Slit pixel width can be narrower / Increase video resolution <br>
-          Balance temporal quality and spatial resolution <br>
-          Preserve enough detail to keep the video clips recognisable while still creating a fragmented, distortion effect over time
-            </ul>
+          <h3>Technical Optimization</h3>
+          <ul>
+            Slit pixel width can be narrower / Increase video resolution <br>
+            Balance temporal quality and spatial resolution <br>
+            Preserve enough detail to keep the video clips recognisable while still creating a fragmented, distortion
+            effect over time
+          </ul>
 
-            <h3>Visual Polish</h3>
-            <ul>
-          Cleaner interface with a white scan line and cursor orb
-            </ul>
-          </div>
-        </section>
+          <h3>Visual Polish</h3>
+          <ul>
+            Cleaner interface with a white scan line and cursor orb
+          </ul>
+        </div>
+      </section>
 
-<script>
-  // Wait for DOM to be fully loaded
-  document.addEventListener('DOMContentLoaded', function () {
-    const navImage = document.getElementById('navImage');
-    const projectOverview = document.getElementById('project-overview');
-    const slitScanTech = document.getElementById('slit-scan-tech');
+      <script>
+        // Wait for DOM to be fully loaded
+        document.addEventListener('DOMContentLoaded', function () {
+          const navImage = document.getElementById('navImage');
+          const projectOverview = document.getElementById('project-overview');
+          const slitScanTech = document.getElementById('slit-scan-tech');
 
-    console.log('Elements found:', {
-      navImage: !!navImage,
-      projectOverview: !!projectOverview,
-      slitScanTech: !!slitScanTech
-    });
+          console.log('Elements found:', {
+            navImage: !!navImage,
+            projectOverview: !!projectOverview,
+            slitScanTech: !!slitScanTech
+          });
 
-    // Click left 40% - show project overview
-    const leftLink = document.querySelector('.left-link');
-    if (leftLink) {
-      leftLink.addEventListener('click', function (e) {
-        e.preventDefault();
-        console.log('Left clicked - Project Overview');
-        if (navImage) navImage.src = 'assets/Click1.png';
-        if (projectOverview) projectOverview.style.display = 'block';
-        if (slitScanTech) slitScanTech.style.display = 'none';
-      });
-    }
+          // Click left 40% - show project overview
+          const leftLink = document.querySelector('.left-link');
+          if (leftLink) {
+            leftLink.addEventListener('click', function (e) {
+              e.preventDefault();
+              console.log('Left clicked - Project Overview');
+              if (navImage) navImage.src = 'assets/Click1.png';
+              if (projectOverview) projectOverview.style.display = 'block';
+              if (slitScanTech) slitScanTech.style.display = 'none';
+            });
+          }
 
-    // Click right 60% - show slit-scan technical report
-    const rightLink = document.querySelector('.right-link');
-    if (rightLink) {
-      rightLink.addEventListener('click', function (e) {
-        e.preventDefault();
-        console.log('Right clicked - Slit-Scan Tech');
-        if (navImage) navImage.src = 'assets/Click2.png';
-        if (projectOverview) projectOverview.style.display = 'none';
-        if (slitScanTech) slitScanTech.style.display = 'block';
-      });
-    }
-  });
-</script>
+          // Click right 60% - show slit-scan technical report
+          const rightLink = document.querySelector('.right-link');
+          if (rightLink) {
+            rightLink.addEventListener('click', function (e) {
+              e.preventDefault();
+              console.log('Right clicked - Slit-Scan Tech');
+              if (navImage) navImage.src = 'assets/Click2.png';
+              if (projectOverview) projectOverview.style.display = 'none';
+              if (slitScanTech) slitScanTech.style.display = 'block';
+            });
+          }
+        });
+      </script>
 </body>
 
 </html>
