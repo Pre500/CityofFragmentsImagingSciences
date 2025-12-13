@@ -10,350 +10,7 @@
   <link rel="icon" type="image/png" sizes="16x16" href="assets/favicon-16x16.png">
   <link rel="icon" type="image/x-icon" href="assets/favicon.ico">
   <link rel="stylesheet" href="style.css?v=deploy-refresh">
-  <style>
-    body.subpage.project-page {
-      background-image: url('assets/Paper bg2.png');
-      background-size: cover;
-      background-attachment: fixed;
-      background-position: center;
-      overflow-y: auto;
-      min-height: 100vh;
-    }
-
-    /* Override topbar colors for this page */
-    body.project-page .topbar {
-      color: #000;
-      padding: 14px 32px;
-      position: relative;
-    }
-
-    body.project-page .topbar .top-link {
-      color: #000;
-    }
-
-    body.project-page .topbar .top-link:hover,
-    body.project-page .topbar .top-link:focus {
-      background: #f2f2f2;
-      color: #000;
-    }
-
-    body.project-page .topbar .top-link.active {
-      background: #000;
-      color: #fff;
-    }
-
-    /* Override title and subtitle colors */
-    body.project-page .overlay-subtitle {
-      color: #000;
-    }
-
-    /* Title wrap customization for this page */
-    body.project-page #title-wrap {
-      position: absolute;
-      left: 50%;
-      top: 10px;
-      transform: translateX(-50%);
-      margin-bottom: 0px;
-      z-index: 23;
-      pointer-events: none;
-      text-align: center;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 0;
-      width: auto;
-      max-width: none;
-      padding: 14px 32px;
-      background: rgb(240, 240, 240);
-      border-radius: 4px;
-    }
-
-
-    body.project-page #title-overlay {
-      position: relative;
-      z-index: 23;
-      pointer-events: none;
-      max-width: 380px;
-      width: 380px;
-      height: auto;
-      display: block;
-    }
-
-    body.project-page .overlay-subtitle {
-      position: relative;
-      margin-top: 8px;
-      color: #000;
-      font-size: 14px;
-      line-height: 1.3;
-      opacity: 1;
-      pointer-events: none;
-      text-decoration: none;
-      display: block;
-      max-width: 342px;
-      width: 100%;
-    }
-
-    /* Override page content colors */
-    body.project-page .page-content {
-      color: #000;
-    }
-
-    body.project-page .page-content h1 {
-      color: #000;
-    }
-
-    body.project-page .page-content p {
-      color: #333;
-    }
-
-    body.project-page .page-content a {
-      color: #000;
-    }
-
-    /* Embedded process slides */
-    .process-section {
-      margin: 10px 0 10px;
-    }
-
-    .process-section h2 {
-      margin-bottom: 1px;
-    }
-
-    .image-embed {
-      margin: 0 auto;
-      max-width: 1500px;
-      text-align: center;
-    }
-
-    .image-embed img {
-      width: 100%;
-      height: auto;
-      display: block;
-      margin: 0 auto;
-      border: none;
-    }
-
-    .image-embed figcaption {
-      margin-top: 8px;
-      font-size: 14px;
-      color: #444;
-    }
-
-    /* Video embed styling */
-    .video-embed {
-      margin: 20px auto;
-      max-width: 800px;
-      text-align: center;
-    }
-
-    .video-embed video {
-      width: 100%;
-      height: auto;
-      display: block;
-      margin: 0 auto;
-      border: 1px solid #ddd;
-      border-radius: 4px;
-    }
-
-    .video-caption {
-      text-align: center;
-      margin: 20px auto;
-      font-size: 14px;
-      color: #333;
-      font-style: italic;
-    }
-
-    /* Video embed styling */
-    .video-embed {
-      margin: 20px auto;
-      max-width: 800px;
-      text-align: center;
-    }
-
-    .video-embed video {
-      width: 100%;
-      height: auto;
-      display: block;
-      margin: 0 auto;
-      border: 1px solid #ddd;
-      border-radius: 4px;
-    }
-
-    .video-caption {
-      text-align: center;
-      margin: 20px auto;
-      font-size: 14px;
-      color: #333;
-      font-style: italic;
-    }
-
-    /* Page content padding */
-    .page-content {
-      padding-top: 0px;
-      position: relative;
-      z-index: 1;
-      max-width: 850px;
-      margin: 0 auto;
-    }
-
-    .content-section {
-      width: 100%;
-      display: block;
-    }
-
-    /* Text content styling */
-    .content-section h2 {
-      font-size: 24px;
-      font-weight: bold;
-      margin: 40px 0 20px;
-      color: #000;
-    }
-
-    .content-section h3 {
-      font-size: 18px;
-      font-weight: bold;
-      margin: 30px 0 15px;
-      color: #000;
-    }
-
-    .content-section p {
-      font-size: 14px;
-      line-height: 1.8;
-      margin: 15px 0;
-      color: #333;
-    }
-
-    .content-section pre {
-      background: #f5f5f5;
-      border: 1px solid #ddd;
-      border-radius: 4px;
-      padding: 20px;
-      overflow-x: auto;
-      margin: 20px 0;
-    }
-
-    .content-section code {
-      font-family: 'Courier New', monospace;
-      font-size: 12px;
-      line-height: 1.6;
-      color: #333;
-    }
-
-    /* Navigation buttons */
-    .nav-buttons {
-      position: relative;
-      width: 50%;
-      max-width: 400px;
-      margin: 100px auto 0px;
-      cursor: pointer;
-    }
-
-    .nav-buttons img {
-      width: 100%;
-      height: auto;
-      display: block;
-    }
-
-    .nav-buttons a {
-      position: absolute;
-      top: 0;
-      height: 100%;
-      width: 50%;
-      display: block;
-      cursor: pointer;
-    }
-
-    .nav-buttons div {
-      position: absolute;
-      top: 0;
-      height: 100%;
-      width: 50%;
-      display: block;
-      cursor: pointer;
-      z-index: 10;
-      pointer-events: auto;
-    }
-
-    .nav-buttons a.left-link {
-      left: 0;
-      width: 40%;
-    }
-
-    .nav-buttons a.right-link {
-      right: 0;
-      width: 60%;
-    }
-
-    .nav-buttons div.left-link {
-      left: 0;
-      width: 40%;
-    }
-
-    .nav-buttons div.right-link {
-      right: 0;
-      width: 60%;
-    }
-
-    /* Table of Contents */
-    .toc-container {
-      max-width: 900px;
-      margin: 0px auto 0px;
-      padding: 0 40px;
-      display: block;
-      grid-template-columns: auto;
-      gap: 80px;
-      font-family: 'Courier New', monospace;
-      font-size: 13px;
-      line-height: 2.2;
-      color: #000;
-      text-align: center;
-    }
-
-    .toc-section h3 {
-      font-size: 14px;
-      font-weight: bold;
-      margin-bottom: 16px;
-      text-transform: uppercase;
-      letter-spacing: 0.5px;
-    }
-
-    .toc-section ul {
-      list-style: none;
-      padding: 0;
-      margin: 0;
-    }
-
-    .toc-section li {
-      margin-bottom: 10px;
-      padding-left: 0;
-    }
-
-    .toc-section li a {
-      color: #000;
-      text-decoration: none;
-      transition: color 0.2s ease;
-    }
-
-    .toc-section li a:hover {
-      color: #666;
-      text-decoration: underline;
-    }
-
-    .toc-section li.indent-1 {
-      padding-left: 20px;
-    }
-
-    .toc-section li.indent-2 {
-      padding-left: 40px;
-    }
-
-    @media (max-width: 768px) {
-      .toc-container {
-        grid-template-columns: 1fr;
-        gap: 40px;
-      }
-    }
-  </style>
+  <link rel="stylesheet" href="project_process.css">
 </head>
 
 
@@ -389,40 +46,50 @@
         <div class="toc-section">
           <h3>Project Overview</h3>
           <ul>
-            <li><a href="#section-1-1">1.1 Project Overview</a></li>
-            <li><a href="#section-1-2">1.2 Core System Features</a></li>
-            <li><a href="#section-1-3">1.3 Design & User Experience</a></li>
-            <li><a href="#section-1-4">1.4 Technical Framework</a></li>
-            <li><a href="#section-1-5">1.5 Production Challenges</a></li>
-            <li><a href="#section-1-6">1.6 Future Evolution</a></li>
-            <li><a href="#section-1-7">1.7 Reflection & Takeaways</a></li>
+            <li><a href="#section-1-1">1.1 Artist Statement</a></li>
+            <li><a href="#section-1-2">1.2 Project Concept & Background Research</a></li>
+            <li><a href="#section-1-3">1.3 Key Inspirations</a></li>
+            <li><a href="#section-1-4">1.4 Process Roadmap</a></li>
+            <li><a href="#section-1-5">1.5 Implementation Methodology</a></li>
+            <li><a href="#section-1-6">1.6 Challenges</a></li>
+            <li><a href="#section-1-7">1.7 Future Work</a></li>
           </ul>
         </div>
       </div>
 
 
       <section class="process-section" id="section-1-1">
-        <h2>Artist Statement </h2>
-        <ul>
+        <h2>1.1 Artist Statement </h2>
+        <p>
+          City of Fragments reinterprets the city as a shifting archive of memories rather than a fixed physical
+          space. Using slit-scan distortion and user-generated uploads, the project reveals how urban moments stretch,
+          fragment, and transform as they are remembered and retold.
+          <br><br>
+          The slit-scan engine becomes a metaphor for memory itself, being unstable, reconstructed, and shaped by
+          time.
+          Each scanned fragment shows the city not as a singular narrative but as layered impressions, blurred
+          transitions, and partial traces.
+          <br><br>
+          Through temporal self-controlled graphic distortion and collective participation,
+          the work invites viewers to experience the city through shifting
+          perspectives, highlighting how technology mediates what we see,
+          recall, and ultimately understand about the world around us.
+        </p>
 
-          <p>
-            City of Fragments reinterprets the city as a shifting archive of memories rather than a fixed physical
-            space. Using slit-scan distortion and user-generated uploads, the project reveals how urban moments stretch,
-            fragment, and transform as they are remembered and retold.
-            <br><br>
-            The slit-scan engine becomes a metaphor for memory itself, being unstable, reconstructed, and shaped by
-            time.
-            Each scanned fragment shows the city not as a singular narrative but as layered impressions, blurred
-            transitions, and partial traces.
-            <br><br>
-            Through temporal self-controlled graphic distortion and collective participation,
-            the work invites viewers to experience the city through shifting
-            perspectives, highlighting how technology mediates what we see,
-            recall, and ultimately understand about the world around us.
-          </p>
+        <h3>Video Demos</h3>
+        <figure class="video-embed">
+          <video src="assets/Video Demo1.mp4" controls loading="lazy"></video>
+        </figure>
+        <div class="video-caption">
+          Video Demo of Final Project (Slit-Scan Effect in Action)
+        </div>
+        <figure class="video-embed">
+          <video src="assets/Video Demo2.mp4" controls loading="lazy"></video>
+        </figure>
+        <div class="video-caption">
+          Video Demo of Final Project (User Upload Collective Images Feature in Action)
+        </div>
 
-
-        </ul>
         <figure class="image-embed">
           <img src="assets/Project Outcome.png" loading="lazy" />
         </figure>
@@ -440,25 +107,28 @@
         </figure>
       </section>
 
-      <section class="process-section" id="section-1-4">
-        <figure class="image-embed">
-          <img src="assets/Process Roadmap.png" loading="lazy" />
-        </figure>
-      </section>
 
-      <section class="process-section">
+      <section class="process-section" id="section-1-4">
+        <h2>1.4 Implementation Methodology</h2>
         <figure class="image-embed">
           <img src="assets/Implementation Methodology.png" loading="lazy" />
         </figure>
       </section>
 
       <section class="process-section" id="section-1-5">
+        <h2>1.5 Project Process & Evolution</h2>
+        <figure class="image-embed">
+          <img src="assets/Process Roadmap.png" loading="lazy" />
+        </figure>
+      </section>
+
+      <section class="process-section" id="section-1-6">
         <figure class="image-embed">
           <img src="assets/Challenges.png" loading="lazy" />
         </figure>
       </section>
 
-      <section class="process-section" id="section-1-6">
+      <section class="process-section" id="section-1-7">
         <figure class="image-embed">
           <img src="assets/Future work.png" loading="lazy" />
         </figure>
@@ -472,46 +142,51 @@
           <h3>Slit-Scan Technical Report</h3>
           <ul>
             <li><a href="#section-2-1">2.1 What is Slit-Scan?</a></li>
-            <li><a href="#section-2-2">2.2 Early Prototypes</a></li>
-            <li><a href="#section-2-3">2.3 Algorithm Breakdown</a></li>
-            <li><a href="#section-2-4">2.4 Slit-Scan in Final Project</a></li>
-            <li><a href="#section-2-5">2.5 Technical Challenges</a></li>
-            <li><a href="#section-2-6">2.6 Demo Gallery</a></li>
+            <li><a href="#section-2-2">2.2 Early Trial Prototypes</a></li>
+            <li><a href="#section-2-3">2.3 Refined Slit-Scan Animation</a></li>
+            <li><a href="#section-2-4">2.4 Website Implementation</a></li>
+            <li><a href="#section-2-5">2.5 Demo Gallery & Results</a></li>
+            <li><a href="#section-2-6">2.6 Challenges in Making Process</a></li>
             <li><a href="#section-2-7">2.7 Summary</a></li>
           </ul>
         </div>
       </div>
-      <h2 id="section-2-1">2.1 What is Slit-Scan? </h2>
 
-      <h3>Principle of Slit-Scan</h3>
-      <p>Slit-scan imaging is built on an essential concept in imaging science: instead of capturing a full frame in a
-        single moment, it records only a narrow slice of the image repeatedly over time and composites these slices into
-        a single frame.</p>
+      <section class="process-section" id="section-2-1">
+        <h2>2.1 What is Slit-Scan?</h2>
 
-      <p>This technique results in a temporal distortion. It transforms the image into a space-time construction where
-        movement is stretched, compressed, or warped depending on how it changes during sampling. In digital form,
-        slit-scan simulates principles similar to a rolling-shutter sensor, where lines are exposed at different
-        moments, producing temporal distortion.</p>
+        <h3>Principle of Slit-Scan</h3>
+        <p>Slit-scan imaging is built on an essential concept in imaging science: instead of capturing a full frame in a
+          single moment, it records only a narrow slice of the image repeatedly over time and composites these slices
+          into a single frame.</p>
 
-      <p>During the Imaging Science Studio workshop, we got some hands-on experience trying slit scan photography. The
-        main principle is that it is a time-based technique in capturing slices of an image in repeating patterns. In
-        our experience playing around with it during the workshop, we found that it emphasises movement. Much like the
-        barrier grid animation workshop, slit scan photography also has various workflows. The effect can be achieved
-        through Processing, Adobe After Effects by using a grayscale gradient as a time displacement map, or even
-        through TouchDesigner.</p>
+        <p>This technique results in a temporal distortion. It transforms the image into a space-time construction where
+          movement is stretched, compressed, or warped depending on how it changes during sampling. In digital form,
+          slit-scan simulates principles similar to a rolling-shutter sensor, where lines are exposed at different
+          moments, producing temporal distortion.</p>
 
-      <h3>How Do We Utilise this Technique?</h3>
-      <p>In our project, this technique is recreated using Javascript by continuously sampling thin pixel strips and
-        rebuilding the frame based on user cursor movement. The result visually expresses memory as unstable, layered,
-        and time-dependent—aligning with our theme of recalling the city not as a fixed moment, but as a shifting and
-        fragmented temporal experience. The temporal distortion reflects our theme of fragmented memories. The slit scan
-        technique serves as a visual language that allows users to express the subjective and personal ways they
-        perceive urban space.</p>
+        <p>During the Imaging Science Studio workshop, we got some hands-on experience trying slit scan photography. The
+          main principle is that it is a time-based technique in capturing slices of an image in repeating patterns. In
+          our experience playing around with it during the workshop, we found that it emphasises movement. Much like the
+          barrier grid animation workshop, slit scan photography also has various workflows. The effect can be achieved
+          through Processing, Adobe After Effects by using a grayscale gradient as a time displacement map, or even
+          through TouchDesigner.</p>
 
-      <h2 id="section-2-2">2.2 Early Prototypes</h2>
-      <h3>First Tests on Processing</h3>
+        <h3>How Do We Utilise this Technique?</h3>
+        <p>In our project, this technique is recreated using Javascript by continuously sampling thin pixel strips and
+          rebuilding the frame based on user cursor movement. The result visually expresses memory as unstable, layered,
+          and time-dependent, aligning with our theme of recalling the city not as a fixed moment, but as a shifting and
+          fragmented temporal experience. The temporal distortion reflects our theme of fragmented memories. The slit
+          scan
+          technique serves as a visual language that allows users to express the subjective and personal ways they
+          perceive urban space.</p>
+      </section>
 
-      <pre><code>import processing.video.*;
+      <section class="process-section" id="section-2-2">
+        <h2>2.2 Early Prototypes</h2>
+        <h3>First Tests on Processing</h3>
+
+        <pre><code>import processing.video.*;
 
 Movie video;
 PImage buffer;
@@ -589,7 +264,6 @@ void movieEvent(Movie m) {
   }
 }</code></pre>
 
-      <section class="process-section">
         <figure class="video-embed">
           <video src="assets/Slit Scan Prototype on Processing.mp4" controls loading="lazy"></video>
         </figure>
@@ -597,84 +271,316 @@ void movieEvent(Movie m) {
           Video Demo of Prototype on Processing
         </div>
 
+        <h3>Refinements Achieved</h3>
+
+        <h4>Slit-Scan Variations</h4>
+        <ul>
+          <li>Applying different types of slit-scans</li>
+          <ul>
+            <li>Moving or fixed</li>
+            <li>Left, right, up or down</li>
+          </ul>
+          </li>
+        </ul>
+
+        <h4>Content Expansion</h4>
+        <ul>
+          <li>Cycle through more videos </li>
+            <ul>
+              <li>Each clip with a set optimal scan type depending on the motion</li>
+            </ul>
+          </li>
+        </ul>
+
+        <h4>User Interactivity</h4>
+        <ul>
+          <li>Create a function for users to download their custom slit-scan images</li>
+          <li>Scan line to follow user's cursor</li>
+          <li> → Adds an extra dimension of interactivity beyond the 4 scan types</li>
+        </ul>
+
+        <h4>Technical Optimization</h4>
+        <ul>
+          <li>Slit pixel width can be narrower / Increase video resolution</li>
+          <ul>
+          <li>Balance temporal quality and spatial resolution</li>
+          <li>Preserve enough detail to keep the video clips recognisable <br> while still creating a fragmented,
+            distortion effect over time</li> </ul>
+            </li>
+        </ul>
+
+        <h4>Visual Polish</h4>
+        <ul>
+          <li>Cleaner interface with a white scan line and cursor orb</li>
+        </ul>
       </section>
+
+
 
       <section class="process-section" id="section-2-3">
-        <h2>Checklist of Improvements After the Prototype</h2>
-        <div class="content-section">
-          <h3>Slit-Scan Variations</h3>
-          <ul>
-            Applying different types of slit-scans <br>
-            Moving or fixed <br>
-            Left, right, up or down
-          </ul>
+        <h2>2.3 Refined Slit-Scan</h2>
+        <h3>Implementation Plan</h3>
+        <p>Building on the p5.js prototype, the slit-scan logic was translated into JavaScript and adapted for real-time
+          use within the project website.
+        </p>
 
-          <h3>Content Expansion</h3>
-          <ul>
-            Cycle through more videos <br>
-            Each clip with a set optimal scan type depending on the motion
-          </ul>
+        <h3>Pixel Sampling from Video Frames</h3>
+        <p>Every animation frame, a thin strip of pixels in the current frame is copied into the canvas. For vertical
+          scans, it samples a narrow column of pixels and pastes it at 'currentX'. If the scan is horizontal, it samples
+          a narrow row of pixels and draws it as a horizontal strip at 'currentY'.</p>
 
-          <h3>User Interactivity</h3>
-          <ul>
-            Create a function for users to download their custom slit-scan images <br>
-            Scan line to follow user's cursor <br>
-            → adds an extra dimension of interactivity beyond the 4 scan types
-          </ul>
+        <h4>Vertical Slits</h4>
+        <p><strong>If scan type is moving:</strong></p>
+        <ul>
+          <li>'currentX' is animated left or right by 'dx' on each frame</li>
+          <li>Scan line leaves behind a temporal trail vertically</li>
+        </ul>
 
-          <h3>Technical Optimization</h3>
-          <ul>
-            Slit pixel width can be narrower / Increase video resolution <br>
-            Balance temporal quality and spatial resolution <br>
-            Preserve enough detail to keep the video clips recognisable while still creating a fragmented, distortion
-            effect over time
-          </ul>
+        <p><strong>If scan type is fixed:</strong></p>
+        <ul>
+          <li>'currentX' follows cursor position when pressed</li>
+          <li>User can choose to either stay stationary or paint time slices by dragging mouse horizontally</li>
+        </ul>
 
-          <h3>Visual Polish</h3>
-          <ul>
-            Cleaner interface with a white scan line and cursor orb
-          </ul>
-        </div>
+        <h4>Horizontal Slits</h4>
+        <p><strong>If scan type is moving:</strong></p>
+        <ul>
+          <li>'currentY' is animated up or down by 'dx' on each frame</li>
+          <li>Scan line leaves behind a temporal trail horizontally</li>
+        </ul>
+
+        <p><strong>If scan type is fixed:</strong></p>
+        <ul>
+          <li>'currentY' follows cursor position when pressed</li>
+          <li>User can choose to either stay stationary or paint time slices by dragging mouse vertically</li>
+        </ul>
+
+        <p>The code then converts 'currentX' or 'currentY' into video coordinates. A new slice is drawn each frame, so
+          as user enables scanning, the canvas gradually fills with strips captured at different times, producing the
+          desired time distortion effect.</p>
+
+        <h3>Scan Specifications</h3>
+        <ul>
+          <li>desired time distortion effect.</li>
+
+          <li>The slit-scan we want to implement has a 'scanWidth' of 8 pixels, the height is the full canvas height.
+            The
+            directional movement is determined by 'dx', which is how many pixels the scan line moves per frame if the
+            scan
+            type is not fixed. There are total of 4 scan types we incorporated onto our set of videos.</li>
+        </ul>
+
+        <h3>Performance Limits</h3>
+        <ul>
+          <li>'drawImage' is fast, but a bigger canvas size and narrow scanWidth means more draws per frame → e.g.
+            slower
+            on mobile view</li>
+          <li>Captures can only happen every 16ms (once per frame) to avoid overload
+          </li>
+          <li>High-speed scan risks blurred video</li>
+        </ul>
       </section>
 
-      <script>
-        // Wait for DOM to be fully loaded
-        document.addEventListener('DOMContentLoaded', function () {
-          const navImage = document.getElementById('navImage');
-          const projectOverview = document.getElementById('project-overview');
-          const slitScanTech = document.getElementById('slit-scan-tech');
 
-          console.log('Elements found:', {
-            navImage: !!navImage,
-            projectOverview: !!projectOverview,
-            slitScanTech: !!slitScanTech
+      <section class="process-section" id="section-2-4">
+        <h2>2.4 Website Implementation</h2>
+        <h3>Mouse Interaction</h3>
+        <p>We experimented with 2 different directions in mouse interaction. It was either the sole purpose of the mouse
+          is to press and toggle the scan effect, or there could be the addition of movement control if the scan line
+          were to follow cursor movement. Allowing the scan line to follow the cursor introduced a rich layer of
+          interactivity, where users could explore and gain more control in the slit-scan image they create. We went in
+          this direction because this design supports the goal of allowing the user to become the performer in this
+          work. We want to give them as much customization as possible. The user can compose and explore temporal
+          imaging with different scan types, cursor movement and toggling.
+        </p>
+
+        <h3>Key Slit-Scan Parameters</h3>
+        <table>
+          <thead>
+            <tr>
+              <th>Parameter</th>
+              <th>Description</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><strong>scanWidth</strong></td>
+              <td>
+                <ul>
+                  <li>Default at 8px</li>
+                  <li>Represents the width of each strip sampled from the videos</li>
+                  <li>Narrower values sharpen temporal layers, but can strain webpage performance</li>
+                </ul>
+              </td>
+            </tr>
+            <tr>
+              <td><strong>dx</strong></td>
+              <td>
+                <ul>
+                  <li>Default at 2 pixels per frame</li>
+                  <li>Step distance between consecutive slits</li>
+                  <li>Smaller steps means denser trails</li>
+                  <li>Larger gaps means bigger time jumps</li>
+                </ul>
+              </td>
+            </tr>
+            <tr>
+              <td><strong>scanType</strong></td>
+              <td>
+                <ul>
+                  <li>4 Main Scan Types
+                    <ul>
+                      <li>Moving Vertical 'moving-vertical'</li>
+                      <li>Moving Horizontal 'moving-horizontal'</li>
+                      <li>Fixed-Vertical 'fixed-vertical'</li>
+                      <li>Fixed-Horizontal 'fixed-horizontal'</li>
+                    </ul>
+                  </li>
+                  <li>Fixed types follow cursor position when pressed</li>
+                  <li>Moving types animate automatically across the canvas</li>
+                  <li>Some videos may have specifications for directional movement</li>
+                </ul>
+              </td>
+            </tr>
+            <tr>
+              <td><strong>captureInterval</strong></td>
+              <td>
+                <ul>
+                  <li>Controls the frequency of frame sampling</li>
+                  <li>Balances visual quality with performance optimization</li>
+                  <li>Default at every frame (16ms) by setting limits</li>
+                  <li>Prevents overload that may crash browser</li>
+                  <li>Maintain smooth trails</li>
+
+                </ul>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+
+        <h3>Unique Scan Types for Each Video</h3>
+        <p>The 4 unique scan types and their directional specifications are then assigned to each video, case
+          dependent
+          to achieve optical visual effect based on its motion and content.
+        </p>
+        <pre><code>
+      const videoScanTypes = {
+        'assets/1.mp4': 'fixed-vertical',
+        'assets/2.mp4': 'moving-vertical',
+        'assets/3.mp4': 'fixed-vertical',
+        'assets/4.mp4': 'fixed-horizontal',
+        'assets/5.mp4': 'moving-horizontal',
+        'assets/6.mp4': 'fixed-vertical',
+        'assets/7.mp4': 'fixed-horizontal',
+        'assets/8.mp4': 'moving-vertical',
+        'assets/9.mp4': 'moving-horizontal-utd',
+        'assets/10.mp4': 'fixed-vertical',
+        'assets/11.mp4': 'fixed-vertical',
+        'assets/12.mp4': 'fixed-vertical'
+      };
+</code></pre>
+      </section>
+
+      <section class="process-section" id="section-2-5">
+        <h2>2.5 Demo Gallery & Results</h2>
+        <h3>Scan Types</h3>
+        <figure class="video-embed">
+          <video src="assets/Demo of Slit Scan Types.mp4" controls loading="lazy"></video>
+        </figure>
+        <div class="video-caption">
+          Video Demo of Final Slit-Scan Implementation on Website
+        </div>
+        <h3>Our Results During Testing</h3>
+        <figure class="image-embed">
+          <img src="assets/Saved Slit Scan Image 1.jpg" loading="lazy" />
+        </figure>
+
+        <figure class="image-embed">
+          <img src="assets/Saved Slit Scan Image 2.jpg" loading="lazy" />
+        </figure>
+
+        <figure class="image-embed">
+          <img src="assets/Saved Slit Scan Image 3.jpg" loading="lazy" />
+        </figure>
+
+        <figure class="image-embed">
+          <img src="assets/Saved Slit Scan Image 4.jpg" loading="lazy" />
+        </figure>
+
+        <figure class="image-embed">
+          <img src="assets/Saved Slit Scan Image 5.jpg" loading="lazy" />
+        </figure>
+
+      </section>
+
+
+
+      <section class="process-section" id="section-2-6">
+        <h2>2.6 Challenges in Making Process</h2>
+        <p>During development, several technical and design challenges emerged while translating the slit-scan technique from prototype to a real-time, web-based system. One key issue was performance limitation, as continuous pixel sampling and canvas redraws placed strain on the browser, especially on lower-end devices. This required careful balancing between scan width, sampling frequency, and canvas resolution to maintain smooth interaction without sacrificing visual clarity.</p>
+
+<p>Another challenge involved browser behaviour and user interaction consistency. Different browsers handle video playback, autoplay policies, and canvas rendering differently, which occasionally caused unexpected delays or visual inconsistencies. Additional testing and fallback logic were necessary to ensure the slit-scan effect behaved reliably across platforms.</p>
+
+      </section>
+
+
+      <section class="process-section" id="section-2-7">
+        <h2>2.7 Summary</h2>
+        <p>The slit-scan technique acts as a visual language for City of Fragments because…
+        </p>
+        <ul>
+          <li>It visually represents memory as unstable and stretched over time.</li>
+          <li>It transforms static images of Hong Kong into time-responsive visuals.</li>
+          <li>It creates a sensory experience where time feels elastic.</li>
+          <li>It lets users participate in forming the distorted image.</li>
+        </ul>
+        <p>The science behind the effect becomes part of the storytelling, showing the fact that the city is viewed not
+          as a fixed object but as a constantly shifting temporal landscape.
+        </p>
+
+        <script>
+          // Wait for DOM to be fully loaded
+          document.addEventListener('DOMContentLoaded', function () {
+            const navImage = document.getElementById('navImage');
+            const projectOverview = document.getElementById('project-overview');
+            const slitScanTech = document.getElementById('slit-scan-tech');
+
+            console.log('Elements found:', {
+              navImage: !!navImage,
+              projectOverview: !!projectOverview,
+              slitScanTech: !!slitScanTech
+            });
+
+            // Initialize page state - ensure project overview is shown on load
+            if (navImage) navImage.src = 'assets/Click1.png';
+            if (projectOverview) projectOverview.style.display = 'block';
+            if (slitScanTech) slitScanTech.style.display = 'none';
+
+            // Click left 40% - show project overview
+            const leftLink = document.querySelector('.left-link');
+            if (leftLink) {
+              leftLink.addEventListener('click', function (e) {
+                e.preventDefault();
+                console.log('Left clicked - Project Overview');
+                if (navImage) navImage.src = 'assets/Click1.png';
+                if (projectOverview) projectOverview.style.display = 'block';
+                if (slitScanTech) slitScanTech.style.display = 'none';
+              });
+            }
+
+            // Click right 60% - show slit-scan technical report
+            const rightLink = document.querySelector('.right-link');
+            if (rightLink) {
+              rightLink.addEventListener('click', function (e) {
+                e.preventDefault();
+                console.log('Right clicked - Slit-Scan Tech');
+                if (navImage) navImage.src = 'assets/Click2.png';
+                if (projectOverview) projectOverview.style.display = 'none';
+                if (slitScanTech) slitScanTech.style.display = 'block';
+              });
+            }
           });
-
-          // Click left 40% - show project overview
-          const leftLink = document.querySelector('.left-link');
-          if (leftLink) {
-            leftLink.addEventListener('click', function (e) {
-              e.preventDefault();
-              console.log('Left clicked - Project Overview');
-              if (navImage) navImage.src = 'assets/Click1.png';
-              if (projectOverview) projectOverview.style.display = 'block';
-              if (slitScanTech) slitScanTech.style.display = 'none';
-            });
-          }
-
-          // Click right 60% - show slit-scan technical report
-          const rightLink = document.querySelector('.right-link');
-          if (rightLink) {
-            rightLink.addEventListener('click', function (e) {
-              e.preventDefault();
-              console.log('Right clicked - Slit-Scan Tech');
-              if (navImage) navImage.src = 'assets/Click2.png';
-              if (projectOverview) projectOverview.style.display = 'none';
-              if (slitScanTech) slitScanTech.style.display = 'block';
-            });
-          }
-        });
-      </script>
+        </script>
 </body>
 
 </html>

@@ -1,6 +1,19 @@
+/* ===================================================================
+   BASE STYLES - Reset & Typography
+   =================================================================== */
+
 /* Basic reset */
-* { box-sizing: border-box; margin: 0; padding: 0; }
-html, body { width: 100%; height: 100%; overflow: hidden; }
+* { 
+  box-sizing: border-box; 
+  margin: 0; 
+  padding: 0; 
+}
+
+html, body { 
+  width: 100%; 
+  height: 100%; 
+  overflow: hidden; 
+}
 
 /* Base typography */
 body {
@@ -11,6 +24,11 @@ body {
   -moz-osx-font-smoothing: grayscale;
 }
 
+
+/* ===================================================================
+   LAYOUT - Page Structure & Containers
+   =================================================================== */
+
 /* Layout wrapper */
 .page {
   max-width: 900px;
@@ -20,8 +38,54 @@ body {
   padding-bottom: 40px;
 }
 
-.topbar .left { cursor: pointer; }
-.topbar .top-link, .topbar a.top-link {
+/* Canvas container sits behind content */
+#canvas-container { 
+  position: fixed; 
+  left: 50%; 
+  transform: translateX(-50%); 
+  top: 0; 
+  width: 100%; 
+  height: 100vh; 
+  z-index: 3; 
+  pointer-events: none; 
+}
+
+.content { 
+  position: relative; 
+  z-index: 2; 
+  padding: 10px 18px 40px; 
+}
+
+
+/* ===================================================================
+   NAVIGATION - Top Bar & Footer
+   =================================================================== */
+
+/* Top and bottom navigation */
+.topbar, .site-footer {
+  position: fixed;
+  left: 50%;
+  transform: translateX(-50%);
+  width: calc(100% - 56px);
+  max-width: 900px;
+  z-index: 12;
+  background: transparent;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 14px 32px;
+}
+
+.topbar { 
+  top: 20px; 
+}
+
+.topbar .left { 
+  cursor: pointer; 
+}
+
+.topbar .top-link, 
+.topbar a.top-link {
   font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
   color: #fff9f9;
   text-decoration: none;
@@ -31,15 +95,56 @@ body {
   font-weight: 500;
   letter-spacing: 0.3px;
   transition: background 150ms ease, transform 120ms ease;
+  text-shadow: none;
 }
-.topbar .top-link { text-shadow: none; }
-.topbar .top-link:hover, .topbar .top-link:focus {
+
+.topbar .top-link:hover, 
+.topbar .top-link:focus {
   background: #f2f2f2;
   color: #000;
   cursor: pointer;
   transform: translateY(-2px);
 }
-.topbar .top-link.active { background: #f2f2f2; color: #000; }
+
+.topbar .top-link.active { 
+  background: #f2f2f2; 
+  color: #000; 
+}
+
+.site-footer { 
+  bottom: 20px; 
+  padding: 10px 32px; 
+  color: #999; 
+  font-size: 12px; 
+}
+
+.site-footer .bottom-link { 
+  color: #ffffff; 
+  text-decoration: none; 
+  padding: 12px 18px; 
+  border-radius: 12px; 
+  display: inline-block; 
+  font-weight: 500; 
+  transition: background 150ms ease, transform 120ms ease; 
+}
+
+.site-footer .bottom-link:hover, 
+.site-footer .bottom-link:focus { 
+  background: #f2f2f2; 
+  color: #000; 
+  cursor: pointer; 
+  transform: translateY(-2px); 
+}
+
+.site-footer .bottom-link.active { 
+  background: #000; 
+  color: #fff; 
+}
+
+
+/* ===================================================================
+   HEADER - Title & Subtitle
+   =================================================================== */
 
 /* Title cluster */
 #title-wrap {
@@ -57,13 +162,57 @@ body {
   width: calc(100% - 56px);
   max-width: 900px;
 }
-.title-link { pointer-events: auto; display: inline-block; }
-#title-overlay { position: relative; z-index: 22; pointer-events: none; max-width: 380px; width: 380px; height: auto; display: block; }
-.overlay-subtitle { position: relative; margin-top: 8px; color: #ffffff; font-size: 14px; line-height: 1.4; opacity: 1; pointer-events: none; text-decoration: none; display: block; max-width: 342px; width: calc(100% - 110px); }
+
+.title-link { 
+  pointer-events: auto; 
+  display: inline-block; 
+}
+
+#title-overlay { 
+  position: relative; 
+  z-index: 22; 
+  pointer-events: none; 
+  max-width: 380px; 
+  width: 380px; 
+  height: auto; 
+  display: block; 
+}
+
+.overlay-subtitle { 
+  position: relative; 
+  margin-top: 8px; 
+  color: #ffffff; 
+  font-size: 14px; 
+  line-height: 1.4; 
+  opacity: 1; 
+  pointer-events: none; 
+  text-decoration: none; 
+  display: block; 
+  max-width: 342px; 
+  width: calc(100% - 110px); 
+}
 
 /* Header text */
-.site-header h1 { font-weight: 700; font-size: 64px; letter-spacing: 0; line-height: 0.3px; color: #2b2b2b; }
-.site-header .subtitle { margin-top: 8px; font-size: 16px; color: #444; opacity: 0.9; display: block; }
+.site-header h1 { 
+  font-weight: 700; 
+  font-size: 64px; 
+  letter-spacing: 0; 
+  line-height: 0.3px; 
+  color: #2b2b2b; 
+}
+
+.site-header .subtitle { 
+  margin-top: 8px; 
+  font-size: 16px; 
+  color: #444; 
+  opacity: 0.9; 
+  display: block; 
+}
+
+
+/* ===================================================================
+   VIDEO PLAYER - Fullscreen & Controls
+   =================================================================== */
 
 /* Player shell */
 #fullscreen-player {
@@ -79,8 +228,26 @@ body {
   border: none;
   outline: none;
 }
-#fullscreen-player .slit-scan-container { width: 100%; height: 100%; flex: 1; position: relative; overflow: visible; border: none; }
-#fullscreen-player video#mainPlayer { width: 100%; height: 100%; object-fit: cover; display: block; position: relative; z-index: 1; border: none; outline: none; }
+
+#fullscreen-player .slit-scan-container { 
+  width: 100%; 
+  height: 100%; 
+  flex: 1; 
+  position: relative; 
+  overflow: visible; 
+  border: none; 
+}
+
+#fullscreen-player video#mainPlayer { 
+  width: 100%; 
+  height: 100%; 
+  object-fit: cover; 
+  display: block; 
+  position: relative; 
+  z-index: 1; 
+  border: none; 
+  outline: none; 
+}
 
 .player-controls {
   position: absolute;
@@ -94,58 +261,186 @@ body {
   z-index: 20;
   padding: 6px;
 }
-.source-btn { padding: 8px 12px; border-radius: 4px; border: none; background: rgba(255,255,255,0.9); cursor: pointer; }
-.source-btn.active { background: rgba(40,40,40,0.9); color: #fff; }
-.control-btn { padding: 8px 12px; border-radius: 4px; border: none; background: rgba(255,255,255,0.9); cursor: pointer; text-shadow: none; }
 
-.controls-row { display: flex; justify-content: center; align-items: center; gap: 30px; margin: 20px auto; }
-.circle-btn { width: 60px; height: 60px; border-radius: 50%; border: 2px solid rgba(255, 255, 255, 0.8); background: transparent; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: background 200ms ease, transform 200ms ease, border-color 200ms ease; padding: 0; flex-shrink: 0; }
-.circle-btn:hover { background: rgba(255, 255, 255, 0.15); border-color: rgba(255, 255, 255, 1); transform: scale(1.05); }
-.circle-btn svg { width: 28px; height: 28px; }
-
-/* Canvas container sits behind content */
-#canvas-container { position: fixed; left: 50%; transform: translateX(-50%); top: 0; width: 100%; height: 100vh; z-index: 3; pointer-events: none; }
-
-.content { position: relative; z-index: 2; padding: 10px 18px 40px; }
-
-.canvas-rect, .frame-grid.video-large { width: 100vw; max-width: none; left: 50%; transform: translateX(-50%); height: 70vh; margin: 0 0 80px; background: #000; border-radius: 0; overflow: hidden; position: relative; }
-.frame-grid.video-frame { display: block; padding: 0; }
-.frame-grid.video-frame video, .frame-grid.has-video video { width: 100%; height: 100%; object-fit: cover; display: block; border-radius: 2px; }
-.frame-grid.has-video { padding: 0; }
-.frame-grid.has-video::before { display: none; }
-.frame-grid.video-missing { display: flex; align-items: center; justify-content: center; background: #f0f0f0; color: #666; font-size: 13px; }
-.frame-grid .missing-label { text-align: center; line-height: 1.2; }
-.video-play-overlay { position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%); padding: 8px 14px; background: rgba(0,0,0,0.6); color: #fff; border: none; border-radius: 4px; cursor: pointer; z-index: 5; }
-.caption { margin-top: 12px; color: #9b9b9b; font-size: 12px; text-align: center; }
-
-/* Top and bottom navigation */
-.topbar, .site-footer {
-  position: fixed;
-  left: 50%;
-  transform: translateX(-50%);
-  width: calc(100% - 56px);
-  max-width: 900px;
-  z-index: 12;
-  background: transparent;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 14px 32px;
+.source-btn { 
+  padding: 8px 12px; 
+  border-radius: 4px; 
+  border: none; 
+  background: rgba(255,255,255,0.9); 
+  cursor: pointer; 
 }
-.topbar { top: 20px; }
-.site-footer { bottom: 20px; padding: 10px 32px; color: #999; font-size: 12px; }
-.site-footer .bottom-link { color: #ffffff; text-decoration: none; padding: 12px 18px; border-radius: 12px; display: inline-block; font-weight: 500; transition: background 150ms ease, transform 120ms ease; }
-.site-footer .bottom-link:hover, .site-footer .bottom-link:focus { background: #f2f2f2; color: #000; cursor: pointer; transform: translateY(-2px); }
-.site-footer .bottom-link.active { background: #000; color: #fff; }
+
+.source-btn.active { 
+  background: rgba(40,40,40,0.9); 
+  color: #fff; 
+}
+
+.control-btn { 
+  padding: 8px 12px; 
+  border-radius: 4px; 
+  border: none; 
+  background: rgba(255,255,255,0.9); 
+  cursor: pointer; 
+  text-shadow: none; 
+}
+
+.controls-row { 
+  display: flex; 
+  justify-content: center; 
+  align-items: center; 
+  gap: 30px; 
+  margin: 20px auto; 
+}
+
+.circle-btn { 
+  width: 60px; 
+  height: 60px; 
+  border-radius: 50%; 
+  border: 2px solid rgba(255, 255, 255, 0.8); 
+  background: transparent; 
+  cursor: pointer; 
+  display: flex; 
+  align-items: center; 
+  justify-content: center; 
+  transition: background 200ms ease, transform 200ms ease, border-color 200ms ease; 
+  padding: 0; 
+  flex-shrink: 0; 
+}
+
+.circle-btn:hover { 
+  background: rgba(255, 255, 255, 0.15); 
+  border-color: rgba(255, 255, 255, 1); 
+  transform: scale(1.05); 
+}
+
+.circle-btn svg { 
+  width: 28px; 
+  height: 28px; 
+}
+
+
+/* ===================================================================
+   VIDEO FRAMES & CAPTIONS
+   =================================================================== */
+
+.canvas-rect, 
+.frame-grid.video-large { 
+  width: 100vw; 
+  max-width: none; 
+  left: 50%; 
+  transform: translateX(-50%); 
+  height: 70vh; 
+  margin: 0 0 80px; 
+  background: #000; 
+  border-radius: 0; 
+  overflow: hidden; 
+  position: relative; 
+}
+
+.frame-grid.video-frame { 
+  display: block; 
+  padding: 0; 
+}
+
+.frame-grid.video-frame video, 
+.frame-grid.has-video video { 
+  width: 100%; 
+  height: 100%; 
+  object-fit: cover; 
+  display: block; 
+  border-radius: 2px; 
+}
+
+.frame-grid.has-video { 
+  padding: 0; 
+}
+
+.frame-grid.has-video::before { 
+  display: none; 
+}
+
+.frame-grid.video-missing { 
+  display: flex; 
+  align-items: center; 
+  justify-content: center; 
+  background: #f0f0f0; 
+  color: #666; 
+  font-size: 13px; 
+}
+
+.frame-grid .missing-label { 
+  text-align: center; 
+  line-height: 1.2; 
+}
+
+.video-play-overlay { 
+  position: absolute; 
+  left: 50%; 
+  top: 50%; 
+  transform: translate(-50%, -50%); 
+  padding: 8px 14px; 
+  background: rgba(0,0,0,0.6); 
+  color: #fff; 
+  border: none; 
+  border-radius: 4px; 
+  cursor: pointer; 
+  z-index: 5; 
+}
+
+.caption { 
+  margin-top: 12px; 
+  color: #9b9b9b; 
+  font-size: 12px; 
+  text-align: center; 
+}
+
+
+/* ===================================================================
+   BUTTONS & INTERACTIVE ELEMENTS
+   =================================================================== */
 
 /* Discover button */
-.discover-btn { background: transparent; border: none; padding: 8px 12px; cursor: pointer; border-radius: 120px; display: inline-flex; align-items: center; justify-content: center; margin: 0 auto; transition: box-shadow 120ms ease, transform 120ms ease; }
-.discover-btn img { display: block; max-width: 240px; width: 240px; min-height: 60px; height: auto; border-radius: 8px; box-shadow: 0 6px 18px rgba(0,0,0,0.08); transition: transform 120ms ease, box-shadow 120ms ease; }
-.discover-btn:focus, .discover-btn:hover { outline: 1px solid rgba(255,255,255,0.9); outline-offset: 2px; }
-.discover-btn:hover img { transform: translateY(-3px); }
+.discover-btn { 
+  background: transparent; 
+  border: none; 
+  padding: 8px 12px; 
+  cursor: pointer; 
+  border-radius: 120px; 
+  display: inline-flex; 
+  align-items: center; 
+  justify-content: center; 
+  margin: 0 auto; 
+  transition: box-shadow 120ms ease, transform 120ms ease; 
+}
 
-/* Slit-scan overlays */
-.slit-scan-canvas, .slit-scan-line { 
+.discover-btn img { 
+  display: block; 
+  max-width: 240px; 
+  width: 240px; 
+  min-height: 60px; 
+  height: auto; 
+  border-radius: 8px; 
+  box-shadow: 0 6px 18px rgba(0,0,0,0.08); 
+  transition: transform 120ms ease, box-shadow 120ms ease; 
+}
+
+.discover-btn:focus, 
+.discover-btn:hover { 
+  outline: 1px solid rgba(255,255,255,0.9); 
+  outline-offset: 2px; 
+}
+
+.discover-btn:hover img { 
+  transform: translateY(-3px); 
+}
+
+
+/* ===================================================================
+   SLIT-SCAN EFFECTS
+   =================================================================== */
+
+.slit-scan-canvas, 
+.slit-scan-line { 
   background-color: transparent !important; 
   display: block; 
   z-index: 10 !important; 
@@ -154,535 +449,56 @@ body {
   opacity: 1 !important;
   mix-blend-mode: normal;
 }
-.slit-scan-canvas { z-index: 10 !important; }
-.slit-scan-line { z-index: 11 !important; }
 
-/* Subpage styles */
-body.subpage { background: #2a2a2a; color: #fff; }
-body.subpage #title-wrap { top: 24px; }
-.page-content { padding: 180px 40px 60px; max-width: 900px; margin: 0 auto; text-align: center; }
-.page-content h1 { font-size: 48px; margin-bottom: 24px; font-weight: 700; letter-spacing: -0.5px; }
-.page-content p { font-size: 16px; line-height: 1.6; margin-bottom: 16px; color: #ccc; }
-.page-content a { color: #ffffff; text-decoration: underline; font-weight: 500; }
-.page-content a:hover { color: #f2f2f2; }
-
-/* ================= Your Stories PAGE ================= */
-.scrapbook-page { background-image: url("assets/Paper bg1.png"); background-size: cover; background-attachment: fixed; overflow: hidden; margin: 0; }
-.scrapbook-title { text-align: center; font-size: 42px; margin-top: 20px; color: #000000; }
-#scrapbook-controls { text-align: center; margin-top: 10px; }
-.upload-btn { background-color: #e0ffdb; padding: 8px 16px; border-radius: 6px; cursor: pointer; margin-right: 10px; border: 2px dashed #ffffff; }
-.upload-btn input { display: none; }
-#userText { width: 230px; height: 50px; border-radius: 10px; border: 1.5px solid #ff9143; font-family: "Apple Garamond", cursive; resize: none; padding: 8px; }
-#addBtn { margin-left: 10px; background: #ffffff; padding: 10px 18px; border-radius: 8px; border: none; cursor: pointer; font-family: "Apple Garamond", cursive; font-size: 18px; }
-#canvas { position: relative; width: 100vw; height: 85vh; }
-.polaroid { position: absolute; width: 200px; border: 10px solid white; border-bottom: 60px solid white; background: white; cursor: grab; box-shadow: 0 8px 14px rgba(0,0,0,0.25); transition: transform 0.15s; transform: rotate(calc(var(--rotation)*1deg)); }
-.polaroid:active { cursor: grabbing; transform: scale(1.05) rotate(calc(var(--rotation)*1deg)); }
-.polaroid img { width: 100%; border-radius: 2px; display: block; }
-.polaroid-text { position: absolute; bottom: -45px; width: 100%; text-align: center; font-size: 16px; }/* Basic reset */
-* { box-sizing: border-box; margin: 0; padding: 0; }
-html,body { width: 100%; height: 100%; overflow: hidden; }
-
-/* Page background + base font */
-body {
-  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
-  font-size: 15px; /* slightly smaller sentence size */
-  color: #222;
-  -webkit-font-smoothing:antialiased;
-  -moz-osx-font-smoothing:grayscale;
+.slit-scan-canvas { 
+  z-index: 10 !important; 
 }
 
-/* Page wrapper to center content and limit width */
-.page {
-  max-width: 900px;
-  margin: 0 auto;
-  position: relative;
-  padding-bottom: 40px; /* move higher from bottom margin */
+.slit-scan-line { 
+  z-index: 11 !important; 
 }
 
 
-.topbar .left {
-  cursor: pointer; /* make top-left text indicate it is clickable */
+/* ===================================================================
+   SUBPAGE STYLES - Generic Subpage Layout
+   =================================================================== */
+
+body.subpage { 
+  background: #2a2a2a; 
+  color: #fff; 
 }
 
-.topbar .top-link, .topbar a.top-link { font-family: "Helvetica Neue", Helvetica, Arial, sans-serif; color: #fff9f9; text-decoration: none; padding: 12px 18px; border-radius: 12px; display: inline-block; font-weight: 500; letter-spacing: 0.3px; }
-.topbar .top-link { text-shadow: none; }
-
-/* Wrapper for title image and subtitle */
-#title-wrap {
-  position: fixed;
-  left: 50%;
-  top: 24px;
-  transform: translateX(-50%);
-  z-index: 22;
-  pointer-events: none;
-  text-align: center;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 0;
-  width: calc(100% - 56px);
-  max-width: 900px;
+body.subpage #title-wrap { 
+  top: 24px; 
 }
 
-/* Allow clicking the title image link even when wrap blocks events */
-.title-link { pointer-events: auto; display: inline-block; }
-
-/* Title overlay in the center top */
-#title-overlay {
-  position: relative;
-  z-index: 22;
-  pointer-events: none;
-  max-width: 380px; /* slightly larger title */
-  width: 380px;
-  height: auto;
-  display: block;
+.page-content { 
+  padding: 180px 40px 60px; 
+  max-width: 900px; 
+  margin: 0 auto; 
+  text-align: center; 
 }
 
-/* Subtitle positioned directly under the title image */
-.overlay-subtitle {
-  position: relative;
-  margin-top: 8px;
-  color: #ffffff;
-  font-size: 14px;
-  line-height: 1.4;
-  opacity: 1;
-  pointer-events: none;
-  text-decoration: none;
-  display: block;
-  max-width: 342px;
-  width: calc(100% - 110px);
+.page-content h1 { 
+  font-size: 48px; 
+  margin-bottom: 24px; 
+  font-weight: 700; 
+  letter-spacing: -0.5px; 
 }
 
-/* remove any text effects site-wide for topbar/nav */
-.topbar .top-link, .control-btn { text-shadow: none; }
-
-/* Fullscreen player styles */
-#fullscreen-player {
-  position: fixed;
-  inset: 0;
-  width: 100%;
-  height: 100vh;
-  background: #000;
-  display: flex;
-  align-items: stretch;
-  justify-content: center;
-  z-index: 1; /* behind canvas (orb) and mini-site */
+.page-content p { 
+  font-size: 16px; 
+  line-height: 1.6; 
+  margin-bottom: 16px; 
+  color: #ccc; 
 }
 
-#fullscreen-player video#mainPlayer {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  display: block;
-  border: none;
-  outline: none;
-}
-.source-btn { padding: 8px 12px; border-radius: 4px; border: none; background: rgba(255,255,255,0.9); cursor: pointer; }
-.source-btn.active { background: rgba(40,40,40,0.9); color: #fff; }
-.control-btn { padding: 8px 12px; border-radius: 4px; border: none; background: rgba(255,255,255,0.9); cursor: pointer; }
-
-/* top smallbar */
-.topbar {
-  display:flex;
-  justify-content:space-between;
-  align-items:center;
-  padding: 3px 0;
-  color: #999;
-  font-size: 12px;
-  letter-spacing: 0.6px;
-}
-.topbar .center { text-align:center; flex:1; }
-
-
-/* subtitle */
-.site-header .subtitle {
-  margin-top: 8px;
-  font-size: 16px; /* reduced subtitle sentence size */
-  color: #444;
-  opacity: 0.9;
-  display: block;
-}
-.site-header h1 {
-  font-weight:700;
-  font-size: 64px;
-  letter-spacing: 0px;
-  line-height: 0.3px;
-  color: #2b2b2b;
+.page-content a { 
+  color: #ffffff; 
+  text-decoration: underline; 
+  font-weight: 500; 
 }
 
-/* canvas container sits absolute behind content (z below overlays) */
-#canvas-container {
-  position: fixed;
-  left: 50%;
-  transform: translateX(-50%);
-  top: 0;
-  width: 100%;
-  height: 100vh;
-  z-index: 3; /* bring canvas above video/content so the orb is visible over the mp4 */
-  pointer-events: none; /* allow mouse events to pass through */
-}
-
-/* content area sits above canvas */
-.content {
-  position: relative;
-  z-index: 2;
-  padding: 10px 18px 40px;
-}
-
-/* large rectangular canvas/video area — almost screen size */
-.canvas-rect,
-.frame-grid.video-large {
-  /* full-bleed responsive video area */
-  width: 100vw;
-  max-width: none;
-  left: 50%;
-  transform: translateX(-50%);
-  height: 70vh; /* tall rectangle for video/animation */
-  margin: 0 0 80px; /* keep space below the rectangle */
-  background: #000; /* black placeholder for video/canvas */
-  border-radius: 0; /* remove rounded corners for edge-to-edge */
-  overflow: hidden;
-  position: relative;
-}
-
-/* video container style (same size as frame-grid) */
-.frame-grid.video-frame {
-  display: block;
-  padding: 0;             /* remove padding used for static placeholder */
-}
-
-/* the video itself */
-.frame-grid.video-frame video {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;      /* crop to fill the frame nicely */
-  display: block;
-  border-radius: 2px;
-}
-
-/* when a frame-grid has a dynamically inserted video */
-.frame-grid.has-video {
-  padding: 0; /* remove placeholder padding so video fills the frame */
-}
-.frame-grid.has-video::before { display: none; }
-.frame-grid.has-video video {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  display: block;
-  border-radius: 2px;
-}
-
-/* missing video fallback */
-.frame-grid.video-missing {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background: #f0f0f0;
-  color: #666;
-  font-size: 13px;
-}
-.frame-grid .missing-label { text-align: center; line-height:1.2; }
-
-/* simple play overlay when autoplay is blocked */
-.video-play-overlay {
-  position: absolute;
-  left: 50%;
-  top: 50%;
-  transform: translate(-50%, -50%);
-  padding: 8px 14px;
-  background: rgba(0,0,0,0.6);
-  color: #fff;
-  border: none;
-  border-radius: 4px;
-  cursor: pointer;
-  z-index: 5;
-}
-
-
-.caption {
-  margin-top: 12px;
-  color: #9b9b9b;
-  font-size: 12px; /* slightly smaller caption text */
-  text-align:center;
-}
-
-/* footer */
-.site-footer {
-  position: fixed;
-  bottom: 8px;
-  left: 50%;
-  transform: translateX(-50%);
-  width: 100%;
-  max-width: 900px;
-  display:flex;
-  justify-content:space-between;
-  align-items:center;
-  color:#999;
-  font-size:12px;
-  z-index: 2;
-}
-
-/* floating add button */
-/* removed addBtn styling */
-
-/* Pin the small topbar to the very top of the viewport (full-width area centered to page width) */
-.topbar {
-  position: fixed;
-  left: 50%;
-  transform: translateX(-50%);
-  top: 20px; /* more space from top */
-  width: calc(100% - 56px);
-  max-width: 900px;
-  z-index: 12; /* above player and canvas */
-  background: transparent;
-  padding: 14px 32px; /* increased padding */
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
-
-/* push page content down so topbar doesn't overlap the header */
-.page { padding-top: 96px; }
-
-/* Bottom navigation bar styled like the topbar */
-.site-footer {
-  position: fixed;
-  left: 50%;
-  transform: translateX(-50%);
-  bottom: 20px; /* more space from bottom */
-  width: calc(100% - 56px);
-  max-width: 900px;
-  z-index: 12;
-  background: transparent;
-  padding: 10px 32px; /* match topbar spacing */
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
-
-.site-footer .bottom-link { color: #ffffff; text-decoration: none; padding: 12px 18px; border-radius: 12px; display: inline-block; font-weight: 500; }
-
-/* Hover and active states for top and bottom nav buttons */
-.topbar .top-link, .site-footer .bottom-link { transition: background 150ms ease, transform 120ms ease; }
-.topbar .top-link:hover, .topbar .top-link:focus, .site-footer .bottom-link:hover, .site-footer .bottom-link:focus {
-  background: #f2f2f2;
-  color: #000; /* make hover text black */
-  cursor: pointer;
-  transform: translateY(-2px);
-}
-.topbar .top-link.active, .site-footer .bottom-link.active {
-  background: #000;
-  color: #fff;
-}
-
-
-/* image control used for Discover Hong Kong */
-.player-controls { left: 0; right: 0; transform: none; justify-content: center; }
-
-/* discover button: button that contains the image */
-.discover-btn { background: transparent; border: none; padding: 3px; cursor: pointer; border-radius: 120px; display: inline-flex;  align-items: center; justify-content: center; margin: 0 auto; transition: box-shadow 120ms ease, transform 120ms ease; }
-.discover-btn img { display: block; max-width: 350px; width: 350px; min-height: 60px; height: auto; border-radius: 8px; box-shadow: 0 6px 18px rgba(0,0,0,0.08); transition: transform 120ms ease, box-shadow 120ms ease; }
-.discover-btn:focus { outline: 1px solid rgba(255,255,255,0.9); outline-offset: 2px }
-.discover-btn:hover { outline: 1px solid rgba(255,255,255,0.9); outline-offset: 2px }
-.discover-btn:hover img { transform: translateY(-3px); }
-
-/* Subpage styles */
-body.subpage {
-  background: #2a2a2a;
-  color: #fff;
-}
-
-/* Adjust title positioning for subpages */
-body.subpage #title-wrap {
-  top: 24px; /* match homepage spacing */
-}
-
-/* Page content area for subpages */
-.page-content {
-  padding: 180px 40px 60px;
-  max-width: 900px;
-  margin: 0 auto;
-  text-align: center;
-}
-
-.page-content h1 {
-  font-size: 48px;
-  margin-bottom: 24px;
-  font-weight: 700;
-  letter-spacing: -0.5px;
-}
-
-.page-content p {
-  font-size: 16px;
-  line-height: 1.6;
-  margin-bottom: 16px;
-  color: #ccc;
-}
-
-.page-content a {
-  color: #ffffff;
-  text-decoration: underline;
-  font-weight: 500;
-}
-
-.page-content a:hover {
-  color: #f2f2f2;
-}
-
-/* Active nav link state (shown on subpages when that page is open) */
-.topbar .top-link.active {
-  background: #f2f2f2;
-  color: #000;
-}
-
-
-/* ================= Your Stories PAGE ================= */
-
-.scrapbook-page {
-    background-image: url("assets/Paper bg1.png");
-    background-size: cover;
-    background-attachment: fixed;
-    overflow: hidden;
-    margin: 0;
-}
-
-.scrapbook-title {
-    text-align: center;
-    font-size: 42px;
-    margin-top: 20px;
-    color: #000000;
-}
-
-/* Controls */
-#scrapbook-controls {
-    text-align: center;
-    margin-top: 10px;
-}
-
-.upload-btn {
-    background-color: #e0ffdb;
-    padding: 8px 16px;
-    border-radius: 6px;
-    cursor: pointer;
-    margin-right: 10px;
-    border: 2px dashed #ffffff;
-}
-
-.upload-btn input {
-    display: none;
-}
-
-#userText {
-    width: 230px;
-    height: 50px;
-    border-radius: 10px;
-    border: 1.5px solid #ff9143;
-    font-family: "Apple Garamond", cursive;
-    resize: none;
-    padding: 8px;
-}
-
-#addBtn {
-    margin-left: 10px;
-    background: #ffffff;
-    padding: 10px 18px;
-    border-radius: 8px;
-    border: none;
-    cursor: pointer;
-    font-family: "Apple Garamond", cursive;
-    font-size: 18px;
-}
-
-#canvas {
-    position: relative;
-    width: 100vw;
-    height: 85vh;
-}
-
-/* Polaroids */
-.polaroid {
-    position: absolute;
-    width: 200px;
-    border: 10px solid white;
-    border-bottom: 60px solid white;
-    background: white;
-    cursor: grab;
-    box-shadow: 0 8px 14px rgba(0,0,0,0.25);
-    transition: transform 0.15s;
-    transform: rotate(calc(var(--rotation)*1deg));
-}
-
-.polaroid:active {
-    cursor: grabbing;
-    transform: scale(1.05) rotate(calc(var(--rotation)*1deg));
-}
-
-.polaroid img {
-    width: 100%;
-    border-radius: 2px;
-    display: block;
-}
-
-.polaroid-text {
-    position: absolute;
-    bottom: -45px;
-    width: 100%;
-    text-align: center;
-    font-size: 16px;
-}
-
-/* Slit-scan overlay canvases - ensure they are transparent */
-.slit-scan-canvas,
-.slit-scan-line {
-  background-color: transparent !important;
-  display: block;
-}
-
-.slit-scan-canvas,
-.slit-scan-line {
-  z-index: 10 !important;
-  position: absolute;
-  pointer-events: none;
-}
-
-/* Video should be BELOW slit-scan canvases so the effect shows on top */
-#fullscreen-player video#mainPlayer {
-  position: relative;
-  z-index: 1;
-}
-
-/* Buttons in row layout with discover image in middle */
-.controls-row {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  gap: 30px;
-  margin: 20px auto;
-}
-
-.circle-btn {
-  width: 60px;
-  height: 60px;
-  border-radius: 50%;
-  border: 2px solid rgba(255, 255, 255, 0.8);
-  background: transparent;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  transition: background 200ms ease, transform 200ms ease, border-color 200ms ease;
-  padding: 0;
-  flex-shrink: 0;
-}
-
-.circle-btn:hover {
-  background: rgba(255, 255, 255, 0.15);
-  border-color: rgba(255, 255, 255, 1);
-  transform: scale(1.05);
-}
-
-.circle-btn svg {
-  width: 28px;
-  height: 28px;
+.page-content a:hover { 
+  color: #f2f2f2; 
 }
