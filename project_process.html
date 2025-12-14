@@ -542,48 +542,50 @@ void movieEvent(Movie m) {
         </p>
 
         <script>
-          // Wait for DOM to be fully loaded
-          document.addEventListener('DOMContentLoaded', function () {
-            const navImage = document.getElementById('navImage');
-            const projectOverview = document.getElementById('project-overview');
-            const slitScanTech = document.getElementById('slit-scan-tech');
-
-            console.log('Elements found:', {
-              navImage: !!navImage,
-              projectOverview: !!projectOverview,
-              slitScanTech: !!slitScanTech
+        document.addEventListener('DOMContentLoaded', function () {
+          const tabs = document.querySelectorAll('.tab');
+          const sections = {
+            overview: document.getElementById('project-overview'),
+            tech: document.getElementById('slit-scan-tech')
+          };
+        
+          // Initialize with Project Overview active
+          function showSection(sectionKey) {
+            // Update tabs
+            tabs.forEach(tab => tab.classList.remove('active'));
+            document.querySelector(`.tab[data-section="${sectionKey}"]`).classList.add('active');
+            
+            // Update sections
+            Object.entries(sections).forEach(([key, section]) => {
+              if (section) {
+                section.style.display = key === sectionKey ? 'block' : 'none';
+                if (key === sectionKey) section.classList.add('active');
+                else section.classList.remove('active');
+              }
             });
-
-            // Initialize page state - ensure project overview is shown on load
-            if (navImage) navImage.src = 'assets/Click1.png';
-            if (projectOverview) projectOverview.style.display = 'block';
-            if (slitScanTech) slitScanTech.style.display = 'none';
-
-            // Click left 40% - show project overview
-            const leftLink = document.querySelector('.left-link');
-            if (leftLink) {
-              leftLink.addEventListener('click', function (e) {
-                e.preventDefault();
-                console.log('Left clicked - Project Overview');
-                if (navImage) navImage.src = 'assets/Click1.png';
-                if (projectOverview) projectOverview.style.display = 'block';
-                if (slitScanTech) slitScanTech.style.display = 'none';
-              });
-            }
-
-            // Click right 60% - show slit-scan technical report
-            const rightLink = document.querySelector('.right-link');
-            if (rightLink) {
-              rightLink.addEventListener('click', function (e) {
-                e.preventDefault();
-                console.log('Right clicked - Slit-Scan Tech');
-                if (navImage) navImage.src = 'assets/Click2.png';
-                if (projectOverview) projectOverview.style.display = 'none';
-                if (slitScanTech) slitScanTech.style.display = 'block';
-              });
+          }
+        
+          // Tab click handlers
+          tabs.forEach(tab => {
+            tab.addEventListener('click', function() {
+              showSection(this.dataset.section);
+            });
+          });
+        
+          // Keyboard navigation support
+          document.addEventListener('keydown', function(e) {
+            if (e.key === 'ArrowLeft') {
+              showSection('overview');
+            } else if (e.key === 'ArrowRight') {
+              showSection('tech');
             }
           });
+        
+          // Initialize on load
+          showSection('overview');
+        });
         </script>
+
 </body>
 
 </html>
