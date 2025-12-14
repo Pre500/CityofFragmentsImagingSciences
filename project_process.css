@@ -1,4 +1,4 @@
-/* Project Process Page Styles - CLEANED UP */
+/* Project Process Page Styles - RESTORED ORIGINAL + IMPROVEMENTS */
 
 body.subpage.project-page {
   background-image: url('assets/Paper bg2.png');
@@ -9,10 +9,11 @@ body.subpage.project-page {
   min-height: 100vh;
 }
 
-/* Topbar overrides */
+/* ORIGINAL Topbar - RESTORED */
 body.project-page .topbar {
   color: #000;
   padding: 14px 32px;
+  position: relative;
 }
 
 body.project-page .topbar .top-link {
@@ -30,9 +31,8 @@ body.project-page .topbar .top-link.active {
   color: #fff;
 }
 
-/* Title overrides */
-body.project-page .overlay-subtitle,
-body.project-page #title-wrap {
+/* ORIGINAL Title - RESTORED */
+body.project-page .overlay-subtitle {
   color: #000;
 }
 
@@ -41,33 +41,55 @@ body.project-page #title-wrap {
   left: 50%;
   top: 10px;
   transform: translateX(-50%);
+  margin-bottom: 0px;
   z-index: 23;
   pointer-events: none;
+  text-align: center;
   display: flex;
   flex-direction: column;
   align-items: center;
+  gap: 0;
+  width: auto;
+  max-width: none;
   padding: 14px 32px;
   background: rgb(240, 240, 240);
   border-radius: 4px;
 }
 
 body.project-page #title-overlay {
+  position: relative;
+  z-index: 23;
+  pointer-events: none;
   max-width: 380px;
   width: 380px;
   height: auto;
+  display: block;
 }
 
-/* Page content base styles */
+body.project-page .overlay-subtitle {
+  position: relative;
+  margin-top: 8px;
+  color: #000;
+  font-size: 14px;
+  line-height: 1.3;
+  opacity: 1;
+  pointer-events: none;
+  text-decoration: none;
+  display: block;
+  max-width: 342px;
+  width: 100%;
+}
+
+/* Page content */
 .page-content {
-  padding-top: 0;
+  padding-top: 0px;
   position: relative;
   z-index: 1;
   max-width: 950px;
   margin: 0 auto;
   color: #000;
-  line-height: 1.7;
-  font-family: "Helvetica Neue", Arial, sans-serif;
   text-align: left;
+  line-height: 1.7;
 }
 
 .content-section,
@@ -76,12 +98,12 @@ body.project-page #title-overlay {
   text-align: left;
 }
 
-/* Prominent Documentation Tabs */
+/* NEW Prominent Documentation Tabs (replaces tiny nav-buttons) */
 .doc-tabs {
   display: flex;
   justify-content: center;
   gap: 0;
-  margin: 80px auto 40px;
+  margin: 100px auto 40px;
   max-width: 900px;
   border-radius: 12px;
   overflow: hidden;
@@ -128,7 +150,7 @@ body.project-page #title-overlay {
   max-width: 140px;
 }
 
-/* Professional Academic Headings */
+/* Professional Academic Headings (replaces khaki) */
 .content-section h2 {
   font-size: 32px;
   font-weight: 700;
@@ -137,7 +159,7 @@ body.project-page #title-overlay {
   padding: 12px 0 12px 20px;
   border-left: 5px solid #d4a574;
   background: linear-gradient(135deg, #fafafa 0%, #f5f5f5 100%);
-  box-shadow: 0 2px 8px rgba(0,0,0,0.08), inset 0 1px 0 rgba(255,255,255,0.6);
+  box-shadow: 0 2px 8px rgba(0,0,0,0.08);
   border-radius: 0 6px 6px 0;
   letter-spacing: -0.5px;
   line-height: 1.3;
@@ -185,7 +207,7 @@ body.project-page #title-overlay {
   background: rgba(52, 152, 219, 0.05);
 }
 
-/* Content sections */
+/* Content styling */
 .process-section {
   margin: 10px 0;
   scroll-margin-top: 120px;
@@ -196,6 +218,34 @@ body.project-page #title-overlay {
   line-height: 1.8;
   margin: 15px 0;
   color: #333;
+}
+
+.content-section pre {
+  background: #f5f5f5;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  padding: 20px;
+  overflow-x: auto;
+  margin: 20px 0;
+}
+
+.content-section code {
+  font-family: 'Courier New', monospace;
+  font-size: 12px;
+  line-height: 1.6;
+  color: #333;
+}
+
+.content-section ul,
+.process-section ul {
+  padding-left: 20px;
+  margin: 10px 0;
+  list-style-position: outside;
+}
+
+.content-section li,
+.process-section li {
+  margin: 5px 0;
 }
 
 /* Media embeds */
@@ -219,43 +269,13 @@ body.project-page #title-overlay {
   border: 1px solid #ddd;
 }
 
-.image-embed figcaption,
-.video-caption {
-  margin-top: 8px;
+.video-caption,
+.image-embed figcaption {
+  text-align: center;
+  margin: 20px auto;
   font-size: 14px;
   color: #333;
   font-style: italic;
-  text-align: center;
-}
-
-/* Code blocks */
-.content-section pre {
-  background: #f5f5f5;
-  border: 1px solid #ddd;
-  border-radius: 4px;
-  padding: 20px;
-  overflow-x: auto;
-  margin: 20px 0;
-}
-
-.content-section code {
-  font-family: 'Courier New', monospace;
-  font-size: 12px;
-  line-height: 1.6;
-  color: #333;
-}
-
-/* Lists */
-.content-section ul,
-.process-section ul {
-  padding-left: 20px;
-  margin: 10px 0;
-  list-style-position: outside;
-}
-
-.content-section li,
-.process-section li {
-  margin: 5px 0;
 }
 
 /* Tables */
@@ -285,11 +305,6 @@ body.project-page #title-overlay {
   vertical-align: top;
 }
 
-.process-section table td ul li,
-.content-section table td ul li {
-  margin: 5px 0;
-}
-
 /* Gallery */
 .image-gallery {
   display: grid;
@@ -311,7 +326,6 @@ body.project-page #title-overlay {
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
 }
 
-/* Lightbox */
 .gallery-lightbox {
   display: none;
   position: fixed;
@@ -325,14 +339,14 @@ body.project-page #title-overlay {
   align-items: center;
 }
 
+.gallery-lightbox:target {
+  display: flex;
+}
+
 .gallery-lightbox img {
   max-width: 90%;
   max-height: 90%;
   border-radius: 8px;
-}
-
-.gallery-lightbox:target {
-  display: flex;
 }
 
 /* Section transitions */
@@ -347,15 +361,10 @@ body.project-page #title-overlay {
   transform: translateY(0);
 }
 
-#project-overview,
-#slit-scan-tech {
-  display: block;
-}
-
 /* Table of Contents */
 .toc-container {
   max-width: 900px;
-  margin: 0 auto;
+  margin: 0px auto 0px;
   padding: 0 40px;
   font-family: 'Courier New', monospace;
   font-size: 13px;
@@ -379,6 +388,7 @@ body.project-page #title-overlay {
 
 .toc-section li {
   margin-bottom: 10px;
+  padding-left: 0;
 }
 
 .toc-section li a {
@@ -392,14 +402,13 @@ body.project-page #title-overlay {
   text-decoration: underline;
 }
 
-/* Remove old nav-buttons (no longer needed) */
+/* HIDE OLD NAV BUTTONS */
 .nav-buttons,
-.left-link,
-.right-link {
+.nav-buttons * {
   display: none !important;
 }
 
-/* Mobile responsiveness */
+/* Mobile */
 @media (max-width: 768px) {
   .doc-tabs {
     margin: 60px auto 30px;
@@ -408,10 +417,5 @@ body.project-page #title-overlay {
   
   .tab {
     padding: 20px 16px;
-  }
-  
-  .page-content {
-    max-width: 95%;
-    padding: 0 10px;
   }
 }
