@@ -1,4 +1,4 @@
-/* Project Process Page Styles - FULL FINAL VERSION - ORIGINAL NAV */
+/* Project Process Page Styles - FULL FINAL VERSION - PERFECT LOGO CENTERING */
 
 body.subpage.project-page {
   background-image: url('assets/Paper bg2.png');
@@ -7,6 +7,7 @@ body.subpage.project-page {
   background-position: center;
   overflow-y: auto;
   min-height: 100vh;
+  text-align: center;
 }
 
 /* ORIGINAL Topbar - EXACT SAME AS OTHER PAGES */
@@ -31,18 +32,12 @@ body.project-page .topbar .top-link.active {
   color: #fff;
 }
 
+/* PERFECT Title Centering - Matches Your Stories page */
 body.project-page #title-wrap {
-  position: relative;
   margin: 20px auto 40px !important;
+  text-align: center !important;
   max-width: 420px !important;
   width: 100% !important;
-  display: flex !important;
-  flex-direction: column !important;
-  align-items: center !important;
-  justify-content: center !important;
-  text-align: center !important;
-  padding: 20px 20px !important;
-  box-sizing: border-box !important;
 }
 
 body.project-page #title-overlay {
@@ -60,17 +55,14 @@ body.project-page .overlay-subtitle {
   line-height: 1.3 !important;
   text-align: center !important;
   width: 100% !important;
-  max-width: 100% !important;
 }
-
-
 
 /* NEW Two-Column Layout - TOC on LEFT, Content on RIGHT */
 .page-content {
   padding-top: 0px;
   position: relative;
   z-index: 1;
-  max-width: 1400px; /* Wider for sidebar */
+  max-width: 1400px;
   margin: 0 auto;
   color: #000;
   text-align: left;
@@ -84,7 +76,7 @@ body.project-page .overlay-subtitle {
 }
 
 .toc-sidebar {
-  flex: 0 0 300px; /* Fixed width sidebar */
+  flex: 0 0 300px;
   position: sticky;
   top: 100px;
   height: fit-content;
@@ -158,21 +150,7 @@ body.project-page .overlay-subtitle {
   display: none;
 }
 
-/* Mobile - Stack vertically */
-@media (max-width: 1024px) {
-  .content-wrapper {
-    flex-direction: column;
-    gap: 30px;
-  }
-  
-  .toc-sidebar {
-    position: static;
-    order: -1; /* TOC above content */
-  }
-}
-
-
-/* Documentation Tabs - LOWERED */
+/* Documentation Tabs */
 .doc-tabs {
   display: flex;
   justify-content: center;
@@ -439,59 +417,6 @@ body.project-page .overlay-subtitle {
   transform: translateY(0);
 }
 
-/* Table of Contents */
-.toc-container {
-  max-width: 300px;
-  margin: 40px auto 60px;
-  padding: 24px;
-  background: rgba(255,255,255,0.95);
-  border-radius: 12px;
-  box-shadow: 0 8px 32px rgba(0,0,0,0.1);
-  font-family: 'Monaco', 'Menlo', monospace;
-  font-size: 14px;
-  line-height: 1.8;
-  color: #333;
-  position: sticky;
-  top: 120px;
-  align-self: flex-start;
-  max-height: 60vh;
-  overflow-y: auto;
-}
-
-.toc-section h3 {
-  font-size: 15px;
-  font-weight: 700;
-  margin: 0 0 20px 0;
-  text-transform: uppercase;
-  letter-spacing: 1px;
-  color: #d4a574;
-}
-
-.toc-section ul {
-  list-style: none;
-  padding: 0;
-  margin: 0;
-}
-
-.toc-section li {
-  margin: 8px 0;
-}
-
-.toc-section li a {
-  color: #444;
-  text-decoration: none;
-  display: block;
-  padding: 8px 12px;
-  border-radius: 6px;
-  transition: all 0.2s ease;
-}
-
-.toc-section li a:hover {
-  background: rgba(212, 165, 116, 0.1);
-  color: #d4a574;
-  transform: translateX(4px);
-}
-
 /* Hide old nav */
 .nav-buttons,
 .nav-buttons * {
@@ -499,6 +424,18 @@ body.project-page .overlay-subtitle {
 }
 
 /* Mobile */
+@media (max-width: 1024px) {
+  .content-wrapper {
+    flex-direction: column;
+    gap: 30px;
+  }
+  
+  .toc-sidebar {
+    position: static;
+    order: -1;
+  }
+}
+
 @media (max-width: 768px) {
   body.project-page .topbar {
     padding: 12px 20px;
