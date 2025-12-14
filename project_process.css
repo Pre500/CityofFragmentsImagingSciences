@@ -9,33 +9,47 @@ body.subpage.project-page {
   min-height: 100vh;
 }
 
-/* ORIGINAL Topbar - Normal flow */
+/* NEW Scrapbook-style Topbar */
 body.project-page .topbar {
-  color: #000;
-  padding: 14px 32px;
+  text-align: center;
+  padding: 20px 32px;
   position: relative;
+  z-index: 10;
   background: rgba(255, 255, 255, 0.95);
   backdrop-filter: blur(10px);
-  box-shadow: 0 2px 20px rgba(0,0,0,0.1);
+  box-shadow: 0 4px 20px rgba(0,0,0,0.1);
   margin-bottom: 20px;
 }
 
 body.project-page .topbar .top-link {
+  display: inline-block;
   color: #000;
+  text-decoration: none;
+  font-weight: 600;
+  font-size: 16px;
+  padding: 12px 24px;
+  margin: 0 8px;
+  border-radius: 25px;
+  transition: all 0.3s ease;
+  background: rgba(255,255,255,0.7);
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
 }
 
 body.project-page .topbar .top-link:hover,
 body.project-page .topbar .top-link:focus {
-  background: #f2f2f2;
-  color: #000;
+  background: #f8f9fa;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 16px rgba(0,0,0,0.15);
 }
 
 body.project-page .topbar .top-link.active {
-  background: #000;
-  color: #fff;
+  background: linear-gradient(135deg, #d4a574 0%, #b8956e 100%);
+  color: white;
+  box-shadow: 0 4px 20px rgba(212, 165, 116, 0.4);
+  transform: translateY(-1px);
 }
 
-/* Title - NO BACKGROUND, clean look */
+/* Clean Title - No background */
 body.project-page #title-wrap {
   position: relative;
   margin: 20px auto 40px;
@@ -44,7 +58,7 @@ body.project-page #title-wrap {
   display: flex;
   flex-direction: column;
   align-items: center;
-  padding: 20px 0; /* Minimal padding, no background */
+  padding: 20px 0;
   max-width: 420px;
 }
 
@@ -53,15 +67,23 @@ body.project-page #title-overlay {
   width: 100%;
   height: auto;
   display: block;
+  transition: transform 0.3s ease;
+}
+
+body.project-page #title-overlay:hover {
+  transform: scale(1.02);
 }
 
 body.project-page .overlay-subtitle {
-  margin-top: 12px;
-  color: #000;
-  font-size: 14px;
+  margin-top: 16px;
+  color: #333;
+  font-size: 15px;
   line-height: 1.4;
   font-weight: 500;
+  font-style: italic;
+  max-width: 100%;
 }
+
 
 /* Page content */
 .page-content {
