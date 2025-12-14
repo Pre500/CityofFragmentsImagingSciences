@@ -213,7 +213,7 @@ body.project-page .overlay-subtitle {
   display: flex;
   justify-content: center;
   gap: 0;
-  margin: 100px auto 16px; /* balanced space above tabs */
+  margin: 100px auto 0px; /* reduce space below tabs */
   max-width: 900px;
   border-radius: 16px;
   overflow: hidden;
