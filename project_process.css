@@ -31,38 +31,38 @@ body.project-page .topbar .top-link.active {
   color: #fff;
 }
 
-/* FIX Logo centering - Add this to your #title-wrap */
 body.project-page #title-wrap {
   position: relative;
-  margin: 20px auto 40px;
-  z-index: 10;
-  text-align: center;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center; /* ADD THIS */
-  padding: 20px 0;
-  max-width: 420px;
-  width: 100%; /* ADD THIS */
-  box-sizing: border-box; /* ADD THIS */
+  margin: 20px auto 40px !important;
+  max-width: 420px !important;
+  width: 100% !important;
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: center !important;
+  justify-content: center !important;
+  text-align: center !important;
+  padding: 20px 20px !important;
+  box-sizing: border-box !important;
 }
 
 body.project-page #title-overlay {
-  max-width: 380px;
-  width: 100%;
-  height: auto;
-  display: block;
-  margin: 0 auto; /* ADD THIS */
+  max-width: 380px !important;
+  width: 100% !important;
+  height: auto !important;
+  display: block !important;
+  margin: 0 auto !important;
 }
 
 body.project-page .overlay-subtitle {
-  margin-top: 12px;
-  color: #000;
-  font-size: 14px;
-  line-height: 1.3;
-  text-align: center; /* ADD THIS */
-  max-width: 100%;
+  margin-top: 12px !important;
+  color: #000 !important;
+  font-size: 14px !important;
+  line-height: 1.3 !important;
+  text-align: center !important;
+  width: 100% !important;
+  max-width: 100% !important;
 }
+
 
 
 /* NEW Two-Column Layout - TOC on LEFT, Content on RIGHT */
