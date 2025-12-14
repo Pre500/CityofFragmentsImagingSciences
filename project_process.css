@@ -12,14 +12,15 @@ body.subpage.project-page {
 
 /* Topbar at top of page with nav links left/right, centered like other pages */
 body.project-page .topbar {
-  position: static;
+  position: fixed;
   left: 50%;
   transform: translateX(-50%);
+  top: 20px;
   width: calc(100% - 56px);
   max-width: 900px;
-  margin: 20px auto 0;
+  z-index: 12;
   background: transparent;
-  color: #000;
+  color: #fff9f9;
   padding: 14px 32px;
   display: flex;
   justify-content: space-between;
@@ -43,19 +44,19 @@ body.project-page .topbar .top-link.active {
 
 /* Logo directly below topbar in normal flow */
 body.project-page #title-wrap {
-  position: static;
-  transform: none;
-  top: auto;
-  left: auto;
-  margin: 20px auto 28px;
+  position: fixed;
+  left: 50%;
+  top: 24px;
+  transform: translateX(-50%);
+  z-index: 22;
+  pointer-events: none;
   text-align: center;
   display: flex;
   flex-direction: column;
   align-items: center;
   gap: 0;
   width: calc(100% - 56px);
-  max-width: 420px;
-  pointer-events: auto;
+  max-width: 900px;
 }
 
 body.project-page #title-overlay {
@@ -71,12 +72,15 @@ body.project-page #title-overlay {
 
 body.project-page .overlay-subtitle {
   position: relative;
-  margin-top: 10px;
-  color: #000;
+  margin-top: 8px;
+  color: #ffffff;
   font-size: 14px;
-  line-height: 1.3;
+  line-height: 1.4;
+  opacity: 1;
   text-align: center;
   pointer-events: none;
+  text-decoration: none;
+  display: block;
 }
 
 
