@@ -10,10 +10,10 @@ body.subpage.project-page {
   text-align: center;
 }
 
-/* Topbar at top of page with nav links left/right, same visual as other pages but not fixed */
+/* Topbar at top of page with nav links left/right, centered like other pages */
 body.project-page .topbar {
   position: static;
-  width: 100%;
+  width: calc(100% - 56px);
   max-width: 900px;
   margin: 20px auto 0;
   background: transparent;
