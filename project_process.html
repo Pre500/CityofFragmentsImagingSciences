@@ -626,11 +626,26 @@
           </div>
           
           <!-- Lightbox modals -->
-          <div id="img1" class="gallery-lightbox"><a href="#"><img src="assets/Saved Slit Scan Image 1.jpg" alt=""></a></div>
-          <div id="img2" class="gallery-lightbox"><a href="#"><img src="assets/Saved Slit Scan Image 2.jpg" alt=""></a></div>
-          <div id="img3" class="gallery-lightbox"><a href="#"><img src="assets/Saved Slit Scan Image 3.jpg" alt=""></a></div>
-          <div id="img4" class="gallery-lightbox"><a href="#"><img src="assets/Saved Slit Scan Image 4.jpg" alt=""></a></div>
-          <div id="img5" class="gallery-lightbox"><a href="#"><img src="assets/Saved Slit Scan Image 5.jpg" alt=""></a></div>
+          <div id="img1" class="gallery-lightbox">
+            <a class="close" href="#" aria-label="Close">×</a>
+            <img src="assets/Saved Slit Scan Image 1.jpg" alt="Slit Scan Result 1">
+          </div>
+          <div id="img2" class="gallery-lightbox">
+            <a class="close" href="#" aria-label="Close">×</a>
+            <img src="assets/Saved Slit Scan Image 2.jpg" alt="Slit Scan Result 2">
+          </div>
+          <div id="img3" class="gallery-lightbox">
+            <a class="close" href="#" aria-label="Close">×</a>
+            <img src="assets/Saved Slit Scan Image 3.jpg" alt="Slit Scan Result 3">
+          </div>
+          <div id="img4" class="gallery-lightbox">
+            <a class="close" href="#" aria-label="Close">×</a>
+            <img src="assets/Saved Slit Scan Image 4.jpg" alt="Slit Scan Result 4">
+          </div>
+          <div id="img5" class="gallery-lightbox">
+            <a class="close" href="#" aria-label="Close">×</a>
+            <img src="assets/Saved Slit Scan Image 5.jpg" alt="Slit Scan Result 5">
+          </div>
   
   
         </section>
@@ -672,6 +687,14 @@
             overview: document.getElementById('project-overview'),
             tech: document.getElementById('slit-scan-tech')
           };
+
+          // Clear any stray lightbox hash so we don't show a black overlay when switching tabs
+          const galleryHashPattern = /^#img[0-9]+$/;
+          function clearGalleryHash() {
+            if (galleryHashPattern.test(window.location.hash)) {
+              history.replaceState(null, document.title, window.location.pathname + window.location.search);
+            }
+          }
         
           // Initialize with Project Overview active
           function showSection(sectionKey) {
@@ -691,6 +714,8 @@
              // Switch TOCs
             document.querySelectorAll('.toc-container').forEach(toc => toc.style.display = 'none');
             document.querySelector(sectionKey === 'overview' ? '.toc-container:first-child' : '.tech-toc').style.display = 'block';
+
+              clearGalleryHash();
           }
         
           // Tab click handlers
@@ -710,6 +735,7 @@
           });
         
           // Initialize on load
+          clearGalleryHash();
           showSection('overview');
         });
         </script>
