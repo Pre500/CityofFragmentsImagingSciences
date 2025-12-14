@@ -617,34 +617,16 @@
           </div>
           
           <h3>Our Results During Testing</h3>
-          <div class="image-gallery">
-            <a href="#img1"><img src="assets/Saved Slit Scan Image 1.jpg" alt="Slit Scan Result 1"></a>
-            <a href="#img2"><img src="assets/Saved Slit Scan Image 2.jpg" alt="Slit Scan Result 2"></a>
-            <a href="#img3"><img src="assets/Saved Slit Scan Image 3.jpg" alt="Slit Scan Result 3"></a>
-            <a href="#img4"><img src="assets/Saved Slit Scan Image 4.jpg" alt="Slit Scan Result 4"></a>
-            <a href="#img5"><img src="assets/Saved Slit Scan Image 5.jpg" alt="Slit Scan Result 5"></a>
-          </div>
-          
-          <!-- Lightbox modals -->
-          <div id="img1" class="gallery-lightbox">
-            <a class="close" href="#" aria-label="Close">×</a>
-            <img src="assets/Saved Slit Scan Image 1.jpg" alt="Slit Scan Result 1">
-          </div>
-          <div id="img2" class="gallery-lightbox">
-            <a class="close" href="#" aria-label="Close">×</a>
-            <img src="assets/Saved Slit Scan Image 2.jpg" alt="Slit Scan Result 2">
-          </div>
-          <div id="img3" class="gallery-lightbox">
-            <a class="close" href="#" aria-label="Close">×</a>
-            <img src="assets/Saved Slit Scan Image 3.jpg" alt="Slit Scan Result 3">
-          </div>
-          <div id="img4" class="gallery-lightbox">
-            <a class="close" href="#" aria-label="Close">×</a>
-            <img src="assets/Saved Slit Scan Image 4.jpg" alt="Slit Scan Result 4">
-          </div>
-          <div id="img5" class="gallery-lightbox">
-            <a class="close" href="#" aria-label="Close">×</a>
-            <img src="assets/Saved Slit Scan Image 5.jpg" alt="Slit Scan Result 5">
+          <div class="gallery-carousel" id="demo-carousel" aria-label="Slit Scan Results">
+            <button class="carousel-control carousel-prev" aria-label="Previous image">❮</button>
+            <div class="carousel-track">
+              <div class="carousel-slide active"><img src="assets/Saved Slit Scan Image 1.jpg" alt="Slit Scan Result 1"></div>
+              <div class="carousel-slide"><img src="assets/Saved Slit Scan Image 2.jpg" alt="Slit Scan Result 2"></div>
+              <div class="carousel-slide"><img src="assets/Saved Slit Scan Image 3.jpg" alt="Slit Scan Result 3"></div>
+              <div class="carousel-slide"><img src="assets/Saved Slit Scan Image 4.jpg" alt="Slit Scan Result 4"></div>
+              <div class="carousel-slide"><img src="assets/Saved Slit Scan Image 5.jpg" alt="Slit Scan Result 5"></div>
+            </div>
+            <button class="carousel-control carousel-next" aria-label="Next image">❯</button>
           </div>
   
   
@@ -737,6 +719,46 @@
           // Initialize on load
           clearGalleryHash();
           showSection('overview');
+
+          // Simple auto-advancing carousel for demo gallery
+          const carousel = document.getElementById('demo-carousel');
+          if (carousel) {
+            const slides = Array.from(carousel.querySelectorAll('.carousel-slide'));
+            const nextBtn = carousel.querySelector('.carousel-next');
+            const prevBtn = carousel.querySelector('.carousel-prev');
+            const INTERVAL_MS = 4000;
+            let current = 0;
+            let timer;
+
+            function show(index) {
+              if (!slides.length) return;
+              current = (index + slides.length) % slides.length;
+              slides.forEach((slide, idx) => {
+                slide.classList.toggle('active', idx === current);
+              });
+            }
+
+            function startTimer() {
+              clearInterval(timer);
+              timer = setInterval(() => show(current + 1), INTERVAL_MS);
+            }
+
+            nextBtn?.addEventListener('click', () => {
+              show(current + 1);
+              startTimer();
+            });
+
+            prevBtn?.addEventListener('click', () => {
+              show(current - 1);
+              startTimer();
+            });
+
+            carousel.addEventListener('mouseenter', () => clearInterval(timer));
+            carousel.addEventListener('mouseleave', startTimer);
+
+            show(0);
+            startTimer();
+          }
         });
         </script>
 

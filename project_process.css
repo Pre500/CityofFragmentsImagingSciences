@@ -387,74 +387,83 @@ body.project-page .overlay-subtitle {
   vertical-align: top;
 }
 
-/* Gallery */
-.image-gallery {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-  gap: 20px;
-  margin: 32px 0;
+/* Gallery carousel */
+.gallery-carousel {
+  position: relative;
+  max-width: 900px;
+  margin: 32px auto;
+  padding: 18px 56px;
+  border-radius: 16px;
+  background: rgba(255,255,255,0.9);
+  box-shadow: 0 12px 36px rgba(0,0,0,0.12);
+  overflow: hidden;
 }
 
-.image-gallery img {
-  width: 100%;
-  aspect-ratio: 4 / 3;
-  height: auto;
-  border-radius: 12px;
-  cursor: pointer;
-  transition: all 0.3s ease;
-  box-shadow: 0 4px 16px rgba(0,0,0,0.1);
-  object-fit: cover;
+.carousel-track {
+  position: relative;
+  min-height: 240px;
 }
 
-.image-gallery img:hover {
-  transform: translateY(-4px) scale(1.02);
-  box-shadow: 0 12px 40px rgba(0,0,0,0.2);
-}
-
-.gallery-lightbox {
-  display: none;
-  position: fixed;
-  inset: 0;
-  z-index: 9999;
-  background: rgba(0, 0, 0, 0.86);
-  justify-content: center;
-  align-items: center;
-  padding: 24px;
-}
-
-.gallery-lightbox:target {
-  display: flex !important;
-}
-
-.gallery-lightbox img {
-  max-width: min(1200px, 92vw);
-  max-height: 90vh;
-  border-radius: 14px;
-  box-shadow: 0 16px 60px rgba(0,0,0,0.5);
-  object-fit: contain;
-}
-
-.gallery-lightbox .close {
+.carousel-slide {
   position: absolute;
-  top: 20px;
-  right: 20px;
-  width: 42px;
-  height: 42px;
-  background: rgba(255,255,255,0.92);
+  inset: 0;
+  opacity: 0;
+  transition: opacity 300ms ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.carousel-slide.active {
+  opacity: 1;
+  position: relative;
+}
+
+.carousel-slide img {
+  width: 100%;
+  max-height: 520px;
+  object-fit: contain;
+  border-radius: 12px;
+  box-shadow: 0 8px 28px rgba(0,0,0,0.16);
+  background: #f7f7f7;
+}
+
+.carousel-control {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 38px;
+  height: 38px;
   border-radius: 50%;
+  border: none;
+  background: rgba(0,0,0,0.18);
+  color: #fff;
+  font-size: 18px;
+  font-weight: 700;
+  cursor: pointer;
   display: grid;
   place-items: center;
-  text-decoration: none;
-  color: #111;
-  font-size: 22px;
-  font-weight: 700;
-  box-shadow: 0 8px 30px rgba(0,0,0,0.25);
-  transition: transform 0.15s ease, box-shadow 0.15s ease;
+  transition: background 150ms ease, transform 150ms ease;
 }
 
-.gallery-lightbox .close:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 12px 36px rgba(0,0,0,0.35);
+.carousel-control:hover {
+  background: rgba(0,0,0,0.28);
+  transform: translateY(-50%) scale(1.05);
+}
+
+.carousel-prev { left: 16px; }
+.carousel-next { right: 16px; }
+
+@media (max-width: 768px) {
+  .gallery-carousel {
+    padding: 14px 44px;
+  }
+
+  .carousel-control {
+    width: 34px;
+    height: 34px;
+    font-size: 16px;
+  }
 }
 
 
