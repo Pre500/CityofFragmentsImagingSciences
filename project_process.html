@@ -206,28 +206,53 @@
           }</code></pre>
           
             <h3>4. Additional Web Functions</h3>
-            <p>From LocalStorage to Firebase: To enable shared participation, we transitioned to Firebase. Uploaded images now persist across sessions and are visible to all users, creating a true collective memory space.</p>
-          
+            <h4>From LocalStorage to Firebase</h4>
+            <p>To support shared participation, the project moved from LocalStorage to Firebase. This transition allowed uploaded images to persist across sessions and be visible to all users, transforming the work from an individual interaction into a collective memory space. This setup establishes the backend infrastructure required for collective participation that we initially imaged and successfully made.</p>
+            
+            <p>Firebase is used for two main functions:</p>
+            <ul>
+              <li>Storage: image file uploads</li>
+              <li>Firestore: metadata and gallery indexing</li>
+            </ul>
+
+            <figure class="image-embed">
+              <img src="assets/Firebase.png" loading="lazy" alt="Firebase Configuration" />
+            </figure>
+
+            <p>Firebase initialization code example is below:</p>
             <pre><code>const firebaseConfig = {
-            apiKey: "...",
-            authDomain: "...",
-            projectId: "...",
-            storageBucket: "city-of-fragments.appspot.com"
-          };
+  apiKey: "...",
+  authDomain: "...",
+  projectId: "...",
+  storageBucket: "city-of-fragments.appspot.com"
+};
+
+firebase.initializeApp(firebaseConfig);
+
+const storage = firebase.storage();
+const db = firebase.firestore();</code></pre>
           
-          const storage = firebase.storage();
-          const db = firebase.firestore();</code></pre>
-          
+            <h4>Image Upload & Storage Workflow</h4>
+
+            <figure class="image-embed">
+              <img src="assets/Image Upload and Storage Workflow.png" loading="lazy" alt="Image Upload and Storage Workflow" />
+            </figure>
+
+            <p>Furthermore, users can upload slit-scan images, which are stored in Firebase Storage and indexed in Firestore. Once uploaded, images immediately appear in the public fragment gallery.</p>
+            
             <p><strong>Image Upload Workflow:</strong></p>
             <pre><code>const storageRef = storage.ref(`uploads/${file.name}`);
-          await storageRef.put(file);
-          const imageURL = await storageRef.getDownloadURL();
-          db.collection("fragments").add({
-            url: imageURL,
-            timestamp: Date.now()
-          });</code></pre>
+await storageRef.put(file);
+
+const imageURL = await storageRef.getDownloadURL();
+db.collection("fragments").add({
+  url: imageURL,
+  timestamp: Date.now()
+});</code></pre>
           
-            <p>Users upload slit-scan images stored in Firebase Storage and indexed in Firestore, immediately appearing in the fragment collage gallery with Polaroid-style presentation. This creates an ever-growing archive.</p>
+            <p>This structure is made to ensure that visual fragments persist even with reloading and made into an ever-present gallery.</p>
+
+            <p>Therefore, an upload page was developed with functions that allow users to contribute images, which immediately appear in the fragment collage gallery. I have also used the idea of Polaroids stuck to a wall. This shift expanded the project's narrative, allowing the archive to grow and evolve through user input continually.</p>
           
             <h3>5. Aesthetic & Testing</h3>
             <p>In the final phase, attention shifted to visual coherence and usability. Video playback frames were stabilised, the polaroid-style layout was refined, and interface elements were adjusted to improve clarity without reducing ambiguity.</p>
