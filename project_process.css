@@ -12,15 +12,19 @@ body.subpage.project-page {
 
 /* Keep topbar placement consistent with other pages while using dark text on light background */
 body.project-page .topbar {
-  position: static;
-  width: 100%;
-  max-width: none;
-  transform: none;
-  margin: 20px auto 12px;
+  position: fixed;
+  top: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: calc(100% - 56px);
+  max-width: 900px;
+  z-index: 12;
   background: transparent;
   color: #000;
   padding: 14px 32px;
-  justify-content: center;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
 }
 
 body.project-page .topbar .top-link {
@@ -38,13 +42,13 @@ body.project-page .topbar .top-link.active {
   color: #fff;
 }
 
-/* Match logo placement to layout without sticking on scroll */
+/* Logo scrolls naturally in content, below the fixed topbar */
 body.project-page #title-wrap {
   position: static;
   transform: none;
   top: auto;
   left: auto;
-  margin: 20px auto 28px;
+  margin: 80px auto 28px;
   text-align: center;
   display: flex;
   flex-direction: column;
@@ -500,13 +504,11 @@ body.project-page .overlay-subtitle {
 @media (max-width: 768px) {
   body.project-page .topbar {
     padding: 12px 20px;
-    margin: 12px auto 8px;
   }
   
   body.project-page #title-wrap {
     width: calc(100% - 40px);
-    top: auto;
-    margin: 18px auto 22px;
+    margin: 76px auto 22px;
   }
   
   .doc-tabs {
