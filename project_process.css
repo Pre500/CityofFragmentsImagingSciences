@@ -103,7 +103,7 @@ body.project-page .overlay-subtitle {
 
 /* NEW Two-Column Layout - TOC on LEFT, Content on RIGHT */
 .page-content {
-  padding-top: 0px;
+  padding-top: 180px;
   position: relative;
   z-index: 1;
   max-width: 1400px;
