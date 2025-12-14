@@ -142,12 +142,103 @@
             </figure>
           </section>
   
-          <section class="process-section" id="section-1-5">
-            <h2>1.5 Project Process & Evolution</h2>
+          <section class="process-section" id="section-1-4">
+            <h2>1.4 Implementation Methodology</h2>
+            
             <figure class="image-embed">
-              <img src="assets/Process Roadmap.png" loading="lazy" />
+              <img src="assets/Implementation Methodology.png" loading="lazy" />
             </figure>
+          
+            <h3>1. Research & Concept</h3>
+            <p>The project started from exploring the slit scan technique we learnt in imaging science studio, while combining it with an interest in how memory of the city, Hong Kong, is never experienced as a single, stable image by us, but as something fragmented, delayed, and constantly reconstructed. Through deeper research into time-based imaging techniques, slit-scan emerged as a method that could visually translate this instability.</p>
+            
+            <p>Rather than treating the city as a fixed document, slit-scan allowed time and movement to be stretched and layered, aligning with the idea of urban memory as subjective and incomplete. This is our primary research concept regarding this project.</p>
+          
+            <h3>2. Technical Foundation</h3>
+            <p>The web core functions as a web-based system combining HTML video elements, canvas-based rendering, and JavaScript control logic. It involves a video playback machine and respective top bar and buttons for switching videos. This provides diversity, reflecting Hong Kong fragmented into many corners with memories created by different individuals, while encouraging user participation.</p>
+            
+            <pre><code>&lt;video id="mainPlayer"
+            autoplay muted playsinline preload="auto"
+            style="width:100%;height:100%;object-fit:cover;"&gt;
+          &lt;/video&gt;
+          
+          &lt;button id="pausePlayBtn"&gt;Play / Pause&lt;/button&gt;
+          &lt;button id="nextBtn"&gt;Next&lt;/button&gt;
+          &lt;div id="locationLabel"&gt;&lt;/div&gt;</code></pre>
+          
+            <p>Initial development focused on testing slit-scan digitally. Early prototypes in Processing and p5.js helped understand pixel sampling, scan direction, and frame rate effects—see the <a href="#" onclick="document.querySelector('.tab[data-section=\"tech\"]').click(); return false;">slit-scan technical report</a>. These tests defined practical limits like scan width and capture frequency before transitioning to web.</p>
+          
+            <p>User data initially used LocalStorage for testing, but data was device-specific and cleared on reload. This revealed a mismatch with our goal of a shared, collective archive, requiring new methods for persistent, engaging web experience.</p>
+          
+            <h3>3. Core Functionality & Interaction</h3>
+            <p>The slit-scan engine was refined in JavaScript with mouse-controlled scanning, shifting from passive viewing to active participation. Different scan types were assigned to videos based on movement—see <a href="#" onclick="document.querySelector('.tab[data-section=\"tech\"]').click(); return false;">slit-scan technical report</a>.</p>
+            
+            <p>A save function was developed for users to capture/export slit-scan images, reinforcing personal memory construction:</p>
+          
+            <pre><code>// HTML Button
+          &lt;button id="screenshotBtn" class="circle-btn"&gt;
+            &lt;svg viewBox="0 0 24 24"&gt;
+              &lt;path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z" fill="white"&gt;&lt;/path&gt;
+              &lt;circle cx="12" cy="13" r="4" stroke="white" stroke-width="2"/&gt;
+            &lt;/svg&gt;
+          &lt;/button&gt;
+          
+          // JavaScript
+          function captureScreenshot(player) {
+            const canvas = document.createElement('canvas');
+            const ctx = canvas.getContext('2d');
+            canvas.width = player.videoWidth;
+            canvas.height = player.videoHeight;
+            ctx.drawImage(player, 0, 0);
+            
+            canvas.toBlob((blob) => {
+              const url = URL.createObjectURL(blob);
+              const a = document.createElement('a');
+              a.href = url;
+              a.download = `city-fragments-${Date.now()}.jpg`;
+              a.click();
+              URL.revokeObjectURL(url);
+            }, 'image/jpeg', 0.95);
+          }</code></pre>
+          
+            <h3>4. Additional Web Functions</h3>
+            <p>From LocalStorage to Firebase: To enable shared participation, we transitioned to Firebase. Uploaded images now persist across sessions and are visible to all users, creating a true collective memory space.</p>
+          
+            <pre><code>const firebaseConfig = {
+            apiKey: "...",
+            authDomain: "...",
+            projectId: "...",
+            storageBucket: "city-of-fragments.appspot.com"
+          };
+          
+          const storage = firebase.storage();
+          const db = firebase.firestore();</code></pre>
+          
+            <p><strong>Image Upload Workflow:</strong></p>
+            <pre><code>const storageRef = storage.ref(`uploads/${file.name}`);
+          await storageRef.put(file);
+          const imageURL = await storageRef.getDownloadURL();
+          db.collection("fragments").add({
+            url: imageURL,
+            timestamp: Date.now()
+          });</code></pre>
+          
+            <p>Users upload slit-scan images stored in Firebase Storage and indexed in Firestore, immediately appearing in the fragment collage gallery with Polaroid-style presentation. This creates an ever-growing archive.</p>
+          
+            <h3>5. Aesthetic & Testing</h3>
+            <p>In the final phase, attention shifted to visual coherence and usability. Video playback frames were stabilised, the polaroid-style layout was refined, and interface elements were adjusted to improve clarity without reducing ambiguity.</p>
+            
+            <p>To strengthen its web design identity, the website incorporates persistent interface elements, including a custom favicon and ambient audio recorded in Hong Kong. These elements contribute to a sense of place and continuity beyond visual interaction.</p>
+            
+            <pre><code>&lt;link rel="icon" href="assets/favicon-32x32.png"&gt;
+            &lt;audio id="ambientAudio" loop&gt;
+              &lt;source src="assets/tai-ping-shan-ambient.mp3"&gt;
+            &lt;/audio&gt;</code></pre>
+            
+            <p>Together, these systems transform the website into a cohesive, time-based artwork rather than a static documentation page. Performance testing across various browsers ensured optimal performance and usability.</p>
+
           </section>
+
   
           <section class="process-section" id="section-1-6">
             <figure class="image-embed">
