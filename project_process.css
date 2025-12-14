@@ -9,7 +9,7 @@ body.subpage.project-page {
   min-height: 100vh;
 }
 
-/* NEW Scrapbook-style Topbar */
+/* Match "YOUR STORIES" tab exact styling for both links */
 body.project-page .topbar {
   text-align: center;
   padding: 20px 32px;
@@ -21,33 +21,54 @@ body.project-page .topbar {
   margin-bottom: 20px;
 }
 
+/* SAME styling for BOTH tabs - no gradient, clean buttons */
 body.project-page .topbar .top-link {
   display: inline-block;
   color: #000;
   text-decoration: none;
-  font-weight: 600;
-  font-size: 16px;
-  padding: 12px 24px;
-  margin: 0 8px;
+  font-weight: 500;  /* Same font weight as inactive tab */
+  font-size: 15px;   /* Same font size */
+  font-family: inherit; /* Match exact font */
+  padding: 12px 28px;
+  margin: 0 12px;
   border-radius: 25px;
   transition: all 0.3s ease;
-  background: rgba(255,255,255,0.7);
-  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+  background: rgba(255,255,255,0.8);  /* No gradient - clean white */
+  box-shadow: 0 2px 12px rgba(0,0,0,0.12);
+  border: 1px solid rgba(0,0,0,0.08);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
 }
 
+/* Hover - subtle lift like inactive tab */
 body.project-page .topbar .top-link:hover,
 body.project-page .topbar .top-link:focus {
-  background: #f8f9fa;
+  background: rgba(248, 249, 250, 0.9);
   transform: translateY(-2px);
-  box-shadow: 0 4px 16px rgba(0,0,0,0.15);
+  box-shadow: 0 6px 20px rgba(0,0,0,0.15);
+  color: #000;
 }
 
+/* Active - SAME style as inactive, just slight underline */
 body.project-page .topbar .top-link.active {
-  background: linear-gradient(135deg, #d4a574 0%, #b8956e 100%);
-  color: white;
-  box-shadow: 0 4px 20px rgba(212, 165, 116, 0.4);
-  transform: translateY(-1px);
+  background: rgba(255,255,255,0.95);  /* Identical to inactive */
+  color: #000;
+  box-shadow: 0 4px 16px rgba(0,0,0,0.12);
+  position: relative;
 }
+
+body.project-page .topbar .top-link.active::after {
+  content: '';
+  position: absolute;
+  bottom: -4px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 60%;
+  height: 2px;
+  background: #d4a574;
+  border-radius: 1px;
+}
+
 
 /* Clean Title - No background */
 body.project-page #title-wrap {
