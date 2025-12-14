@@ -22,7 +22,7 @@ body.project-page .topbar {
   background: #ffffff;
   border-radius: 16px;
   box-shadow: 0 12px 32px rgba(0,0,0,0.12);
-  color: #fff9f9;
+  color: #000;
   padding: 14px 32px;
   display: flex;
   justify-content: space-between;
@@ -42,6 +42,21 @@ body.project-page .topbar .top-link:focus {
 body.project-page .topbar .top-link.active {
   background: #000;
   color: #fff;
+}
+
+/* High-contrast hyperlinks within content */
+.content-section a,
+.process-section a {
+  color: #1a73e8;
+  text-decoration: underline;
+}
+
+.content-section a:hover,
+.process-section a:hover,
+.content-section a:focus,
+.process-section a:focus {
+  color: #0b5bd3;
+  text-decoration-thickness: 2px;
 }
 
 /* Logo directly below topbar in normal flow */
