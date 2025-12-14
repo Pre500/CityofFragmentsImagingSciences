@@ -13,6 +13,8 @@ body.subpage.project-page {
 /* Topbar at top of page with nav links left/right, centered like other pages */
 body.project-page .topbar {
   position: static;
+  left: 50%;
+  transform: translateX(-50%);
   width: calc(100% - 56px);
   max-width: 900px;
   margin: 20px auto 0;
