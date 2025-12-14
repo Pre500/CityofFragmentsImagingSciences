@@ -117,7 +117,7 @@ body.project-page .overlay-subtitle {
 
 /* NEW Two-Column Layout - TOC on LEFT, Content on RIGHT */
 .page-content {
-  padding-top: 180px;
+  padding-top: 160px; /* tighter top spacing to fit header */
   position: relative;
   z-index: 1;
   max-width: 1400px;
@@ -136,7 +136,7 @@ body.project-page .overlay-subtitle {
 .toc-sidebar {
   flex: 0 0 300px;
   position: sticky;
-  top: 100px;
+  top: 140px; /* align sticky TOC under header */
   height: fit-content;
 }
 
@@ -213,7 +213,7 @@ body.project-page .overlay-subtitle {
   display: flex;
   justify-content: center;
   gap: 0;
-  margin: 120px auto 10px; /* reduce bottom spacing; keep spacing above */
+  margin: 140px auto 16px; /* more space above, minimal below */
   max-width: 900px;
   border-radius: 16px;
   overflow: hidden;
@@ -320,7 +320,7 @@ body.project-page .overlay-subtitle {
 /* Content spacing */
 .process-section {
   margin: 24px 0 32px;
-  scroll-margin-top: 140px;
+  scroll-margin-top: 180px; /* ensure anchors are visible below fixed header */
 }
 
 .content-section p {
@@ -547,7 +547,7 @@ body.project-page .overlay-subtitle {
   }
   
   .doc-tabs {
-    margin: 40px auto 40px;
+    margin: 80px auto 16px; /* keep space above on mobile, reduce below */
     flex-direction: column;
   }
   
