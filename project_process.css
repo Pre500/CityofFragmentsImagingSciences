@@ -65,23 +65,112 @@ body.project-page .overlay-subtitle {
 }
 
 
-/* Page content */
+/* NEW Two-Column Layout - TOC on LEFT, Content on RIGHT */
 .page-content {
   padding-top: 0px;
   position: relative;
   z-index: 1;
-  max-width: 950px;
+  max-width: 1400px; /* Wider for sidebar */
   margin: 0 auto;
   color: #000;
   text-align: left;
   line-height: 1.8;
 }
 
+.content-wrapper {
+  display: flex;
+  gap: 40px;
+  margin: 0 auto;
+}
+
+.toc-sidebar {
+  flex: 0 0 300px; /* Fixed width sidebar */
+  position: sticky;
+  top: 100px;
+  height: fit-content;
+}
+
+.main-content {
+  flex: 1;
+  min-width: 0;
+}
+
 .content-section,
-.process-section,
-.toc-container {
+.process-section {
   text-align: left;
 }
+
+/* Sidebar TOC Styling */
+.toc-container {
+  background: rgba(255,255,255,0.95);
+  backdrop-filter: blur(20px);
+  border-radius: 16px;
+  box-shadow: 0 12px 40px rgba(0,0,0,0.12);
+  padding: 32px;
+  margin-bottom: 40px;
+  border: 1px solid rgba(255,255,255,0.3);
+  font-family: 'Monaco', 'Menlo', monospace;
+  font-size: 14px;
+  line-height: 1.8;
+  color: #333;
+}
+
+.toc-section h3 {
+  font-size: 16px;
+  font-weight: 700;
+  margin: 0 0 24px 0;
+  text-transform: uppercase;
+  letter-spacing: 1.5px;
+  color: #d4a574;
+  padding-bottom: 12px;
+  border-bottom: 2px solid rgba(212,165,116,0.3);
+}
+
+.toc-section ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.toc-section li {
+  margin: 10px 0;
+}
+
+.toc-section li a {
+  color: #555;
+  text-decoration: none;
+  display: block;
+  padding: 12px 16px;
+  border-radius: 10px;
+  transition: all 0.3s ease;
+  border-left: 3px solid transparent;
+}
+
+.toc-section li a:hover {
+  background: rgba(212,165,116,0.15);
+  color: #d4a574;
+  border-left-color: #d4a574;
+  transform: translateX(4px);
+}
+
+/* Hide/show TOCs */
+.tech-toc {
+  display: none;
+}
+
+/* Mobile - Stack vertically */
+@media (max-width: 1024px) {
+  .content-wrapper {
+    flex-direction: column;
+    gap: 30px;
+  }
+  
+  .toc-sidebar {
+    position: static;
+    order: -1; /* TOC above content */
+  }
+}
+
 
 /* Documentation Tabs - LOWERED */
 .doc-tabs {
