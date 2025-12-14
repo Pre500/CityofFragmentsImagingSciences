@@ -10,15 +10,12 @@ body.subpage.project-page {
   text-align: center;
 }
 
-/* Keep topbar placement consistent with other pages while using dark text on light background */
+/* Topbar at top of page with nav links left/right, same visual as other pages but not fixed */
 body.project-page .topbar {
-  position: fixed;
-  top: 20px;
-  left: 50%;
-  transform: translateX(-50%);
-  width: calc(100% - 56px);
+  position: static;
+  width: 100%;
   max-width: 900px;
-  z-index: 12;
+  margin: 20px auto 0;
   background: transparent;
   color: #000;
   padding: 14px 32px;
@@ -42,13 +39,13 @@ body.project-page .topbar .top-link.active {
   color: #fff;
 }
 
-/* Logo scrolls naturally in content, below the fixed topbar */
+/* Logo directly below topbar in normal flow */
 body.project-page #title-wrap {
   position: static;
   transform: none;
   top: auto;
   left: auto;
-  margin: 80px auto 28px;
+  margin: 20px auto 28px;
   text-align: center;
   display: flex;
   flex-direction: column;
@@ -504,11 +501,12 @@ body.project-page .overlay-subtitle {
 @media (max-width: 768px) {
   body.project-page .topbar {
     padding: 12px 20px;
+    margin: 16px auto 0;
   }
   
   body.project-page #title-wrap {
     width: calc(100% - 40px);
-    margin: 76px auto 22px;
+    margin: 18px auto 22px;
   }
   
   .doc-tabs {
