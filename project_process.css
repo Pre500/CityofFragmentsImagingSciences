@@ -19,14 +19,28 @@ body.project-page .topbar {
   width: calc(100% - 56px);
   max-width: 900px;
   z-index: 12;
-  background: #ffffff;
-  border-radius: 16px;
-  box-shadow: 0 12px 32px rgba(0,0,0,0.12);
+  background: transparent; /* full-width white handled by ::before */
+  border-radius: 0;
+  box-shadow: none;
   color: #000;
   padding: 14px 32px;
   display: flex;
   justify-content: space-between;
   align-items: center;
+}
+
+/* Full-width white navbar background spanning edge-to-edge */
+body.project-page .topbar::before {
+  content: "";
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  top: 0;
+  height: 100%;
+  width: 100vw;
+  background: #ffffff;
+  box-shadow: 0 8px 24px rgba(0,0,0,0.12);
+  z-index: -1;
 }
 
 body.project-page .topbar .top-link {
