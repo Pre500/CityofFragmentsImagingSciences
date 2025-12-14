@@ -15,7 +15,7 @@ body.project-page .topbar {
   position: fixed;
   left: 50%;
   transform: translateX(-50%);
-  top: 20px;
+  top: 0;
   width: calc(100% - 56px);
   max-width: 900px;
   z-index: 12;
@@ -23,7 +23,7 @@ body.project-page .topbar {
   border-radius: 0;
   box-shadow: none;
   color: #000;
-  padding: 14px 32px 42px; /* extra bottom padding so white bar covers subtitle */
+  padding: 24px 32px 32px; /* more breathing room inside navbar */
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -77,7 +77,7 @@ body.project-page .topbar .top-link.active {
 body.project-page #title-wrap {
   position: fixed;
   left: 50%;
-  top: 24px;
+  top: 8px;
   transform: translateX(-50%);
   z-index: 22;
   pointer-events: none;
@@ -117,7 +117,7 @@ body.project-page .overlay-subtitle {
 
 /* NEW Two-Column Layout - TOC on LEFT, Content on RIGHT */
 .page-content {
-  padding-top: 160px; /* tighter top spacing to fit header */
+  padding-top: 200px; /* account for navbar at top: 0 plus padding */
   position: relative;
   z-index: 1;
   max-width: 1400px;
@@ -213,7 +213,7 @@ body.project-page .overlay-subtitle {
   display: flex;
   justify-content: center;
   gap: 0;
-  margin: 140px auto 16px; /* more space above, minimal below */
+  margin: 100px auto 16px; /* balanced space above tabs */
   max-width: 900px;
   border-radius: 16px;
   overflow: hidden;
