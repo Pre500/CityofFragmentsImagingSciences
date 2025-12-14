@@ -386,6 +386,72 @@ body.project-page .page-content a {
   padding-left: 40px;
 }
 
+/* --- Layout Cleanup --- */
+.page-content,
+.content-section,
+.process-section,
+.toc-container {
+  text-align: left;
+}
+
+/* --- Improved typography ---- */
+body.project-page .page-content {
+  max-width: 950px;
+  margin: 0 auto;
+  line-height: 1.7;
+  font-family: "Helvetica Neue", Arial, sans-serif;
+}
+.content-section h2,
+.content-section h3,
+.content-section h4 {
+  text-align: left;
+}
+
+/* --- Gallery Grid Layout --- */
+.image-gallery {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+  gap: 16px;
+  margin-top: 20px;
+}
+
+.image-gallery img {
+  width: 100%;
+  height: auto;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.image-gallery img:hover {
+  transform: scale(1.03);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
+}
+
+/* --- Optional: Simple Lightbox (pure CSS) --- */
+.gallery-lightbox {
+  display: none;
+  position: fixed;
+  z-index: 999;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.85);
+  justify-content: center;
+  align-items: center;
+}
+
+.gallery-lightbox img {
+  max-width: 90%;
+  max-height: 90%;
+  border-radius: 8px;
+}
+
+.gallery-lightbox:target {
+  display: flex;
+}
+
 @media (max-width: 768px) {
   .toc-container {
     grid-template-columns: 1fr;
