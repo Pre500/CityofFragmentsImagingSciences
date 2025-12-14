@@ -19,7 +19,9 @@ body.project-page .topbar {
   width: calc(100% - 56px);
   max-width: 900px;
   z-index: 12;
-  background: transparent;
+  background: #ffffff;
+  border-radius: 16px;
+  box-shadow: 0 12px 32px rgba(0,0,0,0.12);
   color: #fff9f9;
   padding: 14px 32px;
   display: flex;
@@ -182,7 +184,7 @@ body.project-page .overlay-subtitle {
   display: flex;
   justify-content: center;
   gap: 0;
-  margin: 60px auto 60px;
+  margin: 110px auto 60px;
   max-width: 900px;
   border-radius: 16px;
   overflow: hidden;
