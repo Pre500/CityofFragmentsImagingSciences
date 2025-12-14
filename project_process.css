@@ -12,16 +12,15 @@ body.subpage.project-page {
 
 /* Keep topbar placement consistent with other pages while using dark text on light background */
 body.project-page .topbar {
-  position: fixed;
-  top: 20px;
-  left: 50%;
-  transform: translateX(-50%);
-  width: calc(100% - 56px);
-  max-width: 900px;
-  z-index: 12;
+  position: static;
+  width: 100%;
+  max-width: none;
+  transform: none;
+  margin: 20px auto 12px;
   background: transparent;
   color: #000;
   padding: 14px 32px;
+  justify-content: center;
 }
 
 body.project-page .topbar .top-link {
@@ -501,6 +500,7 @@ body.project-page .overlay-subtitle {
 @media (max-width: 768px) {
   body.project-page .topbar {
     padding: 12px 20px;
+    margin: 12px auto 8px;
   }
   
   body.project-page #title-wrap {
