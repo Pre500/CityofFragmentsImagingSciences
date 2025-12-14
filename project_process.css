@@ -23,7 +23,7 @@ body.project-page .topbar {
   border-radius: 0;
   box-shadow: none;
   color: #000;
-  padding: 14px 32px;
+  padding: 14px 32px 42px; /* extra bottom padding so white bar covers subtitle */
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -104,7 +104,7 @@ body.project-page #title-overlay {
 body.project-page .overlay-subtitle {
   position: relative;
   margin-top: 8px;
-  color: #ffffff;
+  color: #000000; /* subtitle in black as part of navbar */
   font-size: 14px;
   line-height: 1.4;
   opacity: 1;
@@ -213,7 +213,7 @@ body.project-page .overlay-subtitle {
   display: flex;
   justify-content: center;
   gap: 0;
-  margin: 110px auto 60px;
+  margin: 120px auto 10px; /* reduce bottom spacing; keep spacing above */
   max-width: 900px;
   border-radius: 16px;
   overflow: hidden;
