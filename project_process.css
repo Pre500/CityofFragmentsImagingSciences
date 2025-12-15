@@ -120,7 +120,7 @@ body.project-page .overlay-subtitle {
   padding-top: 100px; /* account for navbar at top: 0 plus padding */
   position: relative;
   z-index: 1;
-  max-width: 1400px;
+  max-width: 1200px;
   margin: 0 auto;
   color: #000;
   text-align: left;
