@@ -1,0 +1,53 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Your Stories — City of Fragments</title>
+  <link rel="apple-touch-icon" sizes="180x180" href="assets/apple-touch-icon.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="assets/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="assets/favicon-16x16.png">
+  <link rel="icon" type="image/x-icon" href="assets/favicon.ico">
+<link rel="stylesheet" href="style.css">
+<link rel="stylesheet" href="your_stories.css">
+
+<!-- Firebase SDKs -->
+<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-storage-compat.js"></script>
+</head>
+<body class="scrapbook-page">
+
+<!-- Top navigation bar -->
+<div class="topbar">
+  <a class="top-link left" href="project_process.html">PROJECT PROCESS</a>
+  <a class="top-link right active" href="your_stories.html">YOUR STORIES</a>
+</div>
+
+<div id="title-wrap">
+  <a class="title-link" href="index.html" aria-label="Back to Home">
+    <img id="title-overlay" src="assets/Title City of Fragments.png" alt="City of Fragments" />
+  </a>
+  <a id="overlay-subtitle" class="subtitle overlay-subtitle" href="#" aria-hidden="true">The city is no longer a place we inhabit — it's a place we remember.</a>
+</div>
+
+<div id="scrapbook-controls">
+  <label class="upload-btn">
+    Upload Your Photo
+    <input type="file" id="imageUpload" accept="image/*">
+  </label>
+  <br>
+  <textarea id="userText" placeholder="Keep your memories and stories here..."></textarea>
+  <br>
+  <button id="addBtn">Add Here as a Collective Collage</button>
+</div>
+
+<div id="canvas"></div>
+
+<!-- Firebase Configuration -->
+<script src="firebase-config.js"></script>
+
+<!-- Scrapbook Script -->
+<script src="script-scrapbook.js"></script>
+
+</body>
+</html>
